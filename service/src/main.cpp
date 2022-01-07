@@ -1,6 +1,8 @@
-#include <iostream>
+#include "RobotApp.h"
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
+int main(int argc, char *argv[]) {
+    RobotApp app;
+    app.run(argc, argv);
+
     return 0;
 }
