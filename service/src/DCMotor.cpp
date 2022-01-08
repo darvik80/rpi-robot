@@ -4,9 +4,9 @@
 
 #include "DCMotor.h"
 
-LOG_COMPONENT_SETUP(motor, servo_logger)
+LOG_COMPONENT_SETUP(motor, motor_logger)
 
-DCMotor::DCMotor() : BaseService(servo_logger::get()) {}
+DCMotor::DCMotor() : BaseService(motor_logger::get()) {}
 
 const char *DCMotor::name() {
     return "dc-motor";
