@@ -26,6 +26,10 @@ class XboxJoystick : public Joystick {
     bool _btnX{false};
     bool _btnB{false};
     bool _btnY{false};
+
+    bool _btnBack{false};
+    bool _btnXbox{false};
+    bool _btnStart{false};
 public:
     XboxJoystick()
             : Joystick("xbox360") { }
@@ -108,5 +112,29 @@ public:
 
     void setBtnY(bool btnY) {
         _btnY = btnY;
+    }
+
+    [[nodiscard]] bool isBtnBack() const {
+        return _btnY;
+    }
+
+    void setBtnBack(bool btnBack) {
+        _btnBack = btnBack;
+    }
+
+    [[nodiscard]] bool isBtnXbox() const {
+        return _btnY;
+    }
+
+    void setBtnXbox(bool btnXbox) {
+        _btnXbox = btnXbox;
+    }
+
+    [[nodiscard]] bool isBtnStart() const {
+        return _btnY;
+    }
+
+    void setBtnStart(bool btnStart) {
+        _btnStart = btnStart;
     }
 };

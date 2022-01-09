@@ -44,13 +44,13 @@ namespace xbox {
                 if (_events[idx].number == 0 && JS_EVENT_AXIS == _events[idx].type) {
                     event.setAxisX(axis_left, _events[idx].value);
                     changed = true;
-                } else if (_events[idx].number == 2 && JS_EVENT_AXIS == _events[idx].type) {
+                } else if (_events[idx].number == 3 && JS_EVENT_AXIS == _events[idx].type) {
                     event.setAxisX(axis_right, _events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 1 && JS_EVENT_AXIS == _events[idx].type) {
                     event.setAxisY(axis_left, _events[idx].value);
                     changed = true;
-                } else if (_events[idx].number == 3 && JS_EVENT_AXIS == _events[idx].type) {
+                } else if (_events[idx].number == 4 && JS_EVENT_AXIS == _events[idx].type) {
                     event.setAxisY(axis_right, _events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 6 && JS_EVENT_AXIS == _events[idx].type) {
@@ -59,10 +59,10 @@ namespace xbox {
                 } else if (_events[idx].number == 7 && JS_EVENT_AXIS == _events[idx].type) {
                     event.setAxisY(axis_mid, _events[idx].value);
                     changed = true;
-                } else if (_events[idx].number == 5 && JS_EVENT_AXIS == _events[idx].type) {
+                } else if (_events[idx].number == 2 && JS_EVENT_AXIS == _events[idx].type) {
                     event.setLt(((int) _events[idx].value + 32768) >> 8);
                     changed = true;
-                } else if (_events[idx].number == 4 && JS_EVENT_AXIS == _events[idx].type) {
+                } else if (_events[idx].number == 5 && JS_EVENT_AXIS == _events[idx].type) {
                     event.setRt(((int) _events[idx].value + 32768) >> 8);
                     changed = true;
                 } else if (_events[idx].number == 4 && JS_EVENT_BUTTON == _events[idx].type) {
@@ -83,8 +83,16 @@ namespace xbox {
                 } else if (_events[idx].number == 1 && JS_EVENT_BUTTON == _events[idx].type) {
                     event.setBtnB(_events[idx].value);
                     changed = true;
+                } else if (_events[idx].number == 6 && JS_EVENT_BUTTON == _events[idx].type) {
+                    event.setBtnBack(_events[idx].value);
+                    changed = true;
+                } else if (_events[idx].number == 8 && JS_EVENT_BUTTON == _events[idx].type) {
+                    event.setBtnXbox(_events[idx].value);
+                    changed = true;
+                } else if (_events[idx].number == 7 && JS_EVENT_BUTTON == _events[idx].type) {
+                    event.setBtnStart(_events[idx].value);
+                    changed = true;
                 }
-
             }
             if (changed) {
                 _eventManager->raiseEvent(event);
