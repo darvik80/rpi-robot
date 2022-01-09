@@ -17,6 +17,7 @@ find_package(Threads)
 
 file(GLOB SRCS_G
         src/*.cpp
+        src/joystick/*.cpp
         )
 
 
