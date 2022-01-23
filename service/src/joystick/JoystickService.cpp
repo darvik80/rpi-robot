@@ -69,7 +69,7 @@ namespace xbox {
                     event.setRb(_events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 5 && JS_EVENT_BUTTON == _events[idx].type) {
-                    event.setRb(_events[idx].value);
+                    event.setLb(_events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 0 && JS_EVENT_BUTTON == _events[idx].type) {
                     event.setBtnA(_events[idx].value);

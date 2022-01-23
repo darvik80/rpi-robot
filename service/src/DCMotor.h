@@ -19,6 +19,8 @@ public:
     const char *name() override;
 
     void postConstruct(Registry &registry) override;
+
+    void preDestroy(Registry &registry) override;
 };
 
 

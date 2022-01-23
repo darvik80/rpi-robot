@@ -10,6 +10,7 @@
 #include "joystick/JoystickEvent.h"
 
 LOG_COMPONENT_SETUP(motor, motor_logger)
+
 // name         wPI     BCM
 #define PWMA1   22 //   6
 #define PWMA2   23 //   13
@@ -17,13 +18,6 @@ LOG_COMPONENT_SETUP(motor, motor_logger)
 #define PWMB2   29 //   21
 #define PWM1    26 //   12
 #define PWM2    25 //   26
-
-//#define PWMA1   6
-//#define PWMA2   13
-//#define PWMB1   20
-//#define PWMB2   21
-//#define PWM1    12
-//#define PWM2    26
 
 DCMotor::DCMotor()
         : BaseService(motor_logger::get()) {}
@@ -46,7 +40,7 @@ void DCMotor::forward(int speed) {
 }
 
 void DCMotor::left(int speed) {
-    info("lt val: {}", speed);
+    debug("lt val: {}", speed);
 
     digitalWrite(PWMA1, LOW);
     digitalWrite(PWMA2, HIGH);
@@ -54,7 +48,7 @@ void DCMotor::left(int speed) {
 }
 
 void DCMotor::right(int speed) {
-    info("rt val: {}", speed);
+    debug("rt val: {}", speed);
 
     digitalWrite(PWMB1, LOW);
     digitalWrite(PWMB2, HIGH);
@@ -84,11 +78,18 @@ void DCMotor::postConstruct(Registry &registry) {
     stop();
 
     registry.getService<EventManagerService>().subscribe<xbox::Xbox380Event>([this](const xbox::Xbox380Event &event) -> bool {
-        info("origin lt: {}, rt: {}", event.getLt(), event.getRt());
+        debug("origin lt: {}, rt: {}", event.getLt(), event.getRt());
         left((event.getLt() + 32767) * 1024 / 65535);
         right((event.getRt() + 32767) * 1024 / 65535);
 
         return true;
     });
 
+}
+
+void DCMotor::preDestroy(Registry &registry) {
+    BaseService::preDestroy(registry);
+
+    softPwmStop(PWM1);
+    softPwmStop(PWM2);
 }
