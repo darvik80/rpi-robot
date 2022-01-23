@@ -4,17 +4,20 @@
 
 #pragma once
 
+#include <string>
+#include <string_view>
+
+enum AxisId {
+    axis_left,
+    axis_mid,
+    axis_right,
+};
+
 struct JoystickAxis {
     int x{0}, y{0};
 };
 
 class Joystick {
-    std::string _name;
 public:
-    explicit Joystick(const std::string &name)
-            : _name(name) {}
-
-    [[nodiscard]] const std::string &getName() const {
-        return _name;
-    }
+    virtual const char* name() const = 0;
 };

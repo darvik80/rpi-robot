@@ -6,15 +6,8 @@
 
 #include "Joystick.h"
 
-enum XboxAxisId {
-    axis_left,
-    axis_mid,
-    axis_right,
-    axis_size
-};
-
 class XboxJoystick : public Joystick {
-    JoystickAxis _axis[axis_size];
+    JoystickAxis _axis[3];
 
     bool _rb{false};
     bool _lb{false};
@@ -31,22 +24,23 @@ class XboxJoystick : public Joystick {
     bool _btnXbox{false};
     bool _btnStart{false};
 public:
-    XboxJoystick()
-            : Joystick("xbox360") { }
+    [[nodiscard]] const char *name() const override {
+        return "xbox-joy";
+    }
 
-    [[nodiscard]] JoystickAxis getAxis(XboxAxisId id) const {
+    [[nodiscard]] JoystickAxis getAxis(AxisId id) const {
         return _axis[id];
     }
 
-    void setAxisX(XboxAxisId id, int x) {
+    void setAxisX(AxisId id, int x) {
         _axis[id].x = x;
     }
 
-    void setAxisY(XboxAxisId id, int y) {
+    void setAxisY(AxisId id, int y) {
         _axis[id].y = y;
     }
 
-    const JoystickAxis& getAxis(XboxAxisId id) {
+    const JoystickAxis& getAxis(AxisId id) {
         return _axis[id];
     }
 

@@ -3,8 +3,8 @@
 //
 
 #include "I2CServoDriver.h"
-#include "event/EventManagerService.h"
 #include <wiringPiI2C.h>
+#include "event/EventManagerService.h"
 #include "joystick/JoystickEvent.h"
 
 LOG_COMPONENT_SETUP(servo, servo_logger)
@@ -66,7 +66,7 @@ void I2CServoDriver::postConstruct(Registry &registry) {
     setPWMFreq(50);
 
     registry.getService<EventManagerService>().subscribe<xbox::Xbox380Event>([this](const xbox::Xbox380Event &event) -> bool {
-        setServoPulse(0, ((-event.getAxis(XboxAxisId::axis_right).x + 32768) * 2000 / 65535) + 500);
+        setServoPulse(0, ((-event.getAxis(AxisId::axis_right).x + 32768) * 2000 / 65535) + 500);
         return true;
     });
 

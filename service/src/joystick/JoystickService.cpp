@@ -18,7 +18,7 @@ namespace xbox {
         if (fd > 0) {
             char name[128];
             if (ioctl(fd, JSIOCGNAME(sizeof(name)), name) < 0) {
-                strncpy(name, "Unknown", sizeof(name));
+                strncpy(name, "unknown", sizeof(name));
             }
             log::info("joystick name: {}", name);
 
@@ -42,28 +42,28 @@ namespace xbox {
             for (int idx = 0; idx < size; idx++) {
                 log::info("ev: {}, {}, {}", _events[idx].number, _events[idx].type, _events[idx].value);
                 if (_events[idx].number == 0 && JS_EVENT_AXIS == _events[idx].type) {
-                    event.setAxisX(axis_left, _events[idx].value);
+                    event.setAxisX(AxisId::axis_left, _events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 3 && JS_EVENT_AXIS == _events[idx].type) {
-                    event.setAxisX(axis_right, _events[idx].value);
+                    event.setAxisX(AxisId::axis_right, _events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 1 && JS_EVENT_AXIS == _events[idx].type) {
-                    event.setAxisY(axis_left, _events[idx].value);
+                    event.setAxisY(AxisId::axis_left, _events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 4 && JS_EVENT_AXIS == _events[idx].type) {
-                    event.setAxisY(axis_right, _events[idx].value);
+                    event.setAxisY(AxisId::axis_right, _events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 6 && JS_EVENT_AXIS == _events[idx].type) {
-                    event.setAxisX(axis_mid, _events[idx].value);
+                    event.setAxisX(AxisId::axis_mid, _events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 7 && JS_EVENT_AXIS == _events[idx].type) {
-                    event.setAxisY(axis_mid, _events[idx].value);
+                    event.setAxisY(AxisId::axis_mid, _events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 2 && JS_EVENT_AXIS == _events[idx].type) {
-                    event.setLt(((int) _events[idx].value + 32768) >> 8);
+                    event.setLt(_events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 5 && JS_EVENT_AXIS == _events[idx].type) {
-                    event.setRt(((int) _events[idx].value + 32768) >> 8);
+                    event.setRt(_events[idx].value);
                     changed = true;
                 } else if (_events[idx].number == 4 && JS_EVENT_BUTTON == _events[idx].type) {
                     event.setRb(_events[idx].value);

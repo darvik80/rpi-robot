@@ -13,7 +13,10 @@ const char *RobotApp::name() {
 }
 
 void RobotApp::setup(Registry &registry) {
-    wiringPiSetup();
+    if (-1 == wiringPiSetup()) {
+        error("can't init wiringPiSetupGpio");
+        return;
+    }
 
     registry.addService(std::make_shared<I2CServoDriver>());
     registry.addService(std::make_shared<DCMotor>());
