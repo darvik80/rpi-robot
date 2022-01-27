@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(service)
 
-set(CMAKE_CXX_STANDARD 20)
-
 if (APPLE)
     message("Apple build")
     find_library(IOKIT_LIBRARY IOKit)
@@ -23,4 +21,4 @@ file(GLOB SRCS_G
 
 add_executable(${PROJECT_NAME} ${SRCS_G})
 
-target_link_libraries(${PROJECT_NAME} ${CORE_LIBRARY} ${Boost_LIBRARIES} application wiringPi)
+target_link_libraries(${PROJECT_NAME} ${CORE_LIBRARY} ${Boost_LIBRARIES} application pigpio)
