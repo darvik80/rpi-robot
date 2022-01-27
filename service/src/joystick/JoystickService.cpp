@@ -2,6 +2,8 @@
 // Created by Ivan Kishchenko on 10.07.2021.
 //
 
+#ifdef RASPBERRY_ARCH
+
 #include "JoystickService.h"
 #include "JoystickLogger.h"
 
@@ -115,3 +117,5 @@ namespace xbox {
         BaseService::preDestroy(registry);
     }
 }
+
+#endif

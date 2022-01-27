@@ -4,6 +4,8 @@
 
 #pragma once
 
+#ifdef RASPBERRY_ARCH
+
 #include <BaseService.h>
 
 class DCMotor : public BaseService {
@@ -26,4 +28,5 @@ public:
     void preDestroy(Registry &registry) override;
 };
 
+#endif
 

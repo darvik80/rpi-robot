@@ -2,6 +2,8 @@
 // Created by Ivan Kishchenko on 08.01.2022.
 //
 
+#ifdef RASPBERRY_ARCH
+
 #include "DCMotor.h"
 
 #include "event/EventManagerService.h"
@@ -93,3 +95,5 @@ void DCMotor::preDestroy(Registry &registry) {
 //    softPwmStop(PWM1);
 //    softPwmStop(PWM2);
 }
+
+#endif

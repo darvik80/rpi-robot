@@ -1,9 +1,9 @@
 //
 // Created by Ivan Kishchenko on 08.01.2022.
 //
+#ifdef RASPBERRY_ARCH
 
 #include "I2CServoDriver.h"
-//#include <wiringPiI2C.h>
 #include "event/EventManagerService.h"
 #include "joystick/JoystickEvent.h"
 
@@ -72,3 +72,4 @@ void I2CServoDriver::postConstruct(Registry &registry) {
 
     BaseService::postConstruct(registry);
 }
+#endif
