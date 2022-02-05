@@ -4,6 +4,8 @@
 
 #pragma once
 
+#ifdef RASPBERRY_ARCH
+
 #include "BaseService.h"
 #include <boost/asio/posix/stream_descriptor.hpp>
 #include <linux/joystick.h>
@@ -31,3 +33,5 @@ namespace xbox {
         void onRead(const boost::system::error_code &error, std::size_t readable);
     };
 }
+
+#endif
