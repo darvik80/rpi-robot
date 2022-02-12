@@ -2,24 +2,23 @@
 // Created by Ivan Kishchenko on 08.01.2022.
 //
 
-#ifdef RASPBERRY_ARCH
-
 #include "DCMotor.h"
+#include <wiringPi.h>
+#include <softPwm.h>
 
 #include "event/EventManagerService.h"
 #include "joystick/JoystickEvent.h"
-#include <pigpio.h>
-
-// name         BCM
-#define PWMA1   6
-#define PWMA2   13
-#define PWM1    26
-
-#define PWMB1   20
-#define PWMB2   21
-#define PWM2    12
 
 LOG_COMPONENT_SETUP(motor, motor_logger)
+
+// name         wPO     BCM wPI
+#define PWMA1   20  //  06  22
+#define PWMA2   22  //  13  23
+#define PWM1    21  //  12  26
+
+#define PWMB1   26 //   20  28
+#define PWMB2   27 //   21  29
+#define PWM2    25 //   26  25
 
 DCMotor::DCMotor()
         : BaseService(motor_logger::get()) {}
@@ -29,60 +28,70 @@ const char *DCMotor::name() {
 }
 
 void DCMotor::stop() {
-    gpioWrite(PWMA1, PI_LOW);
-    gpioWrite(PWMA2, PI_LOW);
+    digitalWrite(PWMA1, LOW);
+    digitalWrite(PWMA2, LOW);
 
-    gpioWrite(PWMB1, PI_LOW);
-    gpioWrite(PWMB2, PI_LOW);
+    digitalWrite(PWMB1, LOW);
+    digitalWrite(PWMB2, LOW);
 }
 
 void DCMotor::forward(int speed) {
-    left(speed);
-    right(speed);
+    left(speed, false);
+    right(speed, false);
 }
 
-void DCMotor::left(int speed) {
+void DCMotor::left(int speed, bool dir) {
     debug("lt val: {}", speed);
 
-    gpioWrite(PWMA1, PI_LOW);
-    gpioWrite(PWMA2, PI_HIGH);
-
-    if (int res = gpioPWM(PWM1, speed); res) {
-        error("failed set PWM: {}", res);
+    if (dir) {
+        digitalWrite(PWMA2, LOW);
+        digitalWrite(PWMA1, HIGH);
+    } else {
+        digitalWrite(PWMA1, LOW);
+        digitalWrite(PWMA2, HIGH);
     }
+    softPwmWrite(PWM1, speed);
 }
 
-void DCMotor::right(int speed) {
+void DCMotor::right(int speed, bool dir) {
     debug("rt val: {}", speed);
 
-    gpioWrite(PWMB1, PI_LOW);
-    gpioWrite(PWMB2, PI_HIGH);
-
-    if (int res = gpioPWM(PWM2, speed); res) {
-        error("failed set PWM: {}", res);
+    if (dir) {
+        digitalWrite(PWMB2, LOW);
+        digitalWrite(PWMB1, HIGH);
+    } else {
+        digitalWrite(PWMB1, LOW);
+        digitalWrite(PWMB2, HIGH);
     }
+    softPwmWrite(PWM2, speed);
 }
 
 void DCMotor::postConstruct(Registry &registry) {
     BaseService::postConstruct(registry);
 
-    gpioSetMode(PWMA1, PI_OUTPUT);
-    gpioSetMode(PWMA2, PI_OUTPUT);
-    gpioSetMode(PWM1, PI_OUTPUT);
+    pinMode(PWMA1, OUTPUT);
+    pinMode(PWMA2, OUTPUT);
+    pinMode(PWM1, OUTPUT);
 
-    gpioSetMode(PWMB1, PI_OUTPUT);
-    gpioSetMode(PWMB2, PI_OUTPUT);
-    gpioSetMode(PWM2, PI_OUTPUT);
+    pinMode(PWMB1, OUTPUT);
+    pinMode(PWMB2, OUTPUT);
+    pinMode(PWM2, OUTPUT);
 
-    gpioSetPWMrange(PWM1, 1024);
-    gpioSetPWMrange(PWM2, 1024);
+    if (softPwmCreate(PWM1, 0, 1024)) {
+        error("can't init PWM {}, errno: {}", PWM1, errno);
+        return;
+    }
+    if (softPwmCreate(PWM2, 0, 1024)) {
+        error("can't init PWM {}, errno: {}", PWM2, errno);
+        return;
+    }
 
     stop();
 
     registry.getService<EventManagerService>().subscribe<xbox::Xbox380Event>([this](const xbox::Xbox380Event &event) -> bool {
-        debug("origin lt: {}, rt: {}", event.getLt(), event.getRt());
-        left((event.getLt() + 32767) * 1024 / 65535);
-        right((event.getRt() + 32767) * 1024 / 65535);
+        debug("origin lt: {}:{}, rt: {}:{}", event.getLt(), event.isLb(), event.getRt(), event.isRb());
+        left((event.getLt() + 32767) * 1024 / 65535, event.isLb());
+        right((event.getRt() + 32767) * 1024 / 65535, event.isRb());
 
         return true;
     });
@@ -92,8 +101,6 @@ void DCMotor::postConstruct(Registry &registry) {
 void DCMotor::preDestroy(Registry &registry) {
     BaseService::preDestroy(registry);
 
-//    softPwmStop(PWM1);
-//    softPwmStop(PWM2);
+    softPwmStop(PWM1);
+    softPwmStop(PWM2);
 }
-
-#endif

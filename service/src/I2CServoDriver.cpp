@@ -6,6 +6,7 @@
 #include "I2CServoDriver.h"
 #include "event/EventManagerService.h"
 #include "joystick/JoystickEvent.h"
+#include <wiringPiI2C.h>
 
 LOG_COMPONENT_SETUP(servo, servo_logger)
 
@@ -36,19 +37,19 @@ const char *I2CServoDriver::name() {
 
 void I2CServoDriver::setPWMFreq(int freq) {
     int preScale = lroundf(25000000.0f / (4096 * freq));
-//    auto oldMode = wiringPiI2CReadReg8(_fd, MODE1);
-//    auto newMode = (oldMode & 0x7F) | 0x10;
-//    wiringPiI2CWriteReg8(_fd, MODE1, newMode);
-//    wiringPiI2CWriteReg8(_fd, PRESCALE, preScale);
-//
-//    wiringPiI2CWriteReg8(_fd, MODE1, oldMode);
-//    usleep(5000);
-//    wiringPiI2CWriteReg8(_fd, MODE1, oldMode | 0x80);
+    auto oldMode = wiringPiI2CReadReg8(_fd, MODE1);
+    auto newMode = (oldMode & 0x7F) | 0x10;
+    wiringPiI2CWriteReg8(_fd, MODE1, newMode);
+    wiringPiI2CWriteReg8(_fd, PRESCALE, preScale);
+
+    wiringPiI2CWriteReg8(_fd, MODE1, oldMode);
+    usleep(5000);
+    wiringPiI2CWriteReg8(_fd, MODE1, oldMode | 0x80);
 }
 
 void I2CServoDriver::setPWM(int channel, int off) {
-//    wiringPiI2CWriteReg8(_fd, LED0_OFF_L + 4 * channel, off & 0xFF);
-//    wiringPiI2CWriteReg8(_fd, LED0_OFF_H + 4 * channel, off >> 8);
+    wiringPiI2CWriteReg8(_fd, LED0_OFF_L + 4 * channel, off & 0xFF);
+    wiringPiI2CWriteReg8(_fd, LED0_OFF_H + 4 * channel, off >> 8);
 }
 
 void I2CServoDriver::setServoPulse(int channel, int pulse) {
@@ -57,13 +58,13 @@ void I2CServoDriver::setServoPulse(int channel, int pulse) {
 }
 
 void I2CServoDriver::postConstruct(Registry &registry) {
-//    _fd = wiringPiI2CSetup(0x40);
-//    if (_fd == -1) {
-//        servo::log::error("i2c init failed");
-//        return;
-//    }
-//    wiringPiI2CWriteReg8(_fd, MODE1, 0x00);
-//    setPWMFreq(50);
+    _fd = wiringPiI2CSetupInterface("/dev/i2c-0", 0x40);
+    if (_fd == -1) {
+        servo::log::error("i2c init failed");
+        return;
+    }
+    wiringPiI2CWriteReg8(_fd, MODE1, 0x00);
+    setPWMFreq(50);
 
     registry.getService<EventManagerService>().subscribe<xbox::Xbox380Event>([this](const xbox::Xbox380Event &event) -> bool {
         setServoPulse(0, ((-event.getAxis(AxisId::axis_right).x + 32768) * 2000 / 65535) + 500);

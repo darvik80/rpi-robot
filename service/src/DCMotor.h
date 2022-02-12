@@ -4,20 +4,15 @@
 
 #pragma once
 
-#ifdef RASPBERRY_ARCH
-
 #include <BaseService.h>
 
 class DCMotor : public BaseService {
 private:
     void stop();
-
     void forward(int speed);
 
-    void right(int speed);
-
-    void left(int speed);
-
+    void right(int speed, bool dir);
+    void left(int speed, bool dir);
 public:
     DCMotor();
 
@@ -28,5 +23,4 @@ public:
     void preDestroy(Registry &registry) override;
 };
 
-#endif
 

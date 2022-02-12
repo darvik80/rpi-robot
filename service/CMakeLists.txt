@@ -15,10 +15,10 @@ find_package(Threads)
 
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES arm)
     add_definitions(-DRASPBERRY_ARCH)
-    set(RPI_LIB pigpio)
+    set(RPI_LIB wiringPi crypt)
 elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES aarch64)
     add_definitions(-DRASPBERRY_ARCH)
-    set(RPI_LIB pigpio)
+    set(RPI_LIB wiringPi)
 endif ()
 
 

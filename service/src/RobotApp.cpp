@@ -8,7 +8,7 @@
 #include "I2CServoDriver.h"
 #include "DCMotor.h"
 #include "joystick/JoystickService.h"
-#include <pigpio.h>
+#include <wiringPi.h>
 #endif
 
 const char *RobotApp::name() {
@@ -17,9 +17,8 @@ const char *RobotApp::name() {
 
 void RobotApp::setup(Registry &registry) {
 #ifdef RASPBERRY_ARCH
-    if (gpioInitialise() == PI_INIT_FAILED) {
-        error("can't init gpio...");
-        exit(PI_INIT_FAILED);
+    if (-1 == wiringPiSetup()) {
+        error("can't init wiringPiSetup");
         return;
     }
 
