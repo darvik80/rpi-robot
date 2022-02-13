@@ -24,7 +24,7 @@ endif ()
 
 file(GLOB SRCS_G
         src/*.cpp
-        src/joystick/*.cpp
+        ../core-utils/application/src/joystick/*.cpp
         )
 
 

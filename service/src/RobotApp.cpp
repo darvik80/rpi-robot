@@ -24,7 +24,7 @@ void RobotApp::setup(Registry &registry) {
 
     registry.addService(std::make_shared<I2CServoDriver>());
     registry.addService(std::make_shared<DCMotor>());
-    registry.addService(std::make_shared<xbox::JoystickService>());
+    registry.addService(std::make_shared<JoystickService>());
 #endif
 }
 

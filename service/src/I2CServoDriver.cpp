@@ -58,7 +58,8 @@ void I2CServoDriver::setServoPulse(int channel, int pulse) {
 }
 
 void I2CServoDriver::postConstruct(Registry &registry) {
-    _fd = wiringPiI2CSetupInterface("/dev/i2c-0", 0x40);
+    _fd = wiringPiI2CSetup(0x40);
+    //_fd = wiringPiI2CSetupInterface("/dev/i2c-0", 0x40);
     if (_fd == -1) {
         servo::log::error("i2c init failed");
         return;
@@ -66,11 +67,12 @@ void I2CServoDriver::postConstruct(Registry &registry) {
     wiringPiI2CWriteReg8(_fd, MODE1, 0x00);
     setPWMFreq(50);
 
-    registry.getService<EventManagerService>().subscribe<xbox::Xbox380Event>([this](const xbox::Xbox380Event &event) -> bool {
-        setServoPulse(0, ((-event.getAxis(AxisId::axis_right).x + 32768) * 2000 / 65535) + 500);
+    registry.getService<EventManagerService>().subscribe<JoystickEvent>([this](const JoystickEvent &event) -> bool {
+        setServoPulse(0, ((-event.axis[AxisId::axis_right].x + 32768) * 2000 / 65535) + 500);
         return true;
     });
 
     BaseService::postConstruct(registry);
 }
+
 #endif

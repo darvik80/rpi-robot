@@ -88,10 +88,10 @@ void DCMotor::postConstruct(Registry &registry) {
 
     stop();
 
-    registry.getService<EventManagerService>().subscribe<xbox::Xbox380Event>([this](const xbox::Xbox380Event &event) -> bool {
-        debug("origin lt: {}:{}, rt: {}:{}", event.getLt(), event.isLb(), event.getRt(), event.isRb());
-        left((event.getLt() + 32767) * 1024 / 65535, event.isLb());
-        right((event.getRt() + 32767) * 1024 / 65535, event.isRb());
+    registry.getService<EventManagerService>().subscribe<JoystickEvent>([this](const JoystickEvent &event) -> bool {
+        debug("origin lt: {}:{}, rt: {}:{}", event.lt, event.lb, event.rt, event.rb);
+        left((event.lt + 32767) * 1024 / 65535, event.lb);
+        right((event.rt + 32767) * 1024 / 65535, event.rb);
 
         return true;
     });
