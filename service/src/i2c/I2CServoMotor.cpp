@@ -30,19 +30,19 @@ const char *I2CServoMotor::name() {
 
 void I2CServoMotor::setPWMFreq(int freq) {
     int preScale = lroundf(25000000.0f / (4096 * freq));
-    auto oldMode = _i2c.readReg8(MODE1);
+    auto oldMode = _i2c->readReg8(MODE1);
     auto newMode = (oldMode & 0x7F) | 0x10;
-    _i2c.writeReg8(MODE1, newMode);
-    _i2c.writeReg8(PRESCALE, preScale);
+    _i2c->writeReg8(MODE1, newMode);
+    _i2c->writeReg8(PRESCALE, preScale);
 
-    _i2c.writeReg8(MODE1, oldMode);
+    _i2c->writeReg8(MODE1, oldMode);
     usleep(5000);
-    _i2c.writeReg8(MODE1, oldMode | 0x80);
+    _i2c->writeReg8(MODE1, oldMode | 0x80);
 }
 
 void I2CServoMotor::setPWM(int channel, int off) {
-    _i2c.writeReg8(LED0_OFF_L + 4 * channel, off & 0xFF);
-    _i2c.writeReg8(LED0_OFF_H + 4 * channel, off >> 8);
+    _i2c->writeReg8(LED0_OFF_L + 4 * channel, off & 0xFF);
+    _i2c->writeReg8(LED0_OFF_H + 4 * channel, off >> 8);
 }
 
 void I2CServoMotor::setServoPulse(int channel, int pulse) {
@@ -53,13 +53,13 @@ void I2CServoMotor::setServoPulse(int channel, int pulse) {
 void I2CServoMotor::postConstruct(Registry &registry) {
     auto props = registry.getProperties<I2CServoMotorProperties>();
 
-    _i2c = registry.getService<DriverManager>().createDriver<I2CDriver>(props.device, props.deviceId);
-    _i2c.writeReg8(MODE1, 0x00);
+    _i2c = std::make_unique<I2CDriver>(props.device, props.deviceId);
+    _i2c->writeReg8(MODE1, 0x00);
 
     setPWMFreq(50);
 
-    registry.getService<EventManagerService>().subscribe<JoystickEvent>([this](const JoystickEvent &event) -> bool {
-        setServoPulse(0, ((-event.axis[AxisId::axis_right].x + 32768) * 2000 / 65535) + 500);
+    registry.getService<EventManagerService>().subscribe<JoystickEvent>([this, props](const JoystickEvent &event) -> bool {
+        setServoPulse(props.channel, ((-event.axis[AxisId::axis_right].x + 32768) * 2000 / 65535) + 500);
         return true;
     });
 

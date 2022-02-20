@@ -9,7 +9,8 @@
 
 struct I2CServoMotorProperties : Properties {
     std::string device;
-    int deviceId;
+    int deviceId{};
+    int channel{};
 };
 
 inline void fromJson(JsonPropertiesSource& source, I2CServoMotorProperties& props) {
