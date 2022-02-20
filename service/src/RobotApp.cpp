@@ -5,7 +5,8 @@
 #include "RobotApp.h"
 
 #ifdef RASPBERRY_ARCH
-#include "I2CServoDriver.h"
+#include "i2c/I2CDriver.h"
+#include "i2c/I2CServoMotor.h"
 #include "DCMotor.h"
 #include "joystick/JoystickService.h"
 #include <wiringPi.h>
@@ -22,7 +23,8 @@ void RobotApp::setup(Registry &registry) {
         return;
     }
 
-    registry.addService(std::make_shared<I2CServoDriver>());
+    registry.addService(std::make_shared<DriverManager>());
+    registry.addService(std::make_shared<I2CServoMotor>());
     registry.addService(std::make_shared<DCMotor>());
     registry.addService(std::make_shared<JoystickService>());
 #endif

@@ -1,0 +1,11 @@
+{
+  "logging": {
+    "level": "info",
+    "console": true,
+    "file": false
+  },
+  "i2c-servo": {
+    "device": "/dev/i2c-0",
+    "device-id": 64
+  }
+}

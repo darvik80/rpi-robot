@@ -24,10 +24,10 @@ endif ()
 
 file(GLOB SRCS_G
         src/*.cpp
-        ../core-utils/application/src/joystick/*.cpp
+        src/i2c/*.cpp
         )
 
+file(COPY resources/settings.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME} ${SRCS_G})
-
 target_link_libraries(${PROJECT_NAME} ${CORE_LIBRARY} ${Boost_LIBRARIES} ${RPI_LIB} application)
