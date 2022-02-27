@@ -11,3 +11,5 @@ CTestTestfile.cmake
 build
 cmake-build-*
 /venv/
+
+server.pem

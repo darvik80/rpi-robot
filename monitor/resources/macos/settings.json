@@ -1,0 +1,14 @@
+{
+  "logging": {
+    "level": "info",
+    "console": true,
+    "file": false
+  },
+  "iot-mqtt": {
+    "address": "iot.crearts.xyz",
+    "client-id": "ivan-mac-book",
+    "access-token": "ivan-access-token",
+    "telemetry-topic": "v1/devices/me/telemetry",
+    "key-file": "server.pem"
+  }
+}

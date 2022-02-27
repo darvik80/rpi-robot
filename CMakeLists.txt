@@ -4,9 +4,11 @@ project(rpi_robot)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
+        /usr/local/opt/openssl/include
         core-utils/event-manager/src
         core-utils/logging/src
         core-utils/application/src
+        core-utils/network/src
 )
 
 link_directories(
@@ -16,3 +18,4 @@ link_directories(
 
 add_subdirectory(core-utils)
 add_subdirectory(service)
+add_subdirectory(monitor)
