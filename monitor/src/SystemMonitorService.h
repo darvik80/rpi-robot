@@ -6,13 +6,11 @@
 
 #include <BaseService.h>
 #include "event/Event.h"
+#include <optional>
 
 struct SystemInfoEvent : em::Event {
-    double cpuTemp{};
-    double gpuTemp{};
-
-    SystemInfoEvent(em::EventSource::Ptr source, double cpuTemp, double gpuTemp)
-            : Event(source), cpuTemp(cpuTemp), gpuTemp(gpuTemp) {}
+    float cpuTemp{};
+    std::optional<float> gpuTemp{};
 };
 
 #include <nlohmann/json.hpp>

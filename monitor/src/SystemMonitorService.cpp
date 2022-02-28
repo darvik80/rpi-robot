@@ -13,13 +13,19 @@
 #include <stdexcept>
 
 void to_json(nlohmann::json &j, const SystemInfoEvent &e) {
-    j = nlohmann::json{{"cpu-temp", e.cpuTemp},
-                       {"gpu-temp", e.gpuTemp}};
+    j = nlohmann::json{{"cpu-temp", e.cpuTemp}};
+    if (e.gpuTemp) {
+        j["gpu-temp"] = e.gpuTemp.value();
+    }
 }
 
 void from_json(const nlohmann::json &j, SystemInfoEvent &e) {
     j.at("cpu-temp").get_to(e.cpuTemp);
-    j.at("gpu-temp").get_to(e.gpuTemp);
+    if (j.contains("gpu-temp")) {
+        float gpuTemp;
+        j.at("gpu-temp").get_to(gpuTemp);
+        e.gpuTemp = gpuTemp;
+    }
 }
 
 const char *SystemMonitorService::name() {
@@ -204,7 +210,7 @@ kern_return_t SMCReadKey(UInt32Char_t key, SMCVal_t *val) {
     return kIOReturnSuccess;
 }
 
-double SMCGetTemperature(char *key) {
+float SMCGetTemperature(char *key) {
     SMCVal_t val;
     kern_return_t result;
 
@@ -240,26 +246,21 @@ void SystemMonitorService::postConstruct(Registry &registry) {
             [this, eventService]() -> void {
 #ifdef __APPLE__
                 SMCOpen();
-                SystemInfoEvent event{
-                        this->shared_from_this(),
-                        SMCGetTemperature(SMC_KEY_CPU_TEMP),
-                        SMCGetTemperature(SMC_KEY_GPU_TEMP),
-                };
-
+                SystemInfoEvent event;
+                event.source = this->shared_from_this();
+                event.cpuTemp = SMCGetTemperature(SMC_KEY_CPU_TEMP);
+                event.gpuTemp = SMCGetTemperature(SMC_KEY_GPU_TEMP);
                 SMCClose();
 #else
-                std::string fileName = "/sys/class/thermal/thermal_zone0/temp";
                 std::ifstream piCpuTempFile;
                 std::stringstream buffer;
-                piCpuTempFile.open(fileName);
+                piCpuTempFile.open("/sys/class/thermal/thermal_zone0/temp");
                 buffer << piCpuTempFile.rdbuf();
                 piCpuTempFile.close();
 
-                SystemInfoEvent event{
-                        this->shared_from_this(),
-                        round(std::stof(buffer.str())/1000 * 100) / 100,
-                        0.0
-                };
+                SystemInfoEvent event;
+                event.source = this->shared_from_this();
+                event.cpuTemp = round(std::stof(buffer.str())/1000 * 100) / 100;
 #endif
                 eventService->raiseEvent(event);
             },

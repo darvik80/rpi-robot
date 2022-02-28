@@ -51,7 +51,7 @@ void IoTService::postConstruct(Registry &registry) {
     _client->connect(_props.address, 8883);
 
     registry.getService<EventManagerService>().subscribe<SystemInfoEvent>([this, agent](const SystemInfoEvent &event) -> bool {
-        info("Temp: cpu: {}, gpu: {}", event.cpuTemp, event.gpuTemp);
+        info("Temp: cpu: {}", event.cpuTemp);
 
         agent->publish(_props.telemetryTopic, 0, to_string(nlohmann::json{event}));
         return true;
