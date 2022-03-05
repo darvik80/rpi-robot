@@ -52,7 +52,6 @@ void IoTService::postConstruct(Registry &registry) {
 
     registry.getService<EventManagerService>().subscribe<SystemInfoEvent>([this, agent](const SystemInfoEvent &event) -> bool {
         info("Temp: cpu: {}", event.cpuTemp);
-
         agent->publish(_props.telemetryTopic, 0, to_string(nlohmann::json{event}));
         return true;
     });

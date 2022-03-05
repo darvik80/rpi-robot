@@ -269,6 +269,3 @@ void SystemMonitorService::postConstruct(Registry &registry) {
     );
 }
 
-void SystemMonitorService::preDestroy(Registry &registry) {
-    BaseService::preDestroy(registry);
-}
