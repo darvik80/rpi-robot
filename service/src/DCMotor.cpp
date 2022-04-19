@@ -41,29 +41,29 @@ void DCMotor::forward(int speed) {
 }
 
 void DCMotor::left(int speed, bool dir) {
-    debug("lt val: {}", speed);
+    debug("lt val: {}:{}", speed, dir);
 
-    if (dir) {
-        digitalWrite(PWMA2, LOW);
-        digitalWrite(PWMA1, HIGH);
-    } else {
-        digitalWrite(PWMA1, LOW);
-        digitalWrite(PWMA2, HIGH);
-    }
-    softPwmWrite(PWM1, speed);
+//    if (dir) {
+//        digitalWrite(PWMA2, LOW);
+//        digitalWrite(PWMA1, HIGH);
+//    } else {
+//        digitalWrite(PWMA1, LOW);
+//        digitalWrite(PWMA2, HIGH);
+//    }
+//    softPwmWrite(PWM1, speed);
 }
 
 void DCMotor::right(int speed, bool dir) {
-    debug("rt val: {}", speed);
+    debug("rt val: {}:{}", speed, dir);
 
-    if (dir) {
-        digitalWrite(PWMB2, LOW);
-        digitalWrite(PWMB1, HIGH);
-    } else {
-        digitalWrite(PWMB1, LOW);
-        digitalWrite(PWMB2, HIGH);
-    }
-    softPwmWrite(PWM2, speed);
+//    if (dir) {
+//        digitalWrite(PWMB2, LOW);
+//        digitalWrite(PWMB1, HIGH);
+//    } else {
+//        digitalWrite(PWMB1, LOW);
+//        digitalWrite(PWMB2, HIGH);
+//    }
+//    softPwmWrite(PWM2, speed);
 }
 
 void DCMotor::postConstruct(Registry &registry) {
@@ -90,8 +90,16 @@ void DCMotor::postConstruct(Registry &registry) {
 
     registry.getService<EventManagerService>().subscribe<JoystickEvent>([this](const JoystickEvent &event) -> bool {
         debug("origin lt: {}:{}, rt: {}:{}", event.lt, event.lb, event.rt, event.rb);
-        left((event.lt + 32767) * 1024 / 65535, event.lb);
-        right((event.rt + 32767) * 1024 / 65535, event.rb);
+
+        if (event.type == JoystickType::gamepad) {
+            auto ly = event.axis[AxisId::axis_left].y;
+            auto ry = event.axis[AxisId::axis_right].y;
+            left(std::abs(ly) * 1024 / 32767, ly <= 0);
+            right(std::abs(ry) * 1024 / 32767, ry <= 0);
+        } else {
+            left((event.lt + 32767) * 1024 / 65535, event.lb);
+            right((event.rt + 32767) * 1024 / 65535, event.rb);
+        }
 
         return true;
     });

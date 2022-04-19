@@ -6,6 +6,8 @@
 #include "SystemMonitorService.h"
 #include "IoTService.h"
 
+#include <iostream>
+
 class Monitor : public Application {
 public:
     const char *name() override {
