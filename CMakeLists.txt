@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug)
 
 include_directories(
+        /usr/local/include
         /usr/local/opt/openssl/include
         core-utils/event-manager/src
         core-utils/logging/src

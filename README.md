@@ -9,3 +9,4 @@ Robot based on RPI 3
 ## Libraries
 * [Boost.Lib >= 1.74](https://www.boost.org/)
 * [fmt >= 8](https://github.com/fmtlib/fmt)
+* [nlohmann-json](https://github.com/nlohmann/json)
