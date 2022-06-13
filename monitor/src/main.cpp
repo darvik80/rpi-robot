@@ -16,7 +16,7 @@ public:
 protected:
     void setup(Registry &registry) override {
         registry.addService(std::make_shared<SystemMonitorService>());
-        registry.addService(std::make_shared<IoTService>());
+        registry.addService(std::make_shared<IoTService<network::SslSocket>>());
     }
     void destroy(Registry &registry) override{
 
