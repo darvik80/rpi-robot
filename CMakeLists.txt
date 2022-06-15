@@ -16,8 +16,11 @@ include_directories(
 
 link_directories(
         /usr/local/lib
-        /usr/local/Cellar/icu4c/69.1/lib
+        /usr/local/Cellar/icu4c/70.1/lib
 )
+
+set(Boost_USE_STATIC_LIBS       ON)  # only find static libs
+set(Boost_USE_SHARED_LIBS       OFF)  # only find static libs
 
 add_subdirectory(core-utils)
 add_subdirectory(service)
