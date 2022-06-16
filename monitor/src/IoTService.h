@@ -17,11 +17,8 @@
 
 #include "SystemMonitorService.h"
 
-
-template<typename Socket>
 class IoTService : public BaseService {
-    using SocketType = Socket;
-    using MqttClient = network::AsyncClient<Socket>;
+    using MqttClient = network::AsyncClient<network::SslSocket>;
     std::unique_ptr<MqttClient> _client;
     IoTProperties _props;
 public:
@@ -45,7 +42,7 @@ public:
         });
         _client = std::make_unique<MqttClient>(
                 service,
-                [agent, &service, this](const std::shared_ptr<network::AsyncChannel<SocketType>> &channel) {
+                [agent, &service, this](const std::shared_ptr<network::AsyncChannel<network::SslSocket>> &channel) {
                     link(
                             channel,
                             std::make_shared<network::handler::NetworkLogger>(),
@@ -63,11 +60,7 @@ public:
                 _props.keyFile
         );
 
-        if constexpr(std::is_base_of<network::SslSocket, Socket>::value) {
-            _client->connect(_props.address, 8883);
-        } else {
-            _client->connect(_props.address, 1883);
-        }
+        _client->connect(_props.address, 8883);
 
         registry.getService<EventManagerService>()
                 .subscribe<SystemInfoEvent>(

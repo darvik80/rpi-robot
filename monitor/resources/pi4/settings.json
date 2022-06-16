@@ -9,6 +9,6 @@
     "client-id": "raspberry-pi4",
     "access-token": "pi4-access-token",
     "telemetry-topic": "v1/devices/me/telemetry",
-    "key-file": "server.pem"
+    "key-file": "../etc/server.pem"
   }
 }
