@@ -9,6 +9,6 @@
     "client-id": "ivan-mac-book",
     "access-token": "ivan-access-token",
     "telemetry-topic": "v1/devices/me/telemetry",
-    "key-file": "server.pem"
+    "key-file": "../etc/server.pem"
   }
 }
