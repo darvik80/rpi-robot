@@ -6,7 +6,7 @@
 
 #include "BaseService.h"
 #include "network/boost/AsyncTcpClient.h"
-#include "IoTProperties.h"
+#include "IotProperties.h"
 
 #include "event/EventManagerService.h"
 #include <network/handler/NetworkLogger.h>
@@ -16,11 +16,11 @@
 #include <network/mqtt/MQTTCodec.h>
 
 #include "SystemMonitorService.h"
+#include "iot/BaseIotService.h"
+#include "iot/ThingsBoardIotService.h"
 
 class IoTService : public BaseService {
-    using MqttClient = network::AsyncClient<network::SslSocket>;
-    std::unique_ptr<MqttClient> _client;
-    IoTProperties _props;
+    std::unique_ptr<BaseIotService> _delegate;
 public:
     const char *name() override {
         return "iot";
@@ -29,54 +29,30 @@ public:
     void postConstruct(Registry &registry) override {
         BaseService::postConstruct(registry);
 
-        auto &service = registry.getIoService();
+        auto props = registry.getProperties<IotProperties>();
+        if (props.type == IotType::ThingsBoard) {
+            _delegate = std::make_unique<ThingsBoardIotService>();
+            _delegate->postConstruct(registry);
+        }
 
-        _props = registry.getProperties<IoTProperties>();
+        if (_delegate) {
+            registry.getService<EventManagerService>()
+                    .subscribe<SystemInfoEvent>(
+                            [this](const SystemInfoEvent &event) -> bool {
+                                info("Temp: cpu: {}", event.cpuTemp);
+                                _delegate->telemetry(1, to_string(nlohmann::json{event}));
+                                return true;
 
-        auto agent = std::make_shared<network::mqtt::MQTTAgent>();
-        agent->callback([this](auto &agent, std::string_view topic, std::string_view data) {
-            info("{}:{}", topic, data);
-        });
-        agent->connect([](network::mqtt::MQTTAgent &agent) {
-            agent.subscribe("v1/devices/me/rpc/request/+", 1);
-        });
-        _client = std::make_unique<MqttClient>(
-                service,
-                [agent, &service, this](const std::shared_ptr<network::AsyncChannel<network::SslSocket>> &channel) {
-                    link(
-                            channel,
-                            std::make_shared<network::handler::NetworkLogger>(),
-                            std::make_shared<network::handler::IdleStateHandler>(service, boost::posix_time::seconds(5),
-                                                                                 boost::posix_time::seconds(5)),
-                            std::make_shared<network::mqtt::MQTTCodec>(
-                                    network::mqtt::MQTTOptions{
-                                            .clientId = _props.clientId,
-                                            .accessToken = _props.accessToken
-                                    }
-                            ),
-                            agent
+                            }
                     );
-                },
-                _props.keyFile
-        );
-
-        _client->connect(_props.address, 8883);
-
-        registry.getService<EventManagerService>()
-                .subscribe<SystemInfoEvent>(
-                        [this, agent](const SystemInfoEvent &event) -> bool {
-                            info("Temp: cpu: {}", event.cpuTemp);
-                            agent->publish(_props.telemetryTopic, 1, to_string(nlohmann::json{event}));
-                            return true;
-
-                        }
-                );
+        }
     }
 
     void preDestroy(Registry &registry) override {
-        BaseService::preDestroy(registry);
-        _client->shutdown();
-        _client.reset();
+        if (_delegate) {
+            _delegate->preDestroy(registry);
+            _delegate.reset();
+        }
     }
 };
 

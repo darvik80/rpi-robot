@@ -8,7 +8,7 @@
     "address": "iot.crearts.xyz",
     "client-id": "ivan-mac-book",
     "access-token": "ivan-access-token",
-    "telemetry-topic": "v1/devices/me/telemetry",
-    "key-file": "../etc/server.pem"
+    "key-file": "../etc/server.pem",
+    "type": "thingsboard"
   }
 }
