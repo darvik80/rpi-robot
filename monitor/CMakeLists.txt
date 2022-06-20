@@ -27,8 +27,8 @@ file(GLOB SRCS_G
         src/*.cpp
         )
 
-add_executable(${PROJECT_NAME} ${SRCS_G} src/iot/ThingsBoardIotService.cpp src/iot/ThingsBoardIotService.h src/iot/BaseIotService.h src/iot/IotCommand.h src/iot/IotMessage.h)
-target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} ${CORE_LIBRARY} ${Boost_LIBRARIES} fmt application network)
+add_executable(${PROJECT_NAME} ${SRCS_G})
+target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} ${CORE_LIBRARY} ${Boost_LIBRARIES} iot-platform)
 
 install(TARGETS ${PROJECT_NAME})
 

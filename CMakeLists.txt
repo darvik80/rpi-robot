@@ -12,6 +12,7 @@ include_directories(
         core-utils/logging/src
         core-utils/application/src
         core-utils/network/src
+        core-utils/iot-platform/src
 )
 
 link_directories(
