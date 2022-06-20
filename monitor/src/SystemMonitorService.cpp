@@ -6,6 +6,7 @@
 #include "scheduler/SchedulerService.h"
 #include "event/EventManagerService.h"
 #include "iot/IotCommand.h"
+#include "iot/IotMessage.h"
 
 #include <string>
 #include <iomanip>
@@ -252,11 +253,10 @@ void SystemMonitorService::postConstruct(Registry &registry) {
             [this, eventService]() -> void {
 #ifdef __APPLE__
                 SMCOpen();
-                SystemInfoEvent event;
-                event.source = this->shared_from_this();
-                event.cpuTemp = SMCGetTemperature(SMC_KEY_CPU_TEMP);
-                event.gpuTemp = SMCGetTemperature(SMC_KEY_GPU_TEMP);
-                SMCClose();
+                nlohmann::json json = {
+                        {"cpu-temp", SMCGetTemperature(SMC_KEY_CPU_TEMP)},
+                        {"gpu-temp", SMCGetTemperature(SMC_KEY_GPU_TEMP)},
+                };
 #else
                 std::ifstream piCpuTempFile;
                 std::stringstream buffer;
@@ -264,11 +264,12 @@ void SystemMonitorService::postConstruct(Registry &registry) {
                 buffer << piCpuTempFile.rdbuf();
                 piCpuTempFile.close();
 
-                SystemInfoEvent event;
-                event.source = this->shared_from_this();
-                event.cpuTemp = round(std::stof(buffer.str())/1000 * 100) / 100;
+                nlohmann::json json = {
+                        {"cpu-temp", round(std::stof(buffer.str())/1000 * 100) / 100}
+
+                };
 #endif
-                eventService->raiseEvent(event);
+                eventService->raiseEvent(IotTelemetry{0, json});
             },
             boost::posix_time::seconds{0},
             boost::posix_time::seconds{5}
