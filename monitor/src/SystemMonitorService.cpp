@@ -269,7 +269,7 @@ void SystemMonitorService::postConstruct(Registry &registry) {
 
                 };
 #endif
-                eventService->raiseEvent(IotTelemetry{0, json});
+                eventService->raiseEvent(IotTelemetry{0, json.dump()});
             },
             boost::posix_time::seconds{0},
             boost::posix_time::seconds{5}
