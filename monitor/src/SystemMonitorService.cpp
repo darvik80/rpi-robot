@@ -47,16 +47,7 @@ typedef char UInt32Char_t[5];
 #define SMC_KEY_GPU_TEMP "TG0P"
 
 #define SMC_CMD_READ_BYTES 5
-#define SMC_CMD_WRITE_BYTES 6
-#define SMC_CMD_READ_INDEX 8
 #define SMC_CMD_READ_KEYINFO 9
-#define SMC_CMD_READ_PLIMIT 11
-#define SMC_CMD_READ_VERS 12
-
-#define DATATYPE_FPE2 "fpe2"
-#define DATATYPE_UINT8 "ui8 "
-#define DATATYPE_UINT16 "ui16"
-#define DATATYPE_UINT32 "ui32"
 #define DATATYPE_SP78 "sp78"
 
 typedef struct {
@@ -102,7 +93,7 @@ typedef struct {
 
 static io_connect_t conn;
 
-UInt32 _strtoul(char *str, int size, int base) {
+UInt32 StrToULong(const char *str, int size, int base) {
     UInt32 total = 0;
     int i;
 
@@ -115,7 +106,7 @@ UInt32 _strtoul(char *str, int size, int base) {
     return total;
 }
 
-void _ultostr(char *str, UInt32 val) {
+void ULongToStr(char *str, UInt32 val) {
     str[0] = '\0';
     sprintf(str, "%c%c%c%c",
             (unsigned int) val >> 24,
@@ -191,7 +182,7 @@ kern_return_t SMCReadKey(UInt32Char_t key, SMCVal_t *val) {
     memset(&outputStructure, 0, sizeof(SMCKeyData_t));
     memset(val, 0, sizeof(SMCVal_t));
 
-    inputStructure.key = _strtoul(key, 4, 16);
+    inputStructure.key = StrToULong(key, 4, 16);
     inputStructure.data8 = SMC_CMD_READ_KEYINFO;
 
     result = SMCCall(KERNEL_INDEX_SMC, &inputStructure, &outputStructure);
@@ -199,7 +190,7 @@ kern_return_t SMCReadKey(UInt32Char_t key, SMCVal_t *val) {
         return result;
 
     val->dataSize = outputStructure.keyInfo.dataSize;
-    _ultostr(val->dataType, outputStructure.keyInfo.dataType);
+    ULongToStr(val->dataType, outputStructure.keyInfo.dataType);
     inputStructure.keyInfo.dataSize = val->dataSize;
     inputStructure.data8 = SMC_CMD_READ_BYTES;
 
@@ -274,5 +265,9 @@ void SystemMonitorService::postConstruct(Registry &registry) {
             boost::posix_time::seconds{0},
             boost::posix_time::seconds{5}
     );
+}
+
+void SystemMonitorService::preDestroy(Registry &registry) {
+    BaseService::preDestroy(registry);
 }
 
