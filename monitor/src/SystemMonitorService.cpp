@@ -248,6 +248,7 @@ void SystemMonitorService::postConstruct(Registry &registry) {
                         {"cpu-temp", SMCGetTemperature(SMC_KEY_CPU_TEMP)},
                         {"gpu-temp", SMCGetTemperature(SMC_KEY_GPU_TEMP)},
                 };
+                SMCClose();
 #else
                 std::ifstream piCpuTempFile;
                 std::stringstream buffer;
@@ -260,6 +261,7 @@ void SystemMonitorService::postConstruct(Registry &registry) {
 
                 };
 #endif
+                logger::info("data: {}", json.dump());
                 eventService->raiseEvent(IotTelemetry{0, json.dump()});
             },
             boost::posix_time::seconds{0},

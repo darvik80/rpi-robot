@@ -11,7 +11,6 @@ else ()
 endif ()
 
 find_package(Boost REQUIRED COMPONENTS system filesystem thread)
-find_package(Threads)
 
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES arm)
     add_definitions(-DRASPBERRY_ARCH)
@@ -30,4 +29,4 @@ file(GLOB SRCS_G
 file(COPY resources/settings.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME} ${SRCS_G})
-target_link_libraries(${PROJECT_NAME} ${CORE_LIBRARY} ${Boost_LIBRARIES} ${RPI_LIB} application)
+target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} ${CORE_LIBRARY} ${Boost_LIBRARIES} ${RPI_LIB} application)

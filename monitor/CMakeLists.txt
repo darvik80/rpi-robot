@@ -6,7 +6,6 @@ if (APPLE)
     find_library(IOKIT_LIBRARY IOKit)
     find_library(CORE_LIBRARY CoreFoundation)
     file(COPY resources/macos/settings.json DESTINATION ${PROPERTIES_DIR})
-
 else ()
     message("Unix build")
     set(CORE_LIBRARY dl atomic)
@@ -20,15 +19,14 @@ else ()
 endif ()
 file(COPY resources/server.pem DESTINATION ${PROPERTIES_DIR})
 
-find_package(Boost 1.74 REQUIRED COMPONENTS system filesystem thread)
-find_package(Threads)
+find_package(Boost 1.79 REQUIRED COMPONENTS system filesystem thread)
 
 file(GLOB SRCS_G
         src/*.cpp
         )
 
 add_executable(${PROJECT_NAME} ${SRCS_G})
-target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} ${CORE_LIBRARY} ${Boost_LIBRARIES} iot-platform)
+target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} ${CONAN_LIBS} ${CORE_LIBRARY} ${Boost_LIBRARIES} iot-platform)
 
 install(TARGETS ${PROJECT_NAME})
 
