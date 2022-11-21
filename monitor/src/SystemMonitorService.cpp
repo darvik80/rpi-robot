@@ -3,8 +3,8 @@
 //
 
 #include "SystemMonitorService.h"
-#include "scheduler/SchedulerService.h"
-#include "event/EventManagerService.h"
+#include "core-service/SchedulerService.h"
+#include "core-service/EventBusService.h"
 #include "iot/IotCommand.h"
 #include "iot/IotMessage.h"
 
@@ -233,7 +233,7 @@ double SMCGetTemperature(char *key) {
 void SystemMonitorService::postConstruct(Registry &registry) {
     BaseService::postConstruct(registry);
 
-    auto eventService = registry.getService<EventManagerService>().shared_from_this();
+    auto eventService = registry.getService<EventBusService>().shared_from_this();
 
     eventService->subscribe<IotCommand>([this](const IotCommand &event) -> bool {
         info("handle cmd: {}", event.name);

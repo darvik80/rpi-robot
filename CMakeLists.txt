@@ -10,7 +10,7 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 include_directories(
-        core-utils/event-manager/src
+        core-utils/event-bus/src
         core-utils/logging/src
         core-utils/application/src
         core-utils/network/src

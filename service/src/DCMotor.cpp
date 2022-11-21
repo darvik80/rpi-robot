@@ -6,7 +6,7 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 
-#include "event/EventManagerService.h"
+#include "core-service/EventBusService.h"
 #include "joystick/JoystickEvent.h"
 
 LOG_COMPONENT_SETUP(motor, motor_logger)
@@ -88,7 +88,7 @@ void DCMotor::postConstruct(Registry &registry) {
 
     stop();
 
-    registry.getService<EventManagerService>().subscribe<JoystickEvent>([this](const JoystickEvent &event) -> bool {
+    registry.getService<EventBusService>().subscribe<JoystickEvent>([this](const JoystickEvent &event) -> bool {
         debug("origin lt: {}:{}, rt: {}:{}", event.lt, event.lb, event.rt, event.rb);
 
         if (event.type == JoystickType::gamepad) {
