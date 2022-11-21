@@ -5,10 +5,9 @@
 #pragma once
 
 #include <BaseService.h>
-#include "event/Event.h"
 #include <optional>
 
-struct SystemInfoEvent : em::Event {
+struct SystemInfoEvent {
     float cpuTemp{};
     std::optional<float> gpuTemp{};
 };
