@@ -8,7 +8,7 @@
     "address": "iot.crearts.xyz",
     "client-id": "raspberry-pi4",
     "access-token": "pi4-access-token",
-    "key-file": "../etc/server.pem",
+    "key-file": "/Users/ivan.kishchenko/iot/rabbitmq-cert/ca_certificate.pem",
     "type": "thingsboard"
   }
 }
