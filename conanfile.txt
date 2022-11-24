@@ -1,6 +1,6 @@
 [requires]
 fmt/9.0.0
-boost/1.79.0
+boost/1.80.0
 rabbitmq-c/0.11.0
 libuv/1.44.1
 icu/71.1
