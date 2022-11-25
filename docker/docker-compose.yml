@@ -1,0 +1,20 @@
+version: '3'
+services:
+
+  grafana:
+    build:
+      context: ./
+      dockerfile: DockerFile_Grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+
+  raabbitmq:
+    build:
+      context: ./
+      dockerfile: DockerFile_RabbitMQ
+    container_name: raabbitmq
+    ports:
+      - 1883:1883
+      - 15672:15672
+      - 5672:5672

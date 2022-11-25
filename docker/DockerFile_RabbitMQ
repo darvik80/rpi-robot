@@ -1,0 +1,19 @@
+FROM rabbitmq:3.11.3-management
+
+ADD ./rabbitmq/rabbitmq-init.sh /rabbitmq-init.sh
+ADD ./rabbitmq/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+
+ENV RABBITMQ_ADMIN_USER darvik
+ENV RABBITMQ_ADMIN_PASSWORD test
+ENV RABBITMQ_API_USER api
+ENV RABBITMQ_API_PASSWORD test
+ENV RABBITMQ_MQTT_USER mqtt
+ENV RABBITMQ_MQTT_PASSWORD mqtt
+ENV RABBITMQ_HIPE_COMPILE 1
+
+RUN rabbitmq-plugins enable --offline rabbitmq_management && \
+    rabbitmq-plugins enable --offline rabbitmq_mqtt
+
+EXPOSE 1883 5671 5672 15671 15672 15674 15675 25672 61613
+
+CMD ["/bin/sh", "/rabbitmq-init.sh"]

@@ -1,0 +1,12 @@
+FROM grafana/grafana-plugin-ci:1.6.0-alpine as build
+
+ADD ./data/grafana-plugins /var/lib/grafana/plugins
+RUN ls -al /var/lib/grafana/plugins
+WORKDIR /var/lib/grafana/plugins/mqtt-datasource
+
+RUN yarn install
+RUN yarn build
+
+FROM grafana/grafana:9.2.6 AS grafana
+ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="grafana-mqtt-datasource"
+COPY --from=build /var/lib/grafana/plugins/mqtt-datasource /var/lib/grafana/plugins/mqtt-datasource
