@@ -23,7 +23,7 @@ void RobotApp::setup(Registry &registry) {
         return;
     }
 
-    //registry.addService(std::make_shared<I2CServoMotor>());
+    registry.addService(std::make_shared<I2CServoMotor>());
     registry.addService(std::make_shared<DCMotor>());
     registry.addService(std::make_shared<JoystickService>());
 #endif

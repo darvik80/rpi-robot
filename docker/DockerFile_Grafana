@@ -1,7 +1,6 @@
 FROM grafana/grafana-plugin-ci:1.6.0-alpine as build
 
 ADD grafana-plugins /var/lib/grafana/plugins
-RUN ls -al /var/lib/grafana/plugins
 WORKDIR /var/lib/grafana/plugins/mqtt-datasource
 
 RUN yarn install

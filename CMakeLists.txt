@@ -23,6 +23,7 @@ include_directories(
         core-utils/application/src
         core-utils/network/src
         core-utils/iot-platform/src
+        core-utils/joystick/src
 )
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
@@ -40,3 +41,7 @@ else()
     add_subdirectory(service)
 endif()
 add_subdirectory(monitor)
+if (UNIX AND NOT APPLE)
+    message(STATUS "incubator with GPIO")
+    add_subdirectory(incubator)
+endif()

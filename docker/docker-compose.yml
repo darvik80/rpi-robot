@@ -9,12 +9,14 @@ services:
     ports:
       - 3000:3000
 
-  raabbitmq:
+  rabbitmq:
     build:
       context: ./
       dockerfile: DockerFile_RabbitMQ
-    container_name: raabbitmq
+    container_name: rabbitmq
     ports:
-      - 1883:1883
-      - 15672:15672
+      - 5671:5671
       - 5672:5672
+      - 15672:15672
+      - 1883:1883
+      - 8883:8883

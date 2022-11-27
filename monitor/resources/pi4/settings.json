@@ -5,10 +5,10 @@
     "file": false
   },
   "iot-mqtt": {
-    "address": "iot.crearts.xyz",
+    "address": "192.168.100.4",
     "client-id": "raspberry-pi4",
-    "access-token": "pi4-access-token",
-    "key-file": "/Users/ivan.kishchenko/iot/rabbitmq-cert/ca_certificate.pem",
+    "username": "mqtt",
+    "password": "mqtt",
     "type": "thingsboard"
   }
 }

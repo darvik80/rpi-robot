@@ -3,7 +3,7 @@
 //
 #ifdef RASPBERRY_ARCH
 
-#include "event/EventManagerService.h"
+#include "core-service/EventBusService.h"
 #include "joystick/JoystickEvent.h"
 
 #include "I2CServoMotor.h"
@@ -58,7 +58,7 @@ void I2CServoMotor::postConstruct(Registry &registry) {
 
     setPWMFreq(50);
 
-    registry.getService<EventManagerService>().subscribe<JoystickEvent>([this, props](const JoystickEvent &event) -> bool {
+    registry.getService<EventBusService>().subscribe<JoystickEvent>([this, props](const JoystickEvent &event) -> bool {
         setServoPulse(props.channel, ((-event.axis[AxisId::axis_right].x + 32768) * 2000 / 65535) + 500);
         return true;
     });

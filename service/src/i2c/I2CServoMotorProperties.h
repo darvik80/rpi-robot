@@ -8,9 +8,9 @@
 #include <properties/source/JsonPropertiesSource.h>
 
 struct I2CServoMotorProperties : Properties {
-    std::string device;
-    int deviceId{};
-    int channel{};
+    std::string device="/dev/i2c-1";
+    int deviceId{40};
+    int channel{1};
 };
 
 inline void fromJson(JsonPropertiesSource& source, I2CServoMotorProperties& props) {

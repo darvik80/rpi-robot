@@ -4,6 +4,9 @@
 
 #include "I2CDriver.h"
 #include <stdexcept>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #define I2C_SLAVE    0x0703
 #define I2C_SMBUS    0x0720    /* SMBus-level access */

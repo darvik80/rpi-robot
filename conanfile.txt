@@ -1,9 +1,5 @@
 [requires]
 fmt/9.0.0
-boost/1.80.0
-rabbitmq-c/0.11.0
-libuv/1.44.1
-icu/71.1
 nlohmann_json/3.11.2
 openssl/1.1.1q
 

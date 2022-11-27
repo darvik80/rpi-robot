@@ -7,7 +7,7 @@ if (APPLE)
     find_library(CORE_LIBRARY CoreFoundation)
     file(COPY resources/macos/settings.json DESTINATION ${PROPERTIES_DIR})
 else ()
-    message("Unix build")
+    message("Unix build " ${CMAKE_HOST_SYSTEM_PROCESSOR})
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
@@ -15,6 +15,8 @@ else ()
         file(COPY resources/orange/settings.json DESTINATION ${PROPERTIES_DIR})
     elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES aarch64)
         file(COPY resources/pi4/settings.json DESTINATION ${PROPERTIES_DIR})
+    else()
+        message(STATUS "No settings!!!")
     endif ()
 
 endif ()
@@ -24,7 +26,7 @@ find_package(Boost REQUIRED COMPONENTS system filesystem thread log log_setup RE
 
 file(GLOB SRCS_G src/*.cpp)
 
-add_executable(${PROJECT_NAME} ${SRCS_G})
+add_executable(${PROJECT_NAME} ${SRCS_G} ../incubator/src/main.cpp)
 target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} ${CONAN_LIBS} ${Boost_LIBRARIES} logging application iot-platform)
 
 install(TARGETS ${PROJECT_NAME})
