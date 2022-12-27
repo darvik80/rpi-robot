@@ -26,7 +26,7 @@ find_package(Boost REQUIRED COMPONENTS system filesystem thread log log_setup RE
 
 file(GLOB SRCS_G src/*.cpp)
 
-add_executable(${PROJECT_NAME} ${SRCS_G} ../incubator/src/main.cpp)
+add_executable(${PROJECT_NAME} ${SRCS_G})
 target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} ${CONAN_LIBS} ${Boost_LIBRARIES} logging application iot-platform)
 
 install(TARGETS ${PROJECT_NAME})

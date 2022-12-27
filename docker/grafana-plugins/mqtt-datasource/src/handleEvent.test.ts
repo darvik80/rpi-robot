@@ -1,5 +1,5 @@
-import { ChangeEvent } from 'react';
-import { handlerFactory } from './handleEvent';
+import {ChangeEvent} from 'react';
+import {handlerFactory} from './handleEvent';
 
 const changeEvent = {
   currentTarget: {

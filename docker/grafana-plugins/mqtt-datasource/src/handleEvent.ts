@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import {ChangeEvent} from 'react';
 import _ from 'lodash';
 
 export const handlerFactory =

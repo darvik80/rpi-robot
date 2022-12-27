@@ -1,8 +1,8 @@
-import React, { ChangeEvent } from 'react';
-import { Form, Field, FieldSet, Input } from '@grafana/ui';
-import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
-import { MqttDataSourceOptions, MqttSecureJsonData } from './types';
-import { handlerFactory } from './handleEvent';
+import React, {ChangeEvent} from 'react';
+import {Field, FieldSet, Form, Input} from '@grafana/ui';
+import {DataSourcePluginOptionsEditorProps} from '@grafana/data';
+import {MqttDataSourceOptions, MqttSecureJsonData} from './types';
+import {handlerFactory} from './handleEvent';
 
 interface Props extends DataSourcePluginOptionsEditorProps<MqttDataSourceOptions, MqttSecureJsonData> {}
 

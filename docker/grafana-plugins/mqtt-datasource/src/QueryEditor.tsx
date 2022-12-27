@@ -1,9 +1,9 @@
 import React from 'react';
-import { Form, Field, Input } from '@grafana/ui';
-import { QueryEditorProps } from '@grafana/data';
-import { DataSource } from './datasource';
-import { MqttDataSourceOptions, MqttQuery } from './types';
-import { handlerFactory } from 'handleEvent';
+import {Field, Form, Input} from '@grafana/ui';
+import {QueryEditorProps} from '@grafana/data';
+import {DataSource} from './datasource';
+import {MqttDataSourceOptions, MqttQuery} from './types';
+import {handlerFactory} from 'handleEvent';
 
 type Props = QueryEditorProps<DataSource, MqttQuery, MqttDataSourceOptions>;
 

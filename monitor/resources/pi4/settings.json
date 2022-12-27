@@ -9,6 +9,6 @@
     "client-id": "raspberry-pi4",
     "username": "mqtt",
     "password": "mqtt",
-    "type": "thingsboard"
+    "type": "crearts"
   }
 }

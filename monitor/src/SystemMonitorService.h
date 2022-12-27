@@ -28,6 +28,8 @@ public:
     };
 
     virtual float getTemperature(Type type) = 0;
+
+    virtual ~TemperatureSensor() = default;
 };
 
 
