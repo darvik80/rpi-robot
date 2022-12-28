@@ -4,8 +4,6 @@
 
 #pragma once
 
-#ifdef RASPBERRY_ARCH
-
 #include "BaseService.h"
 #include "I2CDriver.h"
 
@@ -22,5 +20,3 @@ public:
 
     void postConstruct(Registry &registry) override;
 };
-
-#endif

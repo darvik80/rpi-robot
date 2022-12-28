@@ -12,13 +12,14 @@ endif ()
 find_package(Boost REQUIRED COMPONENTS system filesystem thread)
 
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES arm)
-    add_definitions(-DRASPBERRY_ARCH)
     set(RPI_LIB wiringPi)
 elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES aarch64)
-    add_definitions(-DRASPBERRY_ARCH)
     set(RPI_LIB wiringPi)
 endif ()
 
+include_directories(
+        /usr/local/include
+)
 
 file(GLOB SRCS_G
         src/*.cpp

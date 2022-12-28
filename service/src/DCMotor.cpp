@@ -11,17 +11,18 @@
 
 LOG_COMPONENT_SETUP(motor, motor_logger)
 
-// name         wPO     BCM wPI
-#define PWMA1   20  //  06  22
-#define PWMA2   22  //  13  23
-#define PWM1    21  //  12  26
+// name         wPI     BCM wPI wPO
+#define PWM1    13  //  12  26  21
+#define PWMA2   19  //  06  22  20
+#define PWMA1   26  //  13  23  22
 
-#define PWMB1   26 //   20  28
-#define PWMB2   27 //   21  29
-#define PWM2    25 //   26  25
+#define PWMB1   16 //   20  28  26
+#define PWMB2   20 //   21  29  27
+#define PWM2    21 //   26  25  25
 
 DCMotor::DCMotor()
-        : BaseService(motor_logger::get()) {}
+        : BaseService(motor_logger::get()) {
+}
 
 const char *DCMotor::name() {
     return "dc-motor";
@@ -41,29 +42,29 @@ void DCMotor::forward(int speed) {
 }
 
 void DCMotor::left(int speed, bool dir) {
-    debug("lt val: {}:{}", speed, dir);
+    info("lt val: {}:{}", speed, dir);
 
-//    if (dir) {
-//        digitalWrite(PWMA2, LOW);
-//        digitalWrite(PWMA1, HIGH);
-//    } else {
-//        digitalWrite(PWMA1, LOW);
-//        digitalWrite(PWMA2, HIGH);
-//    }
-//    softPwmWrite(PWM1, speed);
+    if (dir) {
+        digitalWrite(PWMA2, LOW);
+        digitalWrite(PWMA1, HIGH);
+    } else {
+        digitalWrite(PWMA1, LOW);
+        digitalWrite(PWMA2, HIGH);
+    }
+    softPwmWrite(PWM1, speed);
 }
 
 void DCMotor::right(int speed, bool dir) {
-    debug("rt val: {}:{}", speed, dir);
+    info("rt val: {}:{}", speed, dir);
 
-//    if (dir) {
-//        digitalWrite(PWMB2, LOW);
-//        digitalWrite(PWMB1, HIGH);
-//    } else {
-//        digitalWrite(PWMB1, LOW);
-//        digitalWrite(PWMB2, HIGH);
-//    }
-//    softPwmWrite(PWM2, speed);
+    if (dir) {
+        digitalWrite(PWMB2, LOW);
+        digitalWrite(PWMB1, HIGH);
+    } else {
+        digitalWrite(PWMB1, LOW);
+        digitalWrite(PWMB2, HIGH);
+    }
+    softPwmWrite(PWM2, speed);
 }
 
 void DCMotor::postConstruct(Registry &registry) {
@@ -89,7 +90,7 @@ void DCMotor::postConstruct(Registry &registry) {
     stop();
 
     registry.getService<EventBusService>().subscribe<JoystickEvent>([this](const JoystickEvent &event) -> bool {
-        debug("origin lt: {}:{}, rt: {}:{}", event.lt, event.lb, event.rt, event.rb);
+        info("origin lt: {}:{}, rt: {}:{}", event.lt, event.lb, event.rt, event.rb);
 
         if (event.type == JoystickType::gamepad) {
             auto ly = event.axis[AxisId::axis_left].y;

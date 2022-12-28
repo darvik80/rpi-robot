@@ -1,8 +1,6 @@
 //
 // Created by Ivan Kishchenko on 08.01.2022.
 //
-#ifdef RASPBERRY_ARCH
-
 #include "core-service/EventBusService.h"
 #include "joystick/JoystickEvent.h"
 
@@ -65,5 +63,3 @@ void I2CServoMotor::postConstruct(Registry &registry) {
 
     BaseService::postConstruct(registry);
 }
-
-#endif

@@ -4,29 +4,26 @@
 
 #include "RobotApp.h"
 
-#ifdef RASPBERRY_ARCH
 #include "i2c/I2CDriver.h"
 #include "i2c/I2CServoMotor.h"
 #include "DCMotor.h"
 #include "joystick/JoystickService.h"
 #include <wiringPi.h>
-#endif
 
 const char *RobotApp::name() {
     return "robot";
 }
 
 void RobotApp::setup(Registry &registry) {
-#ifdef RASPBERRY_ARCH
-    if (-1 == wiringPiSetup()) {
+    info("setup gpio");
+    if (-1 == wiringPiSetupGpio()) {
         error("can't init wiringPiSetup");
         return;
     }
-
+    info("setup services");
     registry.addService(std::make_shared<I2CServoMotor>());
     registry.addService(std::make_shared<DCMotor>());
     registry.addService(std::make_shared<JoystickService>());
-#endif
 }
 
 void RobotApp::destroy(Registry &registry) {
