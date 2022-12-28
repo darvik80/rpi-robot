@@ -7,6 +7,12 @@
   "i2c-servo": {
     "device": "/dev/i2c-1",
     "device-id": 64,
-    "channel": 0
+    "channel": 1
+  },
+  "i2c-motor": {
+    "device": "/dev/i2c-1",
+    "device-id": 64,
+    "channel": 1
   }
+
 }

@@ -9,7 +9,7 @@
 
 struct I2CServoMotorProperties : Properties {
     std::string device="/dev/i2c-1";
-    int deviceId{40};
+    int deviceId{64};
     int channel{1};
 };
 
@@ -20,6 +20,10 @@ inline void fromJson(JsonPropertiesSource& source, I2CServoMotorProperties& prop
         }
         if (auto key = it->find("device-id"); key != it->end()) {
             key->get_to(props.deviceId);
+        }
+
+        if (auto key = it->find("channel"); key != it->end()) {
+            key->get_to(props.channel);
         }
     }
 }
