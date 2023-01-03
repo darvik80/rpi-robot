@@ -11,4 +11,4 @@ include_directories(
         /usr/include
 )
 
-target_link_libraries(${PROJECT_NAME} gpiod)
+target_link_libraries(${PROJECT_NAME} gpiod gpiodcxx logging)

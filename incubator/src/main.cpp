@@ -1,57 +1,84 @@
 //
 // Created by Kishchenko Ivan on 27/11/2022.
 //
-#include <gpiod.h>
-#include <cstdio>
-#include <unistd.h>
+#include <gpiod.hpp>
 
-#ifndef	CONSUMER
-#define	CONSUMER	"Consumer"
+#include "logging/Logging.h"
+
+#ifndef    CONSUMER
+#define    CONSUMER    "Consumer"
 #endif
 
-int main(int argc, char *argv[]) {
-    const char *chipname = "gpiochip0";
-    unsigned int line_num = 23;	// GPIO Pin #23
-    unsigned int val;
-    struct gpiod_chip *chip;
-    struct gpiod_line *line;
-    int i, ret;
+#include <pthread.h>
 
-    chip = gpiod_chip_open_by_name(chipname);
-    if (!chip) {
-        perror("Open chip failed\n");
-        goto end;
-    }
+void * threadFunc(void * arg) {
 
-    line = gpiod_chip_get_line(chip, line_num);
-    if (!line) {
-        perror("Get line failed\n");
-        goto close_chip;
-    }
+    int* stop = (int*)(arg);
+    int policy;
+    struct sched_param param{};
 
-    ret = gpiod_line_request_output(line, CONSUMER, 0);
-    if (ret < 0) {
-        perror("Request line as output failed\n");
-        goto release_line;
-    }
+    pthread_getschedparam(pthread_self(), &policy, &param);
+    param.sched_priority = sched_get_priority_max(policy);
+    pthread_setschedparam(pthread_self(), policy, &param);
 
-    /* Blink 20 times */
-    val = 0;
-    for (i = 20; i > 0; i--) {
-        ret = gpiod_line_set_value(line, val);
-        if (ret < 0) {
-            perror("Set line output failed\n");
-            goto release_line;
-        }
-        printf("Output %u on line #%u\n", val, line_num);
+    gpiod::chip chip("gpiochip0");
+    logger::info("chip: {}", chip.name());
+    logger::info("label: {}", chip.label());
+    logger::info("num_lines: {}", chip.num_lines());
+
+    gpiod::line trig = chip.get_line(4);
+    trig.request(
+            {
+                    "incubator",
+                    gpiod::line_request::DIRECTION_OUTPUT,
+                    0
+            },
+            0
+    );
+
+    gpiod::line echo = chip.get_line(17);
+    echo.request(
+            {
+                    "incubator",
+                    gpiod::line_request::DIRECTION_INPUT,
+                    0
+            },
+            0
+    );
+
+    trig.set_value(0);
+    usleep(2);
+    while (!(*stop)) {
+        trig.set_value(1);
+        usleep(10);
+        trig.set_value(0);
+
+        while (!echo.get_value()) { }
+        auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
+        while (echo.get_value()) { }
+        auto end = std::chrono::high_resolution_clock::now().time_since_epoch();
+        auto distance = (double) (end - start).count() * 0.0343 / 2000;
+        logger::info("Dist: {}", distance);
+
         sleep(1);
-        val = !val;
     }
 
-release_line:
-    gpiod_line_release(line);
-close_chip:
-    gpiod_chip_close(chip);
-end:
+    return nullptr;
+}
+
+#include <thread>
+
+int main(int argc, char *argv[]) {
+    std::thread thread;
+    logger::LoggingProperties logProps;
+    logProps.level = "info";
+    logger::setup(logProps);
+    volatile int stop = 0;
+    pthread_t threadId;
+    int err = pthread_create(&threadId, nullptr, &threadFunc, (void*)&stop);
+
+
+    err = pthread_join(threadId, nullptr);
+
     return 0;
 }
