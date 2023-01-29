@@ -8,6 +8,7 @@
 #include "i2c/I2CServoMotor.h"
 #include "DCMotor.h"
 #include "joystick/JoystickService.h"
+#include "Srf05Sensor.h"
 #include <wiringPi.h>
 
 const char *RobotApp::name() {
@@ -21,6 +22,7 @@ void RobotApp::setup(Registry &registry) {
         return;
     }
     info("setup services");
+    registry.addService(std::make_shared<Srf05Sensor>());
     registry.addService(std::make_shared<I2CServoMotor>());
     registry.addService(std::make_shared<DCMotor>());
     registry.addService(std::make_shared<JoystickService>());

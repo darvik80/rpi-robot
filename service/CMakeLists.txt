@@ -12,9 +12,9 @@ endif ()
 find_package(Boost REQUIRED COMPONENTS system filesystem thread)
 
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES arm)
-    set(RPI_LIB wiringPi)
+    set(RPI_LIB wiringPi gpiod gpiodcxx)
 elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES aarch64)
-    set(RPI_LIB wiringPi)
+    set(RPI_LIB wiringPi gpiod gpiodcxx )
 endif ()
 
 include_directories(
@@ -22,8 +22,9 @@ include_directories(
 )
 
 file(GLOB SRCS_G
-        src/*.cpp
         src/i2c/*.cpp
+        src/gpiod/*.cpp
+        src/*.cpp
         )
 
 file(COPY resources/settings.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

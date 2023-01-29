@@ -45,11 +45,11 @@ void DCMotor::left(int speed, bool dir) {
     info("lt val: {}:{}", speed, dir);
 
     if (dir) {
-        digitalWrite(PWMA2, LOW);
-        digitalWrite(PWMA1, HIGH);
-    } else {
-        digitalWrite(PWMA1, LOW);
         digitalWrite(PWMA2, HIGH);
+        digitalWrite(PWMA1, LOW);
+    } else {
+        digitalWrite(PWMA1, HIGH);
+        digitalWrite(PWMA2, LOW);
     }
     softPwmWrite(PWM1, speed);
 }
@@ -58,11 +58,11 @@ void DCMotor::right(int speed, bool dir) {
     info("rt val: {}:{}", speed, dir);
 
     if (dir) {
-        digitalWrite(PWMB1, LOW);
-        digitalWrite(PWMB2, HIGH);
-    } else {
-        digitalWrite(PWMB2, LOW);
         digitalWrite(PWMB1, HIGH);
+        digitalWrite(PWMB2, LOW);
+    } else {
+        digitalWrite(PWMB2, HIGH);
+        digitalWrite(PWMB1, LOW);
     }
     softPwmWrite(PWM2, speed);
 }
