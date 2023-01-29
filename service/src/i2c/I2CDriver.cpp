@@ -8,31 +8,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define I2C_SLAVE    0x0703
-#define I2C_SMBUS    0x0720    /* SMBus-level access */
-
-#define I2C_SMBUS_READ  1
-#define I2C_SMBUS_WRITE 0
-
-#define I2C_SMBUS_BYTE      1
-#define I2C_SMBUS_BYTE_DATA 2
-#define I2C_SMBUS_WORD_DATA 3
-
-
-union i2c_smbus_data {
-    uint8_t byte;
-    uint16_t word;
-};
-
-
-struct i2c_smbus_ioctl_data {
-    char read_write;
-    uint8_t command;
-    int size;
-    i2c_smbus_data *data;
-};
-
-int I2CDriver::smBusAccess(char rw, uint8_t command, int size, union i2c_smbus_data *data) const {
+int I2CDriver::smBusAccess(char rw, uint8_t command, uint32_t size, i2c_smbus_data *data) const {
     i2c_smbus_ioctl_data args{
             .read_write = rw,
             .command = command,

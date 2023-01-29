@@ -7,11 +7,13 @@
 #include <BaseService.h>
 
 #include <memory>
+#include <linux/i2c.h>
+#include <linux/i2c-dev.h>
 
 class I2CDriver {
     int _fd{};
 private:
-    int smBusAccess(char rw, uint8_t command, int size, union i2c_smbus_data *data) const;
+    int smBusAccess(char rw, uint8_t command, uint32_t size, i2c_smbus_data *data) const;
 
 public:
     I2CDriver() = default;
