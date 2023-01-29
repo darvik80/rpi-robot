@@ -21,7 +21,7 @@ void Srf05Sensor::postConstruct(Registry &registry) {
         gpiod::line trig = chip.get_line(4);
         trig.request(
                 {
-                        "incubator",
+                        "rpi-robot",
                         gpiod::line_request::DIRECTION_OUTPUT,
                         0
                 },
@@ -31,7 +31,7 @@ void Srf05Sensor::postConstruct(Registry &registry) {
         gpiod::line echo = chip.get_line(17);
         echo.request(
                 {
-                        "incubator",
+                        "rpi-robot",
                         gpiod::line_request::DIRECTION_INPUT,
                         0
                 },

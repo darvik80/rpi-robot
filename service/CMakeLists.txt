@@ -22,9 +22,9 @@ include_directories(
 )
 
 file(GLOB SRCS_G
+        src/*.cpp
         src/i2c/*.cpp
         src/gpiod/*.cpp
-        src/*.cpp
         )
 
 file(COPY resources/settings.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

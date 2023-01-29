@@ -14,8 +14,5 @@ class Srf05Sensor  : public BaseService {
 public:
     void postConstruct(Registry &registry) override;
 
-
-
     const char *name() override;
-
 };
