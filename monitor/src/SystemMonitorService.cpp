@@ -249,20 +249,32 @@ void SystemMonitorService::postConstruct(Registry &registry) {
                         {"gpu-temp", SMCGetTemperature(SMC_KEY_GPU_TEMP)},
                 };
                 SMCClose();
+                logger::info("data: {}", json.dump());
+                eventService->send(IotTelemetry{0, json.dump()});
+
 #else
                 std::ifstream piCpuTempFile;
                 std::stringstream buffer;
                 piCpuTempFile.open("/sys/class/thermal/thermal_zone0/temp");
-                buffer << piCpuTempFile.rdbuf();
-                piCpuTempFile.close();
+                nlohmann::json json;
+                if (piCpuTempFile.is_open()) {
+                    buffer << piCpuTempFile.rdbuf();
+                    piCpuTempFile.close();
 
-                nlohmann::json json = {
-                        {"cpu-temp", round(std::stof(buffer.str())/1000 * 100) / 100}
+                    json = {
+                            {"cpu-temp", round(std::stof(buffer.str()) / 1000 * 100) / 100}
 
-                };
-#endif
+                    };
+
+                } else {
+                    json = {
+                            {"cpu-temp", "no-data"}
+
+                    };
+                }
                 logger::info("data: {}", json.dump());
                 eventService->send(IotTelemetry{0, json.dump()});
+#endif
             },
             boost::posix_time::seconds{0},
             boost::posix_time::seconds{5}
