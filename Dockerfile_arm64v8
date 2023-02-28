@@ -9,7 +9,7 @@ RUN useradd -m -u ${UID} -s /bin/bash builder
 RUN { echo 'tzdata tzdata/Areas select Etc'; echo 'tzdata tzdata/Zones/Etc select UTC'; } | debconf-set-selections
 
 RUN apt-get update
-RUN apt-get install -y cmake gdb python3 python3-pip openssh-server mc rsync
+RUN apt-get install -y cmake gdb python3 python3-pip openssh-server mc rsync libgpiod-dev
 RUN pip3 install conan==1.59
 
 USER builder
