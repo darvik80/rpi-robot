@@ -3,18 +3,14 @@ project(service)
 
 if (APPLE)
     message("Apple build")
-    find_library(IOKIT_LIBRARY IOKit)
+    find_library(IOKIT_LIBRAR Y IOKit)
     find_library(CORE_LIBRARY CoreFoundation)
-else ()
-    message("Unix build")
 endif ()
 
 find_package(Boost REQUIRED COMPONENTS system filesystem thread)
 
-if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES arm)
-    set(RPI_LIB wiringPi gpiod gpiodcxx)
-elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES aarch64)
-    set(RPI_LIB wiringPi gpiod gpiodcxx )
+if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES arm OR aarch64)
+    set(RPI_LIB gpiod gpiodcxx)
 endif ()
 
 include_directories(

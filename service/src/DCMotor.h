@@ -5,8 +5,17 @@
 #pragma once
 
 #include <BaseService.h>
+#include "gpiod/pwm.h"
+#include <gpiod.hpp>
 
 class DCMotor : public BaseService {
+    gpiod::line _leftD1;
+    gpiod::line _leftD2;
+    gpiod::extension::soft_pwm _leftPwm;
+
+    gpiod::line _rightD1;
+    gpiod::line _rightD2;
+    gpiod::extension::soft_pwm _rightPwm;
 private:
     void stop();
     void forward(int speed);

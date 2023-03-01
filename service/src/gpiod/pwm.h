@@ -19,9 +19,10 @@ namespace gpiod::extension {
 
         [[noreturn]] void process();
     public:
+        explicit soft_pwm() = default;
         explicit soft_pwm(line line, int initialValue, int pwmRange);
 
-        void setup(line& line, int initialValue, int pwmRange);
+        void setup(line line, int initialValue, int pwmRange);
         void write(int value);
         void shutdown();
 

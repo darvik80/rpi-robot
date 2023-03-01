@@ -3,9 +3,6 @@
 //
 
 #include "DCMotor.h"
-#include <wiringPi.h>
-#include <softPwm.h>
-
 #include "core-service/EventBusService.h"
 #include "joystick/JoystickEvent.h"
 
@@ -29,11 +26,10 @@ const char *DCMotor::name() {
 }
 
 void DCMotor::stop() {
-    digitalWrite(PWMA1, LOW);
-    digitalWrite(PWMA2, LOW);
-
-    digitalWrite(PWMB1, LOW);
-    digitalWrite(PWMB2, LOW);
+    _leftD1.set_value(0);
+    _leftD2.set_value(0);
+    _rightD1.set_value(0);
+    _rightD2.set_value(0);
 }
 
 void DCMotor::forward(int speed) {
@@ -45,47 +41,45 @@ void DCMotor::left(int speed, bool dir) {
     info("lt val: {}:{}", speed, dir);
 
     if (dir) {
-        digitalWrite(PWMA2, HIGH);
-        digitalWrite(PWMA1, LOW);
+        _leftD1.set_value(0);
+        _leftD2.set_value(1);
     } else {
-        digitalWrite(PWMA1, HIGH);
-        digitalWrite(PWMA2, LOW);
+        _leftD1.set_value(1);
+        _leftD2.set_value(0);
     }
-    softPwmWrite(PWM1, speed);
+    _leftPwm.write(speed);
 }
 
 void DCMotor::right(int speed, bool dir) {
     info("rt val: {}:{}", speed, dir);
 
     if (dir) {
-        digitalWrite(PWMB1, HIGH);
-        digitalWrite(PWMB2, LOW);
+        _rightD1.set_value(1);
+        _rightD2.set_value(0);
     } else {
-        digitalWrite(PWMB2, HIGH);
-        digitalWrite(PWMB1, LOW);
+        _rightD1.set_value(0);
+        _rightD2.set_value(1);
     }
-    softPwmWrite(PWM2, speed);
+    _rightPwm.write(speed);
 }
 
 void DCMotor::postConstruct(Registry &registry) {
     BaseService::postConstruct(registry);
 
-    pinMode(PWMA1, OUTPUT);
-    pinMode(PWMA2, OUTPUT);
-    pinMode(PWM1, OUTPUT);
+    gpiod::chip chip("gpiochip0");
 
-    pinMode(PWMB1, OUTPUT);
-    pinMode(PWMB2, OUTPUT);
-    pinMode(PWM2, OUTPUT);
+    _leftD1 = chip.get_line(PWMA1);
+    _leftD2 = chip.get_line(PWMA2);
+    _leftPwm.setup(chip.get_line(PWM1), 0, 1024);
+    _leftD1.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT,0 },0);
+    _leftD2.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT,0 },0);
 
-    if (softPwmCreate(PWM1, 0, 1024)) {
-        error("can't init PWM {}, errno: {}", PWM1, errno);
-        return;
-    }
-    if (softPwmCreate(PWM2, 0, 1024)) {
-        error("can't init PWM {}, errno: {}", PWM2, errno);
-        return;
-    }
+    _rightD1 = chip.get_line(PWMB1);
+    _rightD2 = chip.get_line(PWMB2);
+    _rightPwm.setup(chip.get_line(PWM2), 0, 1024);
+
+    _rightD1.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT,0 },0);
+    _rightD2.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT,0 },0);
 
     stop();
 
@@ -110,6 +104,6 @@ void DCMotor::postConstruct(Registry &registry) {
 void DCMotor::preDestroy(Registry &registry) {
     BaseService::preDestroy(registry);
 
-    softPwmStop(PWM1);
-    softPwmStop(PWM2);
+    _leftPwm.shutdown();
+    _rightPwm.shutdown();
 }

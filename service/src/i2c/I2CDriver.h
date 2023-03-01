@@ -30,7 +30,7 @@ public:
 
     int readReg16(int reg);
 
-    int write(int data);
+    int write(uint8_t data);
 
     int writeReg8(int reg, uint8_t data);
 
