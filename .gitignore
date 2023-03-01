@@ -12,4 +12,6 @@ build
 cmake-build-*
 /venv/
 
+docker-build
+
 server.pem

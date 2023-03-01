@@ -1,0 +1,24 @@
+FROM arm64v8/debian:bullseye
+
+ARG UID=1000
+RUN useradd -m -u ${UID} -s /bin/bash darvik
+
+# Non-interactive configuration of tzdata
+#ENV DEBIAN_FRONTEND noninteractive
+#ENV DEBCONF_NONINTERACTIVE_SEEN true
+RUN { echo 'tzdata tzdata/Areas select Etc'; echo 'tzdata tzdata/Zones/Etc select UTC'; } | debconf-set-selections
+
+RUN apt-get update
+RUN apt-get install -y cmake gdb openssh-server mc gdbserver
+
+
+USER darvik
+RUN mkdir -p /home/darvik/.ssh
+
+COPY docker-configs/authorized_keys /home/darvik/.ssh/authorized_keys
+
+USER root
+RUN service ssh start
+EXPOSE 22
+EXPOSE 1234
+CMD ["/usr/sbin/sshd","-D"]

@@ -13,6 +13,10 @@ Robot based on RPI 3
 * [nlohmann-json](https://github.com/nlohmann/json)
 * [gpiod](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
 
+## Trobleshots
+* GDB Server does not work for Docker 
+add run arg for docker config: --security-opt seccomp=unconfined 
+
 ## IoT Yandex Core
 ### Device
 | topic                              | alias                  | description               | 
