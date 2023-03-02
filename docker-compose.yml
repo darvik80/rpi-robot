@@ -1,0 +1,33 @@
+version: '3'
+services:
+
+  builder_arm64v8_rpi:
+    security_opt:
+      - seccomp:unconfined
+    build:
+      context: .
+      dockerfile: Dockerfile_builder
+      args:
+        UID: 1000
+        USER: builder
+        IMAGE: arm64v8/debian:bullseye
+    container_name: builder_arm64v8_rpi
+    ports:
+      - 2022:22
+    volumes:
+      - ./docker-debug/bin:/home/builder/rpi-robot/cmake-build-debug-dockerhost/bin
+
+  simulator_arm64v8_rpi:
+    security_opt:
+      - seccomp:unconfined
+    build:
+      context: .
+      dockerfile: Dockerfile_simulator
+      args:
+        UID: 1000
+        USER: debugger
+        IMAGE: arm64v8/debian:bullseye
+    container_name: simulator_arm64v8_rpi
+    ports:
+      - 3022:22
+      - 1234:1234

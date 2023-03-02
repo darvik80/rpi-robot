@@ -76,7 +76,7 @@ int I2CDriver::readReg16(int reg) {
     return data.byte & 0xFF;
 }
 
-int I2CDriver::write(int data) {
+int I2CDriver::write(uint8_t data) {
     return smBusAccess(I2C_SMBUS_WRITE, data, I2C_SMBUS_BYTE, nullptr);
 }
 

@@ -2,13 +2,10 @@ cmake_minimum_required(VERSION 3.16)
 project(monitor)
 
 if (APPLE)
-    message("Apple build")
     find_library(IOKIT_LIBRARY IOKit)
     find_library(CORE_LIBRARY CoreFoundation)
     file(COPY resources/macos/settings.json DESTINATION ${PROPERTIES_DIR})
 else ()
-    message("Unix build " ${CMAKE_HOST_SYSTEM_PROCESSOR})
-
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
     if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES arm)

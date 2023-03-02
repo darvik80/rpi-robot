@@ -9,19 +9,12 @@
 #include "DCMotor.h"
 #include "joystick/JoystickService.h"
 #include "Srf05Sensor.h"
-#include <wiringPi.h>
 
 const char *RobotApp::name() {
     return "robot";
 }
 
 void RobotApp::setup(Registry &registry) {
-    info("setup gpio");
-    if (-1 == wiringPiSetupGpio()) {
-        error("can't init wiringPiSetup");
-        return;
-    }
-    info("setup services");
     registry.addService(std::make_shared<Srf05Sensor>());
     registry.addService(std::make_shared<I2CServoMotor>());
     registry.addService(std::make_shared<DCMotor>());

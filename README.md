@@ -15,7 +15,9 @@ Robot based on RPI 3
 
 ## Trobleshots
 * GDB Server does not work for Docker 
-add run arg for docker config: --security-opt seccomp=unconfined 
+add run arg for docker config: --security-opt seccomp=unconfined
+* Remote GDB Server
+![](https://raw.githubusercontent.com/darvik80/rpi-robot/master/images/remote-debug.png)
 
 ## IoT Yandex Core
 ### Device
