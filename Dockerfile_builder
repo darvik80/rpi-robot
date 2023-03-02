@@ -21,7 +21,8 @@ RUN mkdir -p  /home/${USER}/.conan/profiles
 
 COPY docker-configs/authorized_keys /home/${USER}/.ssh/authorized_keys
 COPY conanfile.txt /home/${USER}/rpi-robot/conanfile.txt
-COPY docker-configs/conan.profile /home/${USER}/.conan/profiles/default
+#COPY docker-configs/conan.profile /home/${USER}/.conan/profiles/default
+RUN conan profile new default --detect
 WORKDIR /home/${USER}/rpi-robot
 
 #RUN conan profile detect --force
