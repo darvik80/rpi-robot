@@ -36,7 +36,7 @@ void I2CLcd1602::sendCmd(uint8_t devAddr, uint8_t cmd) {
     data_t[2] = data_l | 0x0C;  //en=1, rs=0
     data_t[3] = data_l | 0x08;  //en=0, rs=0
 
-    _i2c.write()
+//    _i2c.write()
     //ESP_ERROR_CHECK(i2c_master_write_to_device(I2C_NUM_0, devAddr, data_t, 4, 1000));
 }
 

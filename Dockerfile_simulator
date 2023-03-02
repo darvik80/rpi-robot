@@ -1,7 +1,10 @@
-FROM arm64v8/debian:bullseye
+ARG IMAGE
+FROM ${IMAGE}
 
 ARG UID=1000
-RUN useradd -m -u ${UID} -s /bin/bash darvik
+ARG USER=debugger
+
+RUN useradd -m -u ${UID} -s /bin/bash ${USER}
 
 # Non-interactive configuration of tzdata
 #ENV DEBIAN_FRONTEND noninteractive
@@ -12,10 +15,10 @@ RUN apt-get update
 RUN apt-get install -y cmake gdb openssh-server mc gdbserver
 
 
-USER darvik
-RUN mkdir -p /home/darvik/.ssh
+USER ${USER}
+RUN mkdir -p /home/${USER}/.ssh
 
-COPY docker-configs/authorized_keys /home/darvik/.ssh/authorized_keys
+COPY docker-configs/authorized_keys /home/${USER}/.ssh/authorized_keys
 
 USER root
 RUN service ssh start
