@@ -1,0 +1,15 @@
+{
+  "logging": {
+    "level": "info",
+    "console": true,
+    "file": false
+  },
+  "iot-mqtt": {
+    "address": "127.0.0.1",
+    "client-id": "registry",
+    "username": "mqtt",
+    "password": "mqtt",
+    "registry-id": "crearts-iot",
+    "key-file": "server.pem"
+  }
+}

@@ -32,11 +32,11 @@ add run arg for docker config: --security-opt seccomp=unconfined
 ## Registry
 | topic                              | alias                  | description               | 
 |------------------------------------|------------------------|---------------------------|
-| registries/${registryId}/events    | $me/registry/events    | telemetry                 |
-| registries/${registryId}/state     | $me/registry/state     | telemetry                 |
-| registries/${registryId}/commands  | $me/registry/commands  | commands                  |
-| registries/${registryId}/config    | $me/registry/config    | configuration             |
-| registries/${registryId}/json      | $me/registry/config    | monitoring in json format |
+| registries/${registryId}/events    | $me/registryId/events    | telemetry                 |
+| registries/${registryId}/state     | $me/registryId/state     | telemetry                 |
+| registries/${registryId}/commands  | $me/registryId/commands  | commands                  |
+| registries/${registryId}/config    | $me/registryId/config    | configuration             |
+| registries/${registryId}/json      | $me/registryId/config    | monitoring in json format |
 
 ## IoT ThingsBoard
 ### Device

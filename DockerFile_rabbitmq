@@ -1,8 +1,8 @@
 FROM rabbitmq:3.11.3-management
 
-ADD ./rabbitmq/rabbitmq-init.sh /rabbitmq-init.sh
-ADD ./rabbitmq/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
-ADD ./rabbitmq/cert /etc/rabbitmq/cert
+ADD docker-configs/rabbitmq/rabbitmq-init.sh /rabbitmq-init.sh
+ADD docker-configs/rabbitmq/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+ADD docker-configs/rabbitmq/cert /etc/rabbitmq/cert
 
 ENV RABBITMQ_ADMIN_USER darvik
 ENV RABBITMQ_ADMIN_PASSWORD test

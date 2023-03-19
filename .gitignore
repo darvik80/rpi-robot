@@ -13,5 +13,6 @@ cmake-build-*
 /venv/
 
 docker-build
+docker-data
 
 server.pem
