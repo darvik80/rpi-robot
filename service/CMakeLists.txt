@@ -7,8 +7,6 @@ if (APPLE)
     find_library(CORE_LIBRARY CoreFoundation)
 endif ()
 
-find_package(Boost REQUIRED COMPONENTS system filesystem thread)
-
 set(RPI_LIB gpiod gpiodcxx)
 
 include_directories(
@@ -28,6 +26,5 @@ add_executable(${PROJECT_NAME} ${SRCS_G})
 target_link_libraries(
         ${PROJECT_NAME}
         ${CORE_LIBRARY}
-        ${Boost_LIBRARIES}
         gpiod gpiodcxx application joystick
 )

@@ -16,3 +16,5 @@ docker-build
 docker-data
 
 server.pem
+
+CMakeUserPresets.json

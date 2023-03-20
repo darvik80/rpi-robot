@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 project(monitor)
 
+
+find_package(Boost 1.81 REQUIRED)
+find_package(fmt)
+
 if (APPLE)
     find_library(IOKIT_LIBRARY IOKit)
     find_library(CORE_LIBRARY CoreFoundation)
@@ -19,12 +23,10 @@ else ()
 endif ()
 file(COPY resources/server.pem DESTINATION ${PROPERTIES_DIR})
 
-find_package(Boost REQUIRED COMPONENTS system filesystem thread log log_setup REQUIRED)
-
 file(GLOB SRCS_G src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${SRCS_G})
-target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} ${CONAN_LIBS} ${Boost_LIBRARIES} logging application iot-platform)
+target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} logging application iot-platform)
 
 install(TARGETS ${PROJECT_NAME})
 

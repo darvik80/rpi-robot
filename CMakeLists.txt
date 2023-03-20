@@ -4,21 +4,26 @@ set(CMAKE_INSTALL_PREFIX /opt/iot)
 project(rpi_robot)
 
 set(CMAKE_CXX_STANDARD 17)
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-endif ()
-if (APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
-endif ()
 
-set(Boost_NO_WARN_NEW_VERSIONS ON)
-set(CONAN_DISABLE_CHECK_COMPILER ON)
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+# libs {
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME ON)
+add_definitions(-DBOOST_STACKTRACE_GNU_SOURCE_NOT_REQUIRED -DBOOST_STACKTRACE_USE_ADDR2LINE)
+
+find_package(Boost 1.81 REQUIRED)
+find_package(fmt REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(nlohmann_json REQUIRED)
+# }
 
 include_directories(
+        ${fmt_INCLUDE_DIRS}
+        ${Boost_INCLUDE_DIRS}
+        ${nlohmann_json_INCLUDE_DIRS}
+        ${OpenSSL_INCLUDE_DIRS}
+
         core-utils/event-bus/src
         core-utils/logging/src
         core-utils/application/src
@@ -34,7 +39,7 @@ set(VAR_DIR ${PROJECT_BINARY_DIR}/var)
 
 add_subdirectory(core-utils)
 
-add_subdirectory(monitor)
+#add_subdirectory(monitor)
 if (APPLE)
     message(STATUS "Apple build")
 elseif (UNIX AND NOT APPLE)

@@ -1,4 +1,4 @@
-FROM rabbitmq:3.11.3-management
+FROM rabbitmq:management
 
 ADD docker-configs/rabbitmq/rabbitmq-init.sh /rabbitmq-init.sh
 ADD docker-configs/rabbitmq/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf

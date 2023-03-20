@@ -5,7 +5,6 @@
 #include "SystemMonitorService.h"
 #include "core-service/SchedulerService.h"
 #include "core-service/EventBusService.h"
-#include "iot/IotCommand.h"
 #include "iot/IotMessage.h"
 
 #include <string>
@@ -235,10 +234,10 @@ void SystemMonitorService::postConstruct(Registry &registry) {
 
     auto eventService = registry.getService<EventBusService>().shared_from_this();
 
-    eventService->subscribe<IotCommand>([this](const IotCommand &event) -> bool {
-        info("handle cmd: {}", event.name);
-        return true;
-    });
+//    eventService->subscribe<IotCommand>([this](const IotCommand &event) -> bool {
+//        info("handle cmd: {}", event.name);
+//        return true;
+//    });
 
     registry.getService<SchedulerService>().scheduleAtFixedRate(
             [this, eventService]() -> void {
