@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Repository.h"
 #include "DataSource.h"
 #include <nlohmann/json.hpp>
 
@@ -18,14 +19,16 @@ namespace db {
         nlohmann::json json;
     };
 
-    class RegistryRepository {
-        DataSource::Ptr _source;
+    class RegistryRepository : public Repository {
+        DataSource &_source;
     public:
-        explicit RegistryRepository(const DataSource::Ptr &source) : _source(source) {}
+        explicit RegistryRepository(DataSource &source) : _source(source) {}
 
         Registry getById(long regId);
+        std::list<Registry> findAll(long offset, int size);
 
-        long save(const Registry& registry);
+        long save(const Registry &registry);
+        long update(const Registry &registry);
     };
 
 }

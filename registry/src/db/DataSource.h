@@ -6,44 +6,20 @@
 
 #include <fmt/format.h>
 #include <pqxx/pqxx>
-#include <unordered_set>
+#include <unordered_map>
+#include <thread>
 
 namespace db {
-    typedef std::shared_ptr<pqxx::connection> ConnectionPtr;
-
     class DataSource {
-
+        std::string _connString;
         std::mutex _mutex;
-        std::stack<ConnectionPtr> _freeConn;
-
-        friend class ConnGuard;
+        std::unordered_map<std::thread::id, pqxx::connection> _cache;
 
     public:
-        typedef std::shared_ptr<DataSource> Ptr;
+        typedef std::unique_ptr<DataSource> Ptr;
 
-        DataSource(std::string_view host, int port, std::string_view username, std::string_view password, std::string_view database, int poolSize = 4);
+        DataSource(std::string_view host, int port, std::string_view username, std::string_view password, std::string_view database);
 
-    private:
-        ConnectionPtr getConnection();
-
-        void releaseConnection(ConnectionPtr conn);
+        pqxx::connection& getConnection();
     };
-
-    class ConnGuard {
-        DataSource &_source;
-        ConnectionPtr _conn;
-    public:
-        explicit ConnGuard(DataSource &source) : _source(source), _conn(_source.getConnection()) {
-
-        }
-
-        pqxx::connection &operator*() {
-            return *_conn;
-        }
-
-        ~ConnGuard() {
-            _source.releaseConnection(_conn);
-        }
-    };
-
 }

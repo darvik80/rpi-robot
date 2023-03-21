@@ -3,30 +3,60 @@
 //
 
 #include "RegistryRepository.h"
+#include "SqlBuilder.h"
 
 namespace db {
     Registry RegistryRepository::getById(long regId) {
-        ConnGuard guard(*_source);
-        auto &conn = *guard;
-        pqxx::nontransaction w(conn);
+        pqxx::nontransaction w(_source.getConnection());
 
-        auto [id, createdAt, name, uuid, status, json] = w.exec_params1(
-                "SELECT id, created_at, name, uuid, json_data FROM registry WHERE id = $1", regId
-        ).as<long, std::string, std::string, std::string, int, std::string>();
+        sql::SelectModel s;
+        s.select("id", "created_at", "name", "uuid", "status", "json_data")
+                .from("registry")
+                .where(sql::column("id") == regId);
+
+        auto row = w.exec_params1(s.str());
 
         return Registry{
-                .id = id,
-                .createdAt = createdAt,
-                .name = name,
-                .uuid = uuid,
-                .status = status,
-                .json = json,
+                .id = row.at(0).as<long>(),
+                .createdAt = row.at(1).as<std::string>(),
+                .name = row.at(2).as<std::string>(),
+                .uuid = row.at(3).as<std::string>(),
+                .status = row.at(4).as<int>(),
+                .json = row.at(5).as<std::string>(),
         };
     }
 
+    std::list<Registry> RegistryRepository::findAll(long offset, int limit) {
+        pqxx::nontransaction w(_source.getConnection());
+
+        sql::SelectModel s;
+        s.select("id", "created_at", "name", "uuid", "status", "json_data")
+                .from("registry")
+                .offset(offset)
+                .limit(limit)
+                .order_by("id");
+
+        auto res = w.exec_params(s.str());
+
+        std::list<Registry> result;
+        for (const auto &row: res) {
+            result.push_back(
+                    {
+                            .id = row.at(0).as<long>(),
+                            .createdAt = row.at(1).as<std::string>(),
+                            .name = row.at(2).as<std::string>(),
+                            .uuid = row.at(3).as<std::string>(),
+                            .status = row.at(4).as<int>(),
+                            .json = row.at(5).as<std::string>(),
+                    }
+            );
+        }
+
+        return result;
+    }
+
     long RegistryRepository::save(const Registry &registry) {
-        ConnGuard guard(*_source);
-        pqxx::work worker(*guard);
+        pqxx::work worker(_source.getConnection());
 
         auto res = worker.exec_params1(
                 "INSERT INTO registry (created_at, name, uuid, json_data) VALUES (NOW(), $1, gen_random_uuid(), $2) RETURNING id;",
@@ -36,4 +66,5 @@ namespace db {
 
         return res[0].as<long>();
     }
+
 }

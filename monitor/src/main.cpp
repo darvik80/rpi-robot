@@ -4,7 +4,6 @@
 
 #include <Application.h>
 #include "SystemMonitorService.h"
-#include "iot/IotPlatformService.h"
 
 #include <iostream>
 
@@ -17,7 +16,7 @@ public:
 protected:
     void setup(Registry &registry) override {
         registry.addService(std::make_shared<SystemMonitorService>());
-        registry.addService(std::make_shared<IotPlatformService>());
+        //registry.addService(std::make_shared<IotPlatformService>());
     }
 
     void destroy(Registry &registry) override {
