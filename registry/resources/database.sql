@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS device_telemetry
     id         SERIAL PRIMARY KEY,
     device_id  int                                                   NOT NULL REFERENCES device,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     json_data  jsonb                                                 NULL
 );
 
@@ -45,6 +46,7 @@ CREATE TABLE IF NOT EXISTS registry_configuration
     id          SERIAL PRIMARY KEY,
     registry_id int                                                   NOT NULL REFERENCES registryId,
     created_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     json_data   jsonb                                                 NULL
 );
 
@@ -54,6 +56,7 @@ CREATE TABLE IF NOT EXISTS device_configuration
     id         SERIAL PRIMARY KEY,
     device_id  int                                                   NOT NULL REFERENCES device (id),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     json_data  jsonb                                                 NULL
 );
 

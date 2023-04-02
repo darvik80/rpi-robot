@@ -6,7 +6,7 @@
 #include "SqlBuilder.h"
 
 namespace db {
-    Registry RegistryRepository::getById(long regId) {
+    Registry RegistryRepository::findById(long regId) {
         pqxx::nontransaction w(_source.getConnection());
 
         sql::SelectModel s;
@@ -22,7 +22,27 @@ namespace db {
                 .name = row.at(2).as<std::string>(),
                 .uuid = row.at(3).as<std::string>(),
                 .status = row.at(4).as<int>(),
-                .json = row.at(5).as<std::string>(),
+                .json = nlohmann::json::parse(row.at(5).as<std::string>()),
+        };
+    }
+
+    std::optional<Registry> RegistryRepository::findByName(std::string_view name) {
+        pqxx::nontransaction w(_source.getConnection());
+
+        sql::SelectModel s;
+        s.select("id", "created_at", "name", "uuid", "status", "json_data")
+                .from("registry")
+                .where(sql::column("name").like(name));
+
+        auto row = w.exec_params1(s.str());
+
+        return Registry{
+                .id = row.at(0).as<long>(),
+                .createdAt = row.at(1).as<std::string>(),
+                .name = row.at(2).as<std::string>(),
+                .uuid = row.at(3).as<std::string>(),
+                .status = row.at(4).as<int>(),
+                .json = nlohmann::json::parse(row.at(5).as<std::string>()),
         };
     }
 
@@ -47,7 +67,7 @@ namespace db {
                             .name = row.at(2).as<std::string>(),
                             .uuid = row.at(3).as<std::string>(),
                             .status = row.at(4).as<int>(),
-                            .json = row.at(5).as<std::string>(),
+                            .json = nlohmann::json::parse(row.at(5).as<std::string>()),
                     }
             );
         }
@@ -55,16 +75,35 @@ namespace db {
         return result;
     }
 
-    long RegistryRepository::save(const Registry &registry) {
+    long RegistryRepository::insert(const Registry &registry) {
         pqxx::work worker(_source.getConnection());
 
-        auto res = worker.exec_params1(
-                "INSERT INTO registry (created_at, name, uuid, json_data) VALUES (NOW(), $1, gen_random_uuid(), $2) RETURNING id;",
-                registry.name, registry.json.dump()
-        );
+        sql::InsertModel i;
+        i.insert("name", registry.name)
+                        ("json_data", registry.json.dump())
+                        ("uuid", sql::func("gen_random_uuid()"))
+                        ("updated_at", sql::func("now()"))
+                .into("registry")
+                .returning("id");
+        auto res = worker.exec_params1(i.str());
         worker.commit();
 
         return res[0].as<long>();
+    }
+
+    void RegistryRepository::update(const Registry &registry) {
+        pqxx::work worker(_source.getConnection());
+
+        sql::UpdateModel i;
+        i.update("registry")
+                .set("name", registry.name)
+                        ("createdAt", registry.createdAt)
+                        ("status", registry.status)
+                        ("uuid", registry.uuid)
+                        ("json_data", registry.json.dump())
+                        .where(sql::column("id") == registry.id);
+        auto res = worker.exec_params1(i.str());
+        worker.commit();
     }
 
 }

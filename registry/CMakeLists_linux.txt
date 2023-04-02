@@ -1,0 +1,87 @@
+#==================================================================
+# Check
+#==================================================================
+
+# Check is objcopy command was defined or no
+if (NOT DEFINED CMAKE_OBJCOPY)
+    message(FATAL_ERROR "Can`t find CMAKE_OBJCOPY!")
+endif (NOT DEFINED CMAKE_OBJCOPY)
+
+# Check is Resources directory was defined in parent scope or no
+if (NOT DEFINED RESOURCE_DIRECTORY)
+    message(FATAL_ERROR "RESOURCE_DIRECTORY was`t setted !")
+elseif (NOT EXISTS ${RESOURCE_DIRECTORY})
+    message(FATAL_ERROR "The Resources directory with the path below dosn`t exists "
+            "___________________________________________________________ "
+            ${RESOURCE_DIRECTORY})
+else ()
+    message(STATUS "Resources dir: " ${RESOURCE_DIRECTORY})
+endif (NOT DEFINED RESOURCE_DIRECTORY)
+
+#==================================================================
+# Create objective files. 
+# borrowed from : https://stackoverflow.com/a/23008106/10014569
+#===================================================================
+
+# Set list of objectiv resource files and export it to the parent scope
+set(PROJECT_EMBED_OBJ_FILES "")
+
+# Set embed file pointers list
+set(POINTERS_FOR_EMBED_FILES "")
+
+# Set code generating for embed files map
+set(FILL_IN_POINTERS "")
+
+# Select all resource files
+file(GLOB EMBED_FILE_LIST ${RESOURCE_DIRECTORY}/*)
+
+set(LINK_TYPE "extern char ")
+
+If(NOT DEFINED TARGET_FORMAT)
+    set(TARGET_FORMAT "elf64-x86-64")
+endif(NOT DEFINED TARGET_FORMAT)
+
+If(NOT DEFINED TARGET_ARCHITECTURE)
+    set(TARGET_ARCHITECTURE "i386:x86-64")
+endif(NOT DEFINED TARGET_ARCHITECTURE)
+
+# foreach loop by each resource file
+foreach (FILENAME ${EMBED_FILE_LIST})
+    # Get file name and filepaths
+    get_filename_component(FILENAME_ONLY ${FILENAME} NAME)
+    get_filename_component(FILEPATH_ONLY ${FILENAME} PATH)
+
+    # Create object file
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME_ONLY}.o
+            WORKING_DIRECTORY ${FILEPATH_ONLY}
+            COMMAND ${CMAKE_OBJCOPY}
+            ARGS -I binary -O ${TARGET_FORMAT} -B ${TARGET_ARCHITECTURE} ${FILENAME_ONLY} ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME_ONLY}.o)
+
+    # Add path to new object resource file to the objective resource files list
+    list(APPEND RES_EMBED_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME_ONLY}.o)
+
+    if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME_ONLY}.o)
+        message(STATUS "Objcopy'ing ${FILENAME}")
+    endif (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME_ONLY}.o)
+
+    # Create source file configuration
+    string(REGEX REPLACE "[^a-zA-Z0-9а-яА-Я]" "_" OBJECTIVE_NAME ${FILENAME_ONLY})
+
+    set(START_PTR "_binary_${OBJECTIVE_NAME}_start")
+    set(END_PTR "_binary_${OBJECTIVE_NAME}_end")
+
+    set(POINTERS_FOR_EMBED_FILES ${POINTERS_FOR_EMBED_FILES} "\n\n${LINK_TYPE} ${START_PTR}")
+    set(POINTERS_FOR_EMBED_FILES ${POINTERS_FOR_EMBED_FILES} "\n${LINK_TYPE} ${END_PTR}")
+
+    set(FILL_IN_POINTERS ${FILL_IN_POINTERS} "\n\t\t_resources.emplace(\"${FILENAME_ONLY}\",std::make_shared<ResourceLinux>(&${START_PTR}, &${END_PTR}))")
+
+endforeach (FILENAME)
+
+set(POINTERS_FOR_EMBED_FILES "${POINTERS_FOR_EMBED_FILES};")
+set(FILL_IN_POINTERS "${FILL_IN_POINTERS};")
+
+# Set path to the source file
+set(RES_SRC_FILE "${CMAKE_CURRENT_BINARY_DIR}/src/resources/ResourceManager_linux.cpp")
+# configure source file
+configure_file("src/resources/ResourceManager_linux.cpp.template" ${RES_SRC_FILE})
+

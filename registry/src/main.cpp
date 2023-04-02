@@ -4,21 +4,14 @@
 
 #include <Application.h>
 
-#include "iot/IotProperties.h"
 #include "iot/IotPlatform.h"
 
 #include "db/Database.h"
-#include "db/DataSource.h"
 #include "db/RegistryRepository.h"
 
-#include <pqxx/pqxx>
+#include "http/HttpService.h"
 
-struct device {
-    long id;
-    std::string name;
-    std::string uuid;
-    nlohmann::json jsonData;
-};
+#include <pqxx/pqxx>
 
 class RegistryApp : public Application {
 public:
@@ -30,6 +23,22 @@ protected:
     void setup(Registry &registry) override {
         registry.createService<IotRegistry>();
         registry.createService<db::Database>();
+        registry.createService<HttpService>();
+
+
+        std::vector<std::string> data{"1", "2", "3"};
+
+        std::any variant = data;
+
+        if (variant.type() == typeid(std::vector<std::string>)) {
+            info("any type: {}", variant.type().name());
+        }
+
+        variant = std::string("hello");
+        info("any type: {}", variant.type().name());
+
+        variant = 1;
+        info("any type: {}", variant.type().name());
     }
 
     void destroy(Registry &registry) override {

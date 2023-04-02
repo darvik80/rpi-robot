@@ -24,11 +24,12 @@ namespace db {
     public:
         explicit RegistryRepository(DataSource &source) : _source(source) {}
 
-        Registry getById(long regId);
+        Registry findById(long regId);
+        std::optional<Registry> findByName(std::string_view name);
         std::list<Registry> findAll(long offset, int size);
 
-        long save(const Registry &registry);
-        long update(const Registry &registry);
+        long insert(const Registry &registry);
+        void update(const Registry &registry);
     };
 
 }
