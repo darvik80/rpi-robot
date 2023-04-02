@@ -24,21 +24,6 @@ protected:
         registry.createService<IotRegistry>();
         registry.createService<db::Database>();
         registry.createService<HttpService>();
-
-
-        std::vector<std::string> data{"1", "2", "3"};
-
-        std::any variant = data;
-
-        if (variant.type() == typeid(std::vector<std::string>)) {
-            info("any type: {}", variant.type().name());
-        }
-
-        variant = std::string("hello");
-        info("any type: {}", variant.type().name());
-
-        variant = 1;
-        info("any type: {}", variant.type().name());
     }
 
     void destroy(Registry &registry) override {

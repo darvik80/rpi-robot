@@ -40,15 +40,15 @@ void HttpService::postConstruct(Registry &registry) {
     addHandlers(registry, props);
     auto worker = std::make_shared<HttpWorker>(registry.getIoService(), props.host, props.port, shared_from_this());
 
-    registry.getService<EventBusService>().subscribe<ApplicationStartedEvent>([&props, worker, this](const auto &event) -> bool {
+    registry.getService<EventBusService>().subscribe<ApplicationStartedEvent>([props, worker, this](const auto &event) -> bool {
         worker->start();
-        info("started: " + props.host + ":" + std::to_string(props.port));
+        info("{} started: {}:{}", name(), props.host, props.port);
         return true;
     });
 
-    registry.getService<EventBusService>().subscribe<ApplicationCloseEvent>([&props, worker, this](const auto &event) -> bool {
+    registry.getService<EventBusService>().subscribe<ApplicationCloseEvent>([props, worker, this](const auto &event) -> bool {
         worker->shutdown();
-        info("stopped: " + props.host + ":" + std::to_string(props.port));
+        info("{} stopped: {}:{}", name(), props.host, props.port);
         return true;
     });
 }
