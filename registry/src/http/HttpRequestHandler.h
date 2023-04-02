@@ -5,12 +5,15 @@
 #pragma once
 
 #include <boost/beast/http.hpp>
+#include <boost/url.hpp>
 #include <functional>
 #include <string>
 #include <variant>
 
+
 namespace http = boost::beast::http;
 
+typedef boost::urls::params_view HttpParams;
 typedef http::request<http::string_body> HttpRequest;
 typedef http::response<http::string_body> HttpStringResponse;
 typedef http::response<http::file_body> HttpFileResponse;

@@ -3,11 +3,17 @@ project(registry)
 
 file(COPY resources/settings.json DESTINATION ${PROPERTIES_DIR})
 
-file(GLOB SRCS_G src/*.cpp src/db/*.cpp src/http/*.cpp src/resources/*.cpp)
+file(GLOB SRCS_G
+        src/*.cpp
+        src/db/*.cpp
+        src/http/*.cpp
+        src/http/rest/*.cpp
+        src/resources/*.cpp)
 
 find_package(libpqxx)
 
 include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${libpqxx_INCLUDE_DIRS}
 )
 

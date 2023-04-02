@@ -22,7 +22,7 @@ namespace db {
                 .name = row.at(2).as<std::string>(),
                 .uuid = row.at(3).as<std::string>(),
                 .status = row.at(4).as<int>(),
-                .json = nlohmann::json::parse(row.at(5).as<std::string>()),
+                .json_data = nlohmann::json::parse(row.at(5).as<std::string>()),
         };
     }
 
@@ -42,11 +42,11 @@ namespace db {
                 .name = row.at(2).as<std::string>(),
                 .uuid = row.at(3).as<std::string>(),
                 .status = row.at(4).as<int>(),
-                .json = nlohmann::json::parse(row.at(5).as<std::string>()),
+                .json_data = nlohmann::json::parse(row.at(5).as<std::string>()),
         };
     }
 
-    std::list<Registry> RegistryRepository::findAll(long offset, int limit) {
+    std::list<Registry> RegistryRepository:: findAll(std::string_view name, long offset, int limit) {
         pqxx::nontransaction w(_source.getConnection());
 
         sql::SelectModel s;
@@ -55,6 +55,10 @@ namespace db {
                 .offset(offset)
                 .limit(limit)
                 .order_by("id");
+
+        if (!name.empty()) {
+            s.where(sql::column("name").like(name));
+        }
 
         auto res = w.exec_params(s.str());
 
@@ -67,7 +71,7 @@ namespace db {
                             .name = row.at(2).as<std::string>(),
                             .uuid = row.at(3).as<std::string>(),
                             .status = row.at(4).as<int>(),
-                            .json = nlohmann::json::parse(row.at(5).as<std::string>()),
+                            .json_data = nlohmann::json::parse(row.at(5).as<std::string>()),
                     }
             );
         }
@@ -75,12 +79,25 @@ namespace db {
         return result;
     }
 
+    size_t RegistryRepository::findAllCount(std::string_view name) {
+        pqxx::nontransaction w(_source.getConnection());
+
+        sql::SelectModel s;
+        s.select("COUNT(id)").from("registry");
+
+        if (!name.empty()) {
+            s.where(sql::column("name").like(name));
+        }
+
+        return w.exec_params1(s.str()).at(0).as<size_t>();
+    }
+
     long RegistryRepository::insert(const Registry &registry) {
         pqxx::work worker(_source.getConnection());
 
         sql::InsertModel i;
         i.insert("name", registry.name)
-                        ("json_data", registry.json.dump())
+                        ("json_data", registry.json_data.dump())
                         ("uuid", sql::func("gen_random_uuid()"))
                         ("updated_at", sql::func("now()"))
                 .into("registry")
@@ -100,7 +117,7 @@ namespace db {
                         ("createdAt", registry.createdAt)
                         ("status", registry.status)
                         ("uuid", registry.uuid)
-                        ("json_data", registry.json.dump())
+                        ("json_data", registry.json_data.dump())
                         .where(sql::column("id") == registry.id);
         auto res = worker.exec_params1(i.str());
         worker.commit();

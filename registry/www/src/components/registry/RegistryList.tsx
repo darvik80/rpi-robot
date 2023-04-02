@@ -126,8 +126,7 @@ const RegistryList = () => {
                 Header: "Status",
                 accessor: "json_data",
                 Cell: (props: any) => {
-                    let json = JSON.parse(props.value)
-                    return json.status;
+                    return props.value.status;
                 },
             },
             {

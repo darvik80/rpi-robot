@@ -9,7 +9,6 @@ export function makeServer({environment = "test"} = {}) {
 
         serializers: {
             registry: RestSerializer.extend({
-                include: ["list"],
                 embed: true,
             }),
         },
@@ -20,7 +19,7 @@ export function makeServer({environment = "test"} = {}) {
                 id: 1,
                 name: "smart_home",
                 uuid: "4d8a3176-c0c1-11ed-afa1-0242ac120002",
-                json_data: '{"status": "online"}'
+                json_data: { status: "online"}
             })
             server.create("registry",
                 {
@@ -28,7 +27,7 @@ export function makeServer({environment = "test"} = {}) {
                     id: 2,
                     name: "crearts-iot",
                     uuid: "c93af2d0-c0bf-11ed-afa1-0242ac120002",
-                    json_data: '{"status": "online"}',
+                    json_data: { status: "online"}
                 }
             )
             server.create("registry",
@@ -37,7 +36,7 @@ export function makeServer({environment = "test"} = {}) {
                     id: 3,
                     name: "crearts-home",
                     uuid: "c93af2d0-c0bf-11ed-afa1-0242ac120004",
-                    json_data: '{"status": "offline"}',
+                    json_data: { status: "offline"}
                 }
             )
             server.create("registry",
@@ -46,7 +45,7 @@ export function makeServer({environment = "test"} = {}) {
                     id: 4,
                     name: "alibaba",
                     uuid: "14066aa4-d134-11ed-afa1-0242ac120002",
-                    json_data: '{"status": "offline"}',
+                    json_data: { status: "offline"}
                 }
             )
             server.create("registry",
@@ -55,7 +54,7 @@ export function makeServer({environment = "test"} = {}) {
                     id: 5,
                     name: "yandex",
                     uuid: "1f329e70-d134-11ed-afa1-0242ac120002",
-                    json_data: '{"status": "online"}',
+                    json_data: { status: "online"}
                 }
             )
         },

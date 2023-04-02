@@ -16,7 +16,7 @@ namespace db {
         std::string name;
         std::string uuid;
         int status;
-        nlohmann::json json;
+        nlohmann::json json_data;
     };
 
     class RegistryRepository : public Repository {
@@ -25,10 +25,14 @@ namespace db {
         explicit RegistryRepository(DataSource &source) : _source(source) {}
 
         Registry findById(long regId);
+
         std::optional<Registry> findByName(std::string_view name);
-        std::list<Registry> findAll(long offset, int size);
+
+        std::list<Registry> findAll(std::string_view name, long offset, int size);
+        size_t findAllCount(std::string_view name);
 
         long insert(const Registry &registry);
+
         void update(const Registry &registry);
     };
 

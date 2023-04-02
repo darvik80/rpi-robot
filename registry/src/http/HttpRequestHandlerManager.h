@@ -11,6 +11,7 @@
 namespace http = boost::beast::http;
 
 class HttpRequestHandlerManager {
+public:
     struct Request {
         http::verb method;
         std::string path;
@@ -31,7 +32,7 @@ class HttpRequestHandlerManager {
             return std::hash<std::string>()(req.path + ":" + to_string(req.method).data());
         }
     };
-
+private:
     std::unordered_map<Request, HttpRequestHandlerFn, RequestFunction> _handlers;
 public:
     typedef std::shared_ptr<HttpRequestHandlerManager> Ptr;
