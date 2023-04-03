@@ -126,7 +126,11 @@ const RegistryList = () => {
                 Header: "Status",
                 accessor: "json_data",
                 Cell: (props: any) => {
-                    return props.value.status;
+                    if (props.value) {
+                        return props.value.status;
+                    } else {
+                        return "unknown"
+                    }
                 },
             },
             {

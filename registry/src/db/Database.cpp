@@ -21,13 +21,13 @@ namespace db {
         _dataSource = std::make_unique<DataSource>(props.host, props.port, props.username, props.password, props.database);
 
         auto repository = createRepository<RegistryRepository>();
-        auto res = repository.findById(1);
-        info("{}:{}, {}", res.id, res.name, res.uuid);
-
-        auto results = repository.findAll("", 0, 100);
-        for (auto row: results) {
-            info("{}:{}, {}", row.id, row.name, row.uuid);
-        }
+//        auto res = repository.findById(1);
+//        info("{}:{}, {}", res.id, res.name, res.uuid);
+//
+//        auto results = repository.findAll("", 0, 100);
+//        for (auto row: results) {
+//            info("{}:{}, {}", row.id, row.name, row.uuid);
+//        }
 
         BaseService::postConstruct(registry);
     }
