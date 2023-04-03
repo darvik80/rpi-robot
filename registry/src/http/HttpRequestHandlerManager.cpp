@@ -13,6 +13,9 @@ void HttpRequestHandlerManager::process(const HttpRequest& req, HttpResponse& re
     while (*path.rbegin() == '/') {
         path.pop_back();
     }
+    if (path.empty()) {
+        path = "/";
+    }
 
    if (auto it = _handlers.find(Request{req.method(), path}); it != _handlers.end()) {
        it->second(req, resp);
@@ -21,6 +24,7 @@ void HttpRequestHandlerManager::process(const HttpRequest& req, HttpResponse& re
            it->second(req, resp);
            return;
        }
+
        throw std::invalid_argument(req.target().data());
    }
 }

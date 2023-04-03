@@ -20,8 +20,8 @@ std::string mimeType(std::string_view path) {
         return path.substr(pos);
     }();
 
-    if (algorithm::iequals(ext, ".htm")) return "text/html";
-    if (algorithm::iequals(ext, ".html")) return "text/html";
+    if (algorithm::iequals(ext, ".htm")) return "text/html; charset=utf-8";
+    if (algorithm::iequals(ext, ".html")) return "text/html; charset=utf-8";
     if (algorithm::iequals(ext, ".php")) return "text/html";
     if (algorithm::iequals(ext, ".css")) return "text/css";
     if (algorithm::iequals(ext, ".txt")) return "text/plain";
@@ -65,11 +65,15 @@ void HttpFileHandler::handle(const HttpRequest &request, HttpResponse &response)
     beast::error_code ec;
     file.open(fullPath.c_str(), beast::file_mode::read, ec);
     if (ec) {
-        throw std::invalid_argument("file not found");
+        fullPath = _root + "/index.html";
+        file.open(fullPath.c_str(), beast::file_mode::read, ec);
+        if (ec) {
+            throw std::invalid_argument("file not found");
+        }
     }
 
     auto& resp = response.emplace<HttpFileResponse>();
-    resp.set(http::field::content_type, mimeType(target.data()));
+    resp.set(http::field::content_type, mimeType(fullPath));
     resp.body() = std::move(file);
     resp.result(http::status::ok);
 }

@@ -49,6 +49,7 @@ void RestRegistryController::handleGet(const HttpRequest &request, const HttpPar
 
     auto& res = response.emplace<HttpStringResponse>();
     res.body() = json.dump();
+    res.set(http::field::content_type, "application/json");
 }
 
 void RestRegistryController::handlePost(const HttpRequest &request, HttpResponse &response) {

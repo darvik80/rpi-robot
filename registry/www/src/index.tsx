@@ -21,9 +21,9 @@ window.PF = {
 
 Gatekeeper.initialize('08401b7e-da7e-4bf3-a9bf-6f594ae5fb02');
 
-if (process.env.NODE_ENV === "development") {
-    makeServer({ environment: "development" })
-}
+// if (process.env.NODE_ENV === "development") {
+//     makeServer({ environment: "development" })
+// }
 
 const container: any = document.getElementById('root');
 const root = createRoot(container);

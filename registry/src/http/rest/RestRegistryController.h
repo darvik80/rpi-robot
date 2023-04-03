@@ -15,6 +15,6 @@ private:
     void handlePost(const HttpRequest &request, HttpResponse &response);
     void handleDelete(const HttpRequest &request, HttpResponse &response);
 public:
-    RestRegistryController(db::Database& database) : _database(database) {}
+    explicit RestRegistryController(db::Database& database) : _database(database) {}
     void handle(const HttpRequest &request, HttpResponse &response) override;
 };
