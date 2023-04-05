@@ -1,7 +1,11 @@
 //
 // Created by Ivan Kishchenko on 21.04.2021.
 //
+
 #include "ResourceManager.h"
+
+#ifdef __APPLE__
+
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/filesystem.hpp>
@@ -85,3 +89,5 @@ public:
 ResourceManager& ResourceManager::instance() {
     return boost::serialization::singleton<ResourceManagerApple>::get_mutable_instance();
 }
+
+#endif

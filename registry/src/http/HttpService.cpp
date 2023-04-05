@@ -20,7 +20,7 @@ void HttpService::addHandlers(Registry &registry, const HttpProperties& props) {
 
     registerHandler(http::verb::post, "/rpc", jsonRpc);
 
-    auto handler = std::make_shared<RestRegistryController>(registry.getService<db::Database>());
+    auto handler = std::make_shared<RestRegistryController>(registry.getService<Database>());
     registerHandler(http::verb::get, "/api/registries", handler);
 
     std::string root = ResourceManager::instance().getResourcesDir();

@@ -29,7 +29,7 @@ add run arg for docker config: --security-opt seccomp=unconfined
 | $devices/${deviceId}/config        | $me/device/config      | configuration             |
 | $monitoring/${deviceId}/json       | $me/device/config      | monitoring in json format |
 
-## Registry
+## IotRegistry
 | topic                              | alias                  | description               | 
 |------------------------------------|------------------------|---------------------------|
 | registries/${registryId}/events    | $me/registryId/events    | telemetry                 |

@@ -19,7 +19,7 @@
       - pub /{registryId-id}/{device-id}/config
       - pub /{registryId-id}/{device-id}/rpc
 
-## Iot Registry
+## Iot IotRegistry
 
 | topic                    | description   | registryId | device  |
 |--------------------------|---------------|----------|---------|

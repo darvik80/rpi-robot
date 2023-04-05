@@ -12,7 +12,7 @@ build
 cmake-build-*
 /venv/
 
-docker-build
+docker-debug-*
 docker-data
 
 server.pem

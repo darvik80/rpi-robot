@@ -8,32 +8,30 @@
 #include "DataSource.h"
 #include <nlohmann/json.hpp>
 
-namespace db {
+struct IotRegistry {
+    long id;
+    std::string createdAt;
+    std::string name;
+    std::string uuid;
+    int status;
+    nlohmann::json json_data;
+};
 
-    struct Registry {
-        long id;
-        std::string createdAt;
-        std::string name;
-        std::string uuid;
-        int status;
-        nlohmann::json json_data;
-    };
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(IotRegistry, id, createdAt, name, uuid, status, json_data)
 
-    class RegistryRepository : public Repository {
-        DataSource &_source;
-    public:
-        explicit RegistryRepository(DataSource &source) : _source(source) {}
+class RegistryRepository : public Repository {
+    DataSource &_source;
+public:
+    explicit RegistryRepository(DataSource &source) : _source(source) {}
 
-        Registry findById(long regId);
+    IotRegistry findById(long regId);
 
-        std::optional<Registry> findByName(std::string_view name);
+    std::optional<IotRegistry> findByName(std::string_view name);
 
-        std::list<Registry> findAll(std::string_view name, long offset, int size);
-        size_t findAllCount(std::string_view name);
+    std::list<IotRegistry> findAll(std::string_view name, long offset, int size);
+    size_t findAllCount(std::string_view name);
 
-        long insert(const Registry &registry);
+    long insert(const IotRegistry &registry);
 
-        void update(const Registry &registry);
-    };
-
-}
+    void update(const IotRegistry &registry);
+};

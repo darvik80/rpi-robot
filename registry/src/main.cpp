@@ -5,13 +5,8 @@
 #include <Application.h>
 
 #include "iot/IotPlatform.h"
-
 #include "db/Database.h"
-#include "db/RegistryRepository.h"
-
 #include "http/HttpService.h"
-
-#include <pqxx/pqxx>
 
 class RegistryApp : public Application {
 public:
@@ -22,7 +17,7 @@ public:
 protected:
     void setup(Registry &registry) override {
         registry.createService<IotRegistry>();
-        registry.createService<db::Database>();
+        registry.createService<Database>();
         registry.createService<HttpService>();
     }
 

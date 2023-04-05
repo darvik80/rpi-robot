@@ -7,8 +7,6 @@
 #include <logging/Logging.h>
 #include "db/RegistryRepository.h"
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(db::Registry, id, createdAt, name, uuid, status, json_data)
-
 using namespace boost::urls;
 
 void RestRegistryController::handle(const HttpRequest &request, HttpResponse &response) {
@@ -23,7 +21,7 @@ void RestRegistryController::handle(const HttpRequest &request, HttpResponse &re
 }
 
 void RestRegistryController::handleGet(const HttpRequest &request, const HttpParams& params, HttpResponse &response) {
-    auto repository = _database.getRepository<db::RegistryRepository>();
+    auto repository = _database.getRepository<RegistryRepository>();
     int size = 10;
     if (const auto it = params.find("size"); it != params.end()) {
         size = std::stoi((*it).value);
@@ -37,13 +35,9 @@ void RestRegistryController::handleGet(const HttpRequest &request, const HttpPar
     if (auto it = params.find_last("name"); it != params.end()) {
         name = (*it).value;
     }
-    auto result = repository.findAll(name, offset, size);
+    std::list<IotRegistry> registries = repository.findAll(name, offset, size);
 
     nlohmann::json json;
-    nlohmann::json registries = nlohmann::json::array();
-    for (auto& it : result) {
-        to_json(registries.emplace_back(), it);
-    }
     json["registries"] = registries;
     json["total"] = repository.findAllCount(name);
 

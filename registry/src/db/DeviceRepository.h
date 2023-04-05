@@ -7,21 +7,18 @@
 #include "Repository.h"
 #include "DataSource.h"
 #include <nlohmann/json.hpp>
+#include <functional>
 
-namespace db {
+struct Device {
+    long id;
+    std::string createdAt;
+    std::string updatedAt;
+    std::string name;
+    std::string uuid;
+    int status;
+    nlohmann::json json;
+};
 
-    struct Device {
-        long id;
-        std::string createdAt;
-        std::string updatedAt;
-        std::string name;
-        std::string uuid;
-        int status;
-        nlohmann::json json;
-    };
+class DeviceRepository : public Repository {
 
-    class DeviceRepository : public Repository {
-
-    };
-
-}
+};

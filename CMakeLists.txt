@@ -39,7 +39,7 @@ set(VAR_DIR ${PROJECT_BINARY_DIR}/var)
 
 add_subdirectory(core-utils)
 
-#add_subdirectory(monitor)
+add_subdirectory(monitor)
 if (APPLE)
     message(STATUS "Apple build")
 elseif (UNIX AND NOT APPLE)

@@ -46,7 +46,8 @@ services:
     volumes:
       - ./docker-data/postgresql:/var/lib/postgresql/data
 
-  builder_arm64v8_rpi:
+  # builder for Raspberry PI Zero 2, 3, 4
+  builder_arm64v8:
     security_opt:
       - seccomp:unconfined
     build:
@@ -55,14 +56,34 @@ services:
       args:
         UID: 1000
         USER: builder
+        ARCH: armv8
         IMAGE: arm64v8/debian:bullseye
-    container_name: builder_arm64v8_rpi
+    container_name: builder_arm64v8
     ports:
       - 2022:22
     volumes:
-      - ./docker-debug/bin:/home/builder/rpi-robot/cmake-build-debug-dockerhost/bin
+      - ./docker-debug-armv8/bin:/home/builder/rpi-robot/cmake-build-debug-armv8/bin
 
-  simulator_arm64v8_rpi:
+  # builder for Banana PI Berry
+  builder_arm32v7:
+    security_opt:
+      - seccomp:unconfined
+    build:
+      context: .
+      dockerfile: Dockerfile_builder
+      args:
+        UID: 1000
+        USER: builder
+        ARCH: armv7
+        IMAGE: arm32v7/debian:bullseye
+        CONAN: conan-arm32v7.profile
+    container_name: builder_arm32v7
+    ports:
+      - 2023:22
+    volumes:
+      - ./docker-debug-armv7/bin:/home/builder/rpi-robot/cmake-build-debug-armv7/bin
+
+  simulator_arm64v8:
     security_opt:
       - seccomp:unconfined
     build:
@@ -72,7 +93,22 @@ services:
         UID: 1000
         USER: debugger
         IMAGE: arm64v8/debian:bullseye
-    container_name: simulator_arm64v8_rpi
+    container_name: simulator_arm64v8
     ports:
       - 3022:22
       - 1234:1234
+
+  simulator_arm32v7:
+    security_opt:
+      - seccomp:unconfined
+    build:
+      context: .
+      dockerfile: Dockerfile_simulator
+      args:
+        UID: 1000
+        USER: debugger
+        IMAGE: arm32v7/debian:bullseye
+    container_name: simulator_arm32v7
+    ports:
+      - 3023:22
+      - 1235:1234
