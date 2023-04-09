@@ -11,7 +11,7 @@
 #include "core-service/ApplicationEvent.h"
 #include "../resources/ResourceManager.h"
 #include "rpc/RpcHealth.h"
-#include "rest/RestRegistryController.h"
+#include "service/registry/RegistryRestController.h"
 
 void HttpService::addHandlers(Registry &registry, const HttpProperties& props) {
     auto jsonRpc = std::make_shared<JsonRpcHandler>();
@@ -20,7 +20,7 @@ void HttpService::addHandlers(Registry &registry, const HttpProperties& props) {
 
     registerHandler(http::verb::post, "/rpc", jsonRpc);
 
-    auto handler = std::make_shared<RestRegistryController>(registry.getService<Database>());
+    auto handler = std::make_shared<RegistryRestController>(registry.getService<Database>());
     registerHandler(http::verb::get, "/api/registries", handler);
 
     std::string root = ResourceManager::instance().getResourcesDir();

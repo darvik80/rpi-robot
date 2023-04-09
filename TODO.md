@@ -9,7 +9,7 @@
     - может посылать данные в стандартные device топики 
       - pub /{registryId-id}/{device-id}/telemetry 
       - pub /{registryId-id}/{device-id}/rpc
--[ ] IotRegistry
+-[ ] RegistryDo
     - может подписаться на все cтандартные device топики 
       - sub /{registryId-id}/+/telemetry
       - sub /{registryId-id}/+/config
@@ -19,7 +19,7 @@
       - pub /{registryId-id}/{device-id}/config
       - pub /{registryId-id}/{device-id}/rpc
 
-## Iot IotRegistry
+## Iot RegistryDo
 
 | topic                    | description   | registryId | device  |
 |--------------------------|---------------|----------|---------|

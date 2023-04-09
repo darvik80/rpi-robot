@@ -51,7 +51,8 @@ namespace sql {
         std::string _func;
     public:
         explicit func(std::string_view func) : _func(func) {}
-        const std::string& str() const {
+
+        const std::string &str() const {
             return _func;
         }
     };
@@ -77,7 +78,7 @@ namespace sql {
     template<>
     inline std::string to_value<column>(const column &data);
 
-    std::string str_join(const std::vector<std::string> &v, const std::string &delim) {
+    inline std::string str_join(const std::vector<std::string> &v, const std::string &delim) {
         std::string ret;
         auto it = std::begin(v);
         if (it != std::end(v)) {
@@ -131,6 +132,13 @@ namespace sql {
             return *this;
         }
 
+        column &not_like(std::string_view like) {
+            _cond.append(" NOT LIKE ('");
+            _cond.append(like);
+            _cond.append("%')");
+
+            return *this;
+        }
 
         template<typename T>
         column &in(const std::vector<T> &args) {
@@ -246,19 +254,17 @@ namespace sql {
             return *this;
         }
 
-        [[nodiscard]] const std::string &str() const;
-
         explicit operator bool() {
             return true;
+        }
+
+        [[nodiscard]] inline const std::string &str() const {
+            return _cond;
         }
 
     private:
         std::string _cond;
     };
-
-    const std::string &column::str() const {
-        return _cond;
-    }
 
     template<>
     inline std::string to_value<column>(const column &data) {
@@ -289,6 +295,22 @@ namespace sql {
     class SelectModel : public SqlModel {
     public:
         SelectModel() : _distinct(false) {}
+
+        SelectModel(SelectModel &model) {
+            _select_columns = model._select_columns;
+            _distinct = model._distinct;
+            _groupby_columns = model._groupby_columns;
+            _table_name = model._table_name;
+            _join_type = model._join_type;
+            _join_table = model._join_table;
+            _join_on_condition = model._join_on_condition;
+            _where_condition = model._where_condition;
+            _having_condition = model._having_condition;
+            _order_by = model._order_by;
+            _limit = model._limit;
+            _offset = model._offset;
+
+        }
 
         template<typename... Args>
         SelectModel &select(const std::string &str, Args &&... columns) {

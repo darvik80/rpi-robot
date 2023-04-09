@@ -8,13 +8,17 @@
 #include "db/Database.h"
 #include "Service.h"
 
-class RestRegistryController : public HttpRequestHandler {
-    Database& _database;
+class RegistryRestController : public HttpRequestHandler {
+    Database &_database;
 private:
-    void handleGet(const HttpRequest &request, const HttpParams& params, HttpResponse &response);
+    void handleGet(const HttpRequest &request, const HttpParams &params, HttpResponse &response);
+
     void handlePost(const HttpRequest &request, HttpResponse &response);
+
     void handleDelete(const HttpRequest &request, HttpResponse &response);
+
 public:
-    explicit RestRegistryController(Database& database) : _database(database) {}
+    explicit RegistryRestController(Database &database) : _database(database) {}
+
     void handle(const HttpRequest &request, HttpResponse &response) override;
 };

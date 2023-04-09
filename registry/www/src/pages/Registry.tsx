@@ -1,11 +1,11 @@
 import React from 'react';
 import {ContentHeader, RegistryList} from '@components';
 
-const IotRegistry = () => {
+const RegistryDo = () => {
 
     return (
         <div>
-            <ContentHeader title="IoT IotRegistry" />
+            <ContentHeader title="IoT RegistryDo" />
             <section className="content">
                 <div className="card">
                 <RegistryList/>
@@ -15,4 +15,4 @@ const IotRegistry = () => {
     );
 };
 
-export default IotRegistry;
+export default RegistryDo;

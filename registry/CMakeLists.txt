@@ -7,7 +7,9 @@ file(GLOB SRCS_G
         src/*.cpp
         src/db/*.cpp
         src/http/*.cpp
-        src/http/rest/*.cpp
+        src/service/*.cpp
+        src/service/registry/*.cpp
+        src/service/device/*.cpp
         src/resources/*.cpp)
 
 find_package(libpqxx)
@@ -57,7 +59,7 @@ if (APPLE)
             ${HTML_MEDIA}
             ${HTML_CSS}
             ${HTML_IMG}
-            )
+            src/http/JsonSupport.h)
 
 
     file(GLOB SRCS_OS src/resources/ResourceManager_apple.cpp)

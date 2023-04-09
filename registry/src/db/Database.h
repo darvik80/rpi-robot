@@ -6,7 +6,7 @@
 
 #include <BaseService.h>
 
-#include "Repository.h"
+#include "DatabaseSupport.h"
 #include "DatabaseProperties.h"
 #include "DataSource.h"
 #include <typeindex>
@@ -37,4 +37,6 @@ public:
     R& createRepository() {
         return *static_cast<R*>(_repositories.emplace(typeid(R), std::make_unique<R>(*_dataSource)).first->second.get());
     }
+
+    virtual void createRepositories() = 0;
 };
