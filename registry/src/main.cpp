@@ -9,12 +9,14 @@
 #include "http/HttpService.h"
 #include "service/registry/RegistryRepository.h"
 #include "service/device/DeviceRepository.h"
+#include "service/device/DeviceTelemetryRepository.h"
 
 class RegistryDatabase : public Database {
 public:
     void createRepositories() override {
         createRepository<RegistryRepository>();
         createRepository<DeviceRepository>();
+        createRepository<DeviceTelemetryRepository>();
     }
 };
 
