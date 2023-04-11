@@ -4,21 +4,22 @@
 
 #include "RobotApp.h"
 
-#include "i2c/I2CDriver.h"
 #include "i2c/I2CServoMotor.h"
 #include "DCMotor.h"
 #include "joystick/JoystickService.h"
 #include "Srf05Sensor.h"
+#include "iot/IotPlatform.h"
 
 const char *RobotApp::name() {
     return "robot";
 }
 
 void RobotApp::setup(Registry &registry) {
-    registry.addService(std::make_shared<Srf05Sensor>());
-    registry.addService(std::make_shared<I2CServoMotor>());
-    registry.addService(std::make_shared<DCMotor>());
-    registry.addService(std::make_shared<JoystickService>());
+    registry.createService<Srf05Sensor>();
+    registry.createService<I2CServoMotor>();
+    registry.createService<DCMotor>();
+    registry.createService<JoystickService>();
+    registry.createService<IotDevice>();
 }
 
 void RobotApp::destroy(Registry &registry) {

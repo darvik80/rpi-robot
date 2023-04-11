@@ -13,6 +13,13 @@
     "device": "/dev/i2c-1",
     "device-id": 64,
     "channel": 1
+  },
+  "iot-mqtt": {
+    "address": "127.0.0.1",
+    "username": "mqtt",
+    "password": "mqtt",
+    "registry-id": "crearts-iot",
+    "device-id": "rpi-robot",
+    "key-file": "server.pem"
   }
-
 }
