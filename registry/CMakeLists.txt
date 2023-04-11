@@ -59,7 +59,7 @@ if (APPLE)
             ${HTML_MEDIA}
             ${HTML_CSS}
             ${HTML_IMG}
-            src/http/JsonSupport.h)
+            src/http/JsonSupport.h src/service/device/DeviceTelemetryRepository.cpp src/service/device/DeviceTelemetryRepository.h src/service/device/DeviceDomainObjects.h src/service/device/DeviceTelemetryRestController.cpp src/service/device/DeviceTelemetryRestController.h)
 
 
     file(GLOB SRCS_OS src/resources/ResourceManager_apple.cpp)

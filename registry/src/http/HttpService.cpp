@@ -9,9 +9,11 @@
 #include "HttpProperties.h"
 #include "core-service/EventBusService.h"
 #include "core-service/ApplicationEvent.h"
-#include "../resources/ResourceManager.h"
+#include "resources/ResourceManager.h"
 #include "rpc/RpcHealth.h"
 #include "service/registry/RegistryRestController.h"
+#include "service/device/DeviceRestController.h"
+#include "service/device/DeviceTelemetryRestController.h"
 
 void HttpService::addHandlers(Registry &registry, const HttpProperties& props) {
     auto jsonRpc = std::make_shared<JsonRpcHandler>();
@@ -19,9 +21,9 @@ void HttpService::addHandlers(Registry &registry, const HttpProperties& props) {
     registry.getService<EventBusService>().send(JsonRpcRegisterEvent{*jsonRpc});
 
     registerHandler(http::verb::post, "/rpc", jsonRpc);
-
-    auto handler = std::make_shared<RegistryRestController>(registry.getService<Database>());
-    registerHandler(http::verb::get, "/api/registries", handler);
+    registerHandler(http::verb::get, "/api/registries", std::make_shared<RegistryRestController>(registry.getService<Database>()));
+    registerHandler(http::verb::get, "/api/devices", std::make_shared<DeviceRestController>(registry.getService<Database>()));
+    registerHandler(http::verb::get, "/api/devices-telemetry", std::make_shared<DeviceTelemetryRestController>(registry.getService<Database>()));
 
     std::string root = ResourceManager::instance().getResourcesDir();
     if (props.root.has_value()) {

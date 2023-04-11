@@ -32,22 +32,22 @@ CREATE TABLE IF NOT EXISTS device
 
 CREATE INDEX IF NOT EXISTS device_idx_status_name_registry ON device (status, name, registry_id);
 
-CREATE TABLE IF NOT EXISTS device_telemetry
-(
-    id         SERIAL PRIMARY KEY,
-    device_id  int                                                   NOT NULL REFERENCES device,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    json_data  jsonb                                                 NULL
-);
-
 CREATE TABLE IF NOT EXISTS registry_configuration
 (
     id          SERIAL PRIMARY KEY,
     registry_id int                                                   NOT NULL REFERENCES registryId,
     created_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    json_data   jsonb                                                 NULL
+    status      int                                                   NOT NULL DEFAULT 0,
+    json_data   jsonb
+);
+
+CREATE TABLE IF NOT EXISTS device_telemetry
+(
+    id         SERIAL PRIMARY KEY,
+    device_id  int                                                   NOT NULL REFERENCES device,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    json_data  jsonb                                                 NULL
 );
 
 
@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS device_configuration
     id         SERIAL PRIMARY KEY,
     device_id  int                                                   NOT NULL REFERENCES device (id),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    status     int                                                   NOT NULL DEFAULT 0,
     json_data  jsonb                                                 NULL
 );
 
@@ -79,10 +80,15 @@ VALUES (1, 2, 'rpi-robot', 'e114cd7c-c0c4-11ed-afa1-0242ac120002', '{
 }')
 ON CONFLICT DO NOTHING;
 
-SELECT name, json_data ->> 'status'
-FROM registryId
-WHERE json_data ->> 'status' = 'online';
-
-SELECT d.name, r.name, d.json_data ->> 'status' status
-FROM device d
-         JOIN registryId r on r.id = d.registry_id
+INSERT INTO device_configuration (id, device_id, status, json_data)
+VALUES (1, 1, 1, '{
+  "logging": {
+    "level": "debug",
+    "console": true,
+    "file": false
+  },
+  "http": {
+    "port": 8090
+  }
+}')
+ON CONFLICT DO NOTHING;
