@@ -16,7 +16,7 @@ else ()
         file(COPY resources/orange/settings.json DESTINATION ${PROPERTIES_DIR})
     elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES aarch64)
         file(COPY resources/pi4/settings.json DESTINATION ${PROPERTIES_DIR})
-    else()
+    else ()
         message(STATUS "No settings!!!")
     endif ()
 
@@ -25,12 +25,31 @@ file(COPY resources/server.pem DESTINATION ${PROPERTIES_DIR})
 
 file(GLOB SRCS_G src/*.cpp)
 
-add_executable(${PROJECT_NAME} ${SRCS_G})
+set(RESOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+
+if (APPLE)
+    function(resource VAR SOURCE_PATH DESTINATION PATTERN)
+        file(GLOB_RECURSE _LIST CONFIGURE_DEPENDS ${SOURCE_PATH}/${PATTERN})
+        foreach (RESOURCE ${_LIST})
+            get_filename_component(_PARENT ${RESOURCE} DIRECTORY)
+            if (${_PARENT} STREQUAL ${SOURCE_PATH})
+                set(_DESTINATION ${DESTINATION})
+            else ()
+                file(RELATIVE_PATH _DESTINATION ${SOURCE_PATH} ${_PARENT})
+                set(_DESTINATION ${DESTINATION}/${_DESTINATION})
+            endif ()
+            set_property(SOURCE ${RESOURCE} PROPERTY MACOSX_PACKAGE_LOCATION ${_DESTINATION})
+        endforeach (RESOURCE)
+        set(${VAR} ${_LIST} PARENT_SCOPE)
+    endfunction()
+
+    resource(RESOURCES ${RESOURCE_DIRECTORY} Resources/ *.*)
+    set(RESOURCES_G ${RESOURCES})
+
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRCS_G} ${RESOURCES_G})
+else ()
+    file(COPY resources/settings.json DESTINATION {CMAKE_INSTALL_PREFIX}/etc/monitor_settings.json)
+    add_executable(${PROJECT_NAME} ${SRCS_G})
+endif ()
+
 target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} logging application iot-platform)
-
-install(TARGETS ${PROJECT_NAME})
-
-install(
-        FILES ./resources/server.pem ./resources/pi4/settings.json
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/etc
-)

@@ -37,9 +37,8 @@ struct DeviceTelemetryDo {
     long deviceId;
     DeviceDo refDevice;
     std::string createdAt;
-    std::string updatedAt;
     nlohmann::json json_data;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceTelemetryDo, id, deviceId ,createdAt, updatedAt, json_data)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceTelemetryDo, id, deviceId ,createdAt, json_data)
 

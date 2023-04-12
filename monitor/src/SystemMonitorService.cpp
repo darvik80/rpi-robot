@@ -6,6 +6,7 @@
 #include "core-service/SchedulerService.h"
 #include "core-service/EventBusService.h"
 #include "iot/IotMessage.h"
+#include "iot/IotPlatform.h"
 
 #include <string>
 #include <iomanip>
@@ -232,15 +233,10 @@ double SMCGetTemperature(char *key) {
 void SystemMonitorService::postConstruct(Registry &registry) {
     BaseService::postConstruct(registry);
 
-    auto eventService = registry.getService<EventBusService>().shared_from_this();
-
-//    eventService->subscribe<IotCommand>([this](const IotCommand &event) -> bool {
-//        info("handle cmd: {}", event.name);
-//        return true;
-//    });
+    auto& iot = registry.getService<IotDevice>();
 
     registry.getService<SchedulerService>().scheduleAtFixedRate(
-            [this, eventService]() -> void {
+            [this, &iot]() -> void {
 #ifdef __APPLE__
                 SMCOpen();
                 nlohmann::json json = {
@@ -249,7 +245,7 @@ void SystemMonitorService::postConstruct(Registry &registry) {
                 };
                 SMCClose();
                 logger::info("data: {}", json.dump());
-                eventService->send(IotTelemetry{0, json.dump()});
+                iot.telemetry(1, json.dump());
 
 #else
                 std::ifstream piCpuTempFile;
@@ -272,7 +268,7 @@ void SystemMonitorService::postConstruct(Registry &registry) {
                     };
                 }
                 logger::info("data: {}", json.dump());
-                eventService->send(IotTelemetry{"monitor", json.dump()});
+                iot.telemetry(1, json.dump());
 #endif
             },
             boost::posix_time::seconds{0},

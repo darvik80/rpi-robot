@@ -30,7 +30,7 @@ void RegistryRestController::handleGet(const HttpRequest &request, const HttpPar
     if (params.contains("id")) {
         json = repository.findById(std::stoi((*params.find_last("id")).value));
     } else {
-        PageRequest page{.offset = 0, .size = 10};
+        PageRequest page{.offset = 0, .size = 10, .hasCount=true};
         if (const auto it = params.find("size"); it != params.end()) {
             page.size = std::stoi((*it).value);
         }

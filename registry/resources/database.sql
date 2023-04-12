@@ -80,6 +80,10 @@ VALUES (1, 2, 'rpi-robot', 'e114cd7c-c0c4-11ed-afa1-0242ac120002', '{
 }')
 ON CONFLICT DO NOTHING;
 
+INSERT INTO device (id, registry_id, name, uuid, json_data)
+VALUES (2, 2, 'monitor', gen_random_uuid(), '{}')
+ON CONFLICT DO NOTHING;
+
 INSERT INTO device_configuration (id, device_id, status, json_data)
 VALUES (1, 1, 1, '{
   "logging": {

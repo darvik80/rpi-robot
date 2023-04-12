@@ -11,11 +11,9 @@ const RegistryList = () => {
 
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(0);
-    const [pageSize, setPageSize] = useState(2);
+    const [pageSize, setPageSize] = useState(20);
 
     registriesRef.current = registries;
-
-    const pageSizes = [2, 10, 20];
 
     const onChangeSearchName = (e: any) => {
         const searchName = e.target.value;
@@ -45,7 +43,7 @@ const RegistryList = () => {
 
         RegistryRepository.findAll(params)
             .then((response) => {
-                setRegistries(response.data.registries);
+                setRegistries(response.data.data);
                 setCount(Math.ceil(response.data.total / pageSize));
             })
             .catch((e) => {

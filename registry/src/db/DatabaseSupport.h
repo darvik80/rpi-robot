@@ -171,6 +171,12 @@ public:
         return *this;
     }
 
+    template<class T>
+    Filter &add(std::string_view name, const T &val) {
+        add(name, Operation::op_eq, val);
+        return *this;
+    }
+
     static Filter create() {
         return {};
     }

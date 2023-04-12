@@ -22,6 +22,8 @@ include_directories(
 set(RESOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 set(WWW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/www)
 
+execute_process(COMMAND yarn install WORKING_DIRECTORY ${WWW_DIRECTORY})
+
 if (APPLE)
     message("Apple incubator build")
 
@@ -49,9 +51,6 @@ if (APPLE)
     resource(HTML_MEDIA ${WWW_DIRECTORY}/build/static/media Resources/www/static/media *.*)
     resource(HTML_IMG ${WWW_DIRECTORY}/build/img Resources/www/img *.png)
 
-    message(STATUS "HTML: " ${HTML})
-
-
     set(RESOURCES_G
             ${RESOURCES}
             ${HTML}
@@ -59,8 +58,7 @@ if (APPLE)
             ${HTML_MEDIA}
             ${HTML_CSS}
             ${HTML_IMG}
-            src/http/JsonSupport.h src/service/device/DeviceTelemetryRepository.cpp src/service/device/DeviceTelemetryRepository.h src/service/device/DeviceDomainObjects.h src/service/device/DeviceTelemetryRestController.cpp src/service/device/DeviceTelemetryRestController.h)
-
+            )
 
     file(GLOB SRCS_OS src/resources/ResourceManager_apple.cpp)
 

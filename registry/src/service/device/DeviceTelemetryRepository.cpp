@@ -72,7 +72,7 @@ long DeviceTelemetryRepository::insert(const DeviceTelemetryDo &model) {
     pqxx::work worker(_source.getConnection());
 
     sql::InsertModel i;
-    i.insert("deviceId", model.deviceId)
+    i.insert("device_id", model.deviceId)
                     ("json_data", model.json_data.dump())
             .into("device_telemetry")
             .returning("id");
