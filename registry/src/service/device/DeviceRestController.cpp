@@ -16,7 +16,7 @@ void DeviceRestController::handle(const HttpRequest &request, HttpResponse &resp
         handleGet(request, result.value().params(), response);
     } else {
         auto &resp = response.emplace<HttpStringResponse>();
-        resp.body() = "Hello World!";
+        applyHeaders(resp);
     }
 }
 

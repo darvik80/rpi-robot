@@ -32,7 +32,7 @@ export const MENU: IMenuItem[] = [
     },
     {
         name: i18n.t('menusidebar.label.device-telemetry'),
-        icon: 'fas fa-gamepad nav-icon" />',
+        icon: 'fas fa-history nav-icon" />',
         path: '/device-telemetry'
     },
     // {

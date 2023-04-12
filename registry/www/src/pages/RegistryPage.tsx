@@ -7,9 +7,7 @@ const RegistryPage = () => {
         <div>
             <ContentHeader title="IoT Registry"/>
             <section className="content">
-                <div className="card">
-                    <RegistryList/>
-                </div>
+                <RegistryList/>
             </section>
         </div>
     );

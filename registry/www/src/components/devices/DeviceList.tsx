@@ -1,30 +1,37 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import DeviceRepository from "../../repository/DeviceRepository";
+import RegistryRepository from "../../repository/RegistryRepository";
 import {useTable} from "react-table";
 import Pagination from "@material-ui/lab/Pagination";
 
 
 const DeviceList = () => {
+    const [devices, setDevices] = useState([]);
+    const [registryId, setRegistryId] = useState(0);
     const [registries, setRegistries] = useState([]);
     const [searchName, setSearchName] = useState("");
-    const registriesRef = useRef([]);
+    const devicesRef = useRef([]);
 
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(0);
     const [pageSize, setPageSize] = useState(20);
 
-    registriesRef.current = registries;
+    devicesRef.current = devices;
 
     const onChangeSearchName = (e: any) => {
         const searchName = e.target.value;
         setSearchName(searchName);
     };
 
-    const getRequestParams = (searchName: string, page: number, pageSize: number) => {
+    const getRequestParams = (searchName: string, registryId : number, page: number, pageSize: number) => {
         let params: any = {};
 
         if (searchName) {
             params["name"] = searchName;
+        }
+
+        if (registryId) {
+            params["registry_id"] = registryId;
         }
 
         if (page) {
@@ -39,27 +46,37 @@ const DeviceList = () => {
     };
 
     const findAllRegistries = () => {
-        const params = getRequestParams(searchName, page, pageSize);
+        RegistryRepository.findAll({})
+            .then((response) => {
+                setRegistries(response.data.data);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
+    const findAllDevices = () => {
+        const params = getRequestParams(searchName, registryId, page, pageSize);
 
         DeviceRepository.findAll(params)
             .then((response) => {
-                setRegistries(response.data.data);
+                setDevices(response.data.data);
                 setCount(Math.ceil(response.data.total / pageSize));
             })
             .catch((e) => {
                 console.log(e);
             });
     };
+
     const findByName = () => {
         setPage(1);
-        findAllRegistries();
+        findAllDevices();
     }
 
-    useEffect(findAllRegistries, [page, pageSize]);
-
-    const refreshList = () => {
-        findAllRegistries();
-    };
+    useEffect(() => {
+        findAllDevices()
+        findAllRegistries()
+    }, [searchName, registryId, page, pageSize]);
 
     const openDevice = (rowIndex: any) => {
         // @ts-ignore
@@ -76,10 +93,10 @@ const DeviceList = () => {
             .then((response) => {
                 //props.history.push("/registry");
 
-                let newRegistries = [...registriesRef.current];
+                let newRegistries = [...devicesRef.current];
                 newRegistries.splice(rowIndex, 1);
 
-                setRegistries(newRegistries);
+                setDevices(newRegistries);
             })
             .catch((e) => {
                 console.log(e);
@@ -90,10 +107,11 @@ const DeviceList = () => {
         setPage(value);
     };
 
-    const handlePageSizeChange = (event: any) => {
-        setPageSize(event.target.value);
-        setPage(1);
-    };
+    const handleRegistryChange = (e: any) => {
+        setRegistryId(parseInt(e.target.value, 10))
+        findAllDevices()
+    }
+
 
     const columns = useMemo(
         () => [
@@ -152,81 +170,97 @@ const DeviceList = () => {
     } = useTable({
         // @ts-ignore
         columns,
-        data: registries,
+        data: devices,
     });
 
     return (
-        <div className="list row">
-            <div className="col-md-8">
-                <div className="input-group mb-3">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by name"
-                        value={searchName}
-                        onChange={onChangeSearchName}
-                    />
-                    <div className="input-group-append">
-                        <button
-                            className="btn btn-outline-secondary"
-                            type="button"
-                            onClick={findByName}
-                        >
-                            Search
-                        </button>
+        <div className="card">
+            <div className="row list">
+                <div className="col-md-12 list">
+                    <div className="card-header">
+                        <h3 className="card-title">Devices</h3>
                     </div>
-                </div>
-            </div>
-            <div className="col-md-12 list">
-                <div className="card-header">
-                    <h3 className="card-title">Registries</h3>
-                </div>
-                <div className="card-body">
-                    <table
-                        className="table table-striped table-bordered"
-                        {...getTableProps()}
-                    >
-                        <thead>
-                        {headerGroups.map((headerGroup, headerId) => (
-                            <tr {...headerGroup.getHeaderGroupProps()} key={headerId}>
-                                {headerGroup.headers.map((column) => (
-                                    <th {...column.getHeaderProps()} key={column.id}>
-                                        {column.render("Header")}
-                                    </th>
+                    <div className="card-body row">
+                        <div className="col-md-6">
+                            <div className="input-group mb-3">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search by name"
+                                    value={searchName}
+                                    onChange={onChangeSearchName}
+                                />
+                                <div className="input-group-append">
+                                    <button
+                                        className="btn btn-outline-secondary"
+                                        type="button"
+                                        onClick={findByName}
+                                    >
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="input-group mb-3 col-md-6">
+                            <div className="input-group-prepend">
+                                <label htmlFor="registries" className="input-group-text">Registry</label>
+                            </div>
+                            <select id="registries" className="custom-select" onChange={handleRegistryChange}>
+                                <option selected value={0}>Choose...</option>
+                                {registries.map((registry) => (
+                                    // @ts-ignore
+                                    <option key={registry.name} id={registry.id}
+                                        // @ts-ignore
+                                            value={registry.id}>{registry.name}</option>
                                 ))}
-                            </tr>
-                        ))}
-                        </thead>
-                        <tbody {...getTableBodyProps()}>
-                        {rows.map((row, i) => {
-                            prepareRow(row);
-                            return (
-                                <tr {...row.getRowProps()} key={row.id}>
-                                    {row.cells.map((cell, id) => {
-                                        return (
-                                            <td {...cell.getCellProps()} key={id}>{cell.render("Cell")}</td>
-                                        );
-                                    })}
+                            </select>
+                        </div>
+                        <table
+                            className="table table-striped table-bordered"
+                            {...getTableProps()}
+                        >
+                            <thead>
+                            {headerGroups.map((headerGroup, headerId) => (
+                                <tr {...headerGroup.getHeaderGroupProps()} key={headerId}>
+                                    {headerGroup.headers.map((column) => (
+                                        <th {...column.getHeaderProps()} key={column.id}>
+                                            {column.render("Header")}
+                                        </th>
+                                    ))}
                                 </tr>
-                            );
-                        })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div className="col-md-10">
-                <div className="card-tools">
-                    <Pagination
-                        className="pagination pagination-sm float-right"
-                        count={count}
-                        page={page}
-                        siblingCount={1}
-                        boundaryCount={1}
-                        variant="outlined"
-                        shape="rounded"
-                        size={"small"}
-                        onChange={handlePageChange}
-                    />
+                            ))}
+                            </thead>
+                            <tbody {...getTableBodyProps()}>
+                            {rows.map((row, i) => {
+                                prepareRow(row);
+                                return (
+                                    <tr {...row.getRowProps()} key={row.id}>
+                                        {row.cells.map((cell, id) => {
+                                            return (
+                                                <td {...cell.getCellProps()} key={id}>{cell.render("Cell")}</td>
+                                            );
+                                        })}
+                                    </tr>
+                                );
+                            })}
+                            </tbody>
+                        </table>
+                        <div className="col-md-12">
+                            <div className="card-tools">
+                                <Pagination
+                                    className="pagination pagination-sm float-right"
+                                    count={count}
+                                    page={page}
+                                    siblingCount={1}
+                                    boundaryCount={1}
+                                    variant="outlined"
+                                    shape="rounded"
+                                    size={"small"}
+                                    onChange={handlePageChange}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

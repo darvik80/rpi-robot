@@ -20,7 +20,7 @@ import Profile from '@pages/profile/Profile';
 
 import PublicRoute from './routes/PublicRoute';
 import Devices from "@pages/Devices";
-import {DeviceTelemetry} from "@components";
+import DeviceTelemetry from "@pages/DevicesTelemetry";
 
 const App = () => {
     const windowSize = useWindowSize();

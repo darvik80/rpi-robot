@@ -83,6 +83,13 @@ const DeviceTelemetry = () => {
                 accessor: "id",
             },
             {
+                Header: "Device",
+                accessor: "refDevice",
+                Cell: (props: any) => {
+                    return props.value.name
+                },
+            },
+            {
                 Header: "Telemetry",
                 accessor: "json_data",
                 Cell: (props: any) => {
@@ -124,57 +131,59 @@ const DeviceTelemetry = () => {
     });
 
     return (
-        <div className="list row">
-            <div className="col-md-12 list">
-                <div className="card-header">
-                    <h3 className="card-title">Registries</h3>
-                </div>
-                <div className="card-body">
-                    <table
-                        className="table table-striped table-bordered"
-                        {...getTableProps()}
-                    >
-                        <thead>
-                        {headerGroups.map((headerGroup, headerId) => (
-                            <tr {...headerGroup.getHeaderGroupProps()} key={headerId}>
-                                {headerGroup.headers.map((column) => (
-                                    <th {...column.getHeaderProps()} key={column.id}>
-                                        {column.render("Header")}
-                                    </th>
-                                ))}
-                            </tr>
-                        ))}
-                        </thead>
-                        <tbody {...getTableBodyProps()}>
-                        {rows.map((row, i) => {
-                            prepareRow(row);
-                            return (
-                                <tr {...row.getRowProps()} key={row.id}>
-                                    {row.cells.map((cell, id) => {
-                                        return (
-                                            <td {...cell.getCellProps()} key={id}>{cell.render("Cell")}</td>
-                                        );
-                                    })}
+        <div className="card">
+            <div className="row list">
+                <div className="col-md-12 list">
+                    <div className="card-header">
+                        <h3 className="card-title">History</h3>
+                    </div>
+                    <div className="card-body">
+                        <table
+                            className="table table-striped table-bordered"
+                            {...getTableProps()}
+                        >
+                            <thead>
+                            {headerGroups.map((headerGroup, headerId) => (
+                                <tr {...headerGroup.getHeaderGroupProps()} key={headerId}>
+                                    {headerGroup.headers.map((column) => (
+                                        <th {...column.getHeaderProps()} key={column.id}>
+                                            {column.render("Header")}
+                                        </th>
+                                    ))}
                                 </tr>
-                            );
-                        })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div className="col-md-10">
-                <div className="card-tools">
-                    <Pagination
-                        className="pagination pagination-sm float-right"
-                        count={count}
-                        page={page}
-                        siblingCount={1}
-                        boundaryCount={1}
-                        variant="outlined"
-                        shape="rounded"
-                        size={"small"}
-                        onChange={handlePageChange}
-                    />
+                            ))}
+                            </thead>
+                            <tbody {...getTableBodyProps()}>
+                            {rows.map((row, i) => {
+                                prepareRow(row);
+                                return (
+                                    <tr {...row.getRowProps()} key={row.id}>
+                                        {row.cells.map((cell, id) => {
+                                            return (
+                                                <td {...cell.getCellProps()} key={id}>{cell.render("Cell")}</td>
+                                            );
+                                        })}
+                                    </tr>
+                                );
+                            })}
+                            </tbody>
+                        </table>
+                        <div className="col-md-12">
+                            <div className="card-tools">
+                                <Pagination
+                                    className="pagination pagination-sm float-right"
+                                    count={count}
+                                    page={page}
+                                    siblingCount={1}
+                                    boundaryCount={1}
+                                    variant="outlined"
+                                    shape="rounded"
+                                    size={"small"}
+                                    onChange={handlePageChange}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -75,43 +75,45 @@ const Registry = () => {
     ];
 
     return (
-        <div className="card-body">
-            <form className="form-horizontal col-md-12">
-                <div className="form-group row">
-                    <label htmlFor="inputName" className="col-sm-2 col-form-label">Name</label>
-                    <div className="col-md-10">
-                        <input type="text" className="form-control" id="inputName" placeholder="Name"
-                               value={registry.name} onChange={handleNameChange}/>
+        <div className="card">
+            <div className="card-body">
+                <form className="form-horizontal col-md-12">
+                    <div className="form-group row">
+                        <label htmlFor="inputName" className="col-sm-2 col-form-label">Name</label>
+                        <div className="col-md-10">
+                            <input type="text" className="form-control" id="inputName" placeholder="Name"
+                                   value={registry.name} onChange={handleNameChange}/>
+                        </div>
                     </div>
-                </div>
-                <div className="form-group row">
-                    <label htmlFor="inputUuid" className="col-sm-2 col-form-label">UUID</label>
-                    <div className="col-md-10">
-                        <input type="text" className="form-control" id="inputUuid" placeholder="UUID"
-                               value={registry.uuid} readOnly={true}/>
+                    <div className="form-group row">
+                        <label htmlFor="inputUuid" className="col-sm-2 col-form-label">UUID</label>
+                        <div className="col-md-10">
+                            <input type="text" className="form-control" id="inputUuid" placeholder="UUID"
+                                   value={registry.uuid} readOnly={true}/>
+                        </div>
                     </div>
-                </div>
-                <div className="form-group row">
-                    <label htmlFor="inputStatus" className="col-sm-2 col-form-label">Status</label>
-                    <div className="col-md-10">
-                        <select value={registry.status} onChange={handleStatusChange} id="inputStatus">
-                            {statusOptions.map((option) => (
-                                <option key={option.value} id={option.label}
-                                        value={option.value}>{option.label}</option>
-                            ))}
-                        </select>
+                    <div className="form-group row">
+                        <label htmlFor="inputStatus" className="col-sm-2 col-form-label">Status</label>
+                        <div className="col-md-10">
+                            <select value={registry.status} onChange={handleStatusChange} id="inputStatus">
+                                {statusOptions.map((option) => (
+                                    <option key={option.value} id={option.label}
+                                            value={option.value}>{option.label}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div className="row line"/>
-                <div className="form-group row ">
-                    <div className="col-md-10"/>
-                    <div className="btn-group col-md-2" role="group">
-                        <input className="btn btn-primary" type="button" disabled={!updated} value="Apply"
-                               onClick={handleOnApply}/>
-                        <input className="btn btn-secondary" type="button" value="Close" onClick={handleOnClose}/>
+                    <div className="row line"/>
+                    <div className="form-group row ">
+                        <div className="col-md-10"/>
+                        <div className="btn-group col-md-2" role="group">
+                            <input className="btn btn-primary" type="button" disabled={!updated} value="Apply"
+                                   onClick={handleOnApply}/>
+                            <input className="btn btn-secondary" type="button" value="Close" onClick={handleOnClose}/>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     );
 };

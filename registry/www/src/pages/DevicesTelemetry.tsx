@@ -1,18 +1,16 @@
 import React from 'react';
 import {ContentHeader, DeviceTelemetry} from '@components';
 
-const RegistryDo = () => {
+const Telemetry = () => {
 
     return (
         <div>
-            <ContentHeader title="IoT Devices"/>
+            <ContentHeader title="IoT Telemetry"/>
             <section className="content">
-                <div className="card">
-                    <DeviceTelemetry/>
-                </div>
+                <DeviceTelemetry/>
             </section>
         </div>
     );
 };
 
-export default RegistryDo;
+export default Telemetry;
