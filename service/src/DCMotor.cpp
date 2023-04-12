@@ -71,15 +71,15 @@ void DCMotor::postConstruct(Registry &registry) {
     _leftD1 = chip.get_line(PWMA1);
     _leftD2 = chip.get_line(PWMA2);
     _leftPwm.setup(chip.get_line(PWM1), 0, 1024);
-    _leftD1.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT,0 },0);
-    _leftD2.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT,0 },0);
+    _leftD1.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT, 0}, 0);
+    _leftD2.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT, 0}, 0);
 
     _rightD1 = chip.get_line(PWMB1);
     _rightD2 = chip.get_line(PWMB2);
     _rightPwm.setup(chip.get_line(PWM2), 0, 1024);
 
-    _rightD1.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT,0 },0);
-    _rightD2.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT,0 },0);
+    _rightD1.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT, 0}, 0);
+    _rightD2.request({"rpi-robot", gpiod::line_request::DIRECTION_OUTPUT, 0}, 0);
 
     stop();
 

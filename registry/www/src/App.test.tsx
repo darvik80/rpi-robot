@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 test('renders learn react link', () => {
-  expect(true).toBeTruthy();
+    expect(true).toBeTruthy();
 });
 
 export {};

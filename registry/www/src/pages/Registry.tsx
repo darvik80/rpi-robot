@@ -5,10 +5,10 @@ const RegistryPage = () => {
 
     return (
         <div>
-            <ContentHeader title="IoT Registry" />
+            <ContentHeader title="IoT Registry"/>
             <section className="content">
                 <div className="card">
-                <Registry/>
+                    <Registry/>
                 </div>
             </section>
         </div>

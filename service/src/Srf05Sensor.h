@@ -8,7 +8,7 @@
 
 #include "BaseService.h"
 
-class Srf05Sensor  : public BaseService {
+class Srf05Sensor : public BaseService {
     volatile int _shutdown = 0;
     std::thread _thread;
 public:

@@ -109,10 +109,10 @@ UInt32 StrToULong(const char *str, int size, int base) {
 void ULongToStr(char *str, UInt32 val) {
     str[0] = '\0';
     snprintf(str, 5, "%c%c%c%c",
-            (unsigned int) val >> 24,
-            (unsigned int) val >> 16,
-            (unsigned int) val >> 8,
-            (unsigned int) val);
+             (unsigned int) val >> 24,
+             (unsigned int) val >> 16,
+             (unsigned int) val >> 8,
+             (unsigned int) val);
 }
 
 kern_return_t SMCCall(int index, SMCKeyData_t *inputStructure, SMCKeyData_t *outputStructure) {
@@ -233,7 +233,7 @@ double SMCGetTemperature(char *key) {
 void SystemMonitorService::postConstruct(Registry &registry) {
     BaseService::postConstruct(registry);
 
-    auto& iot = registry.getService<IotDevice>();
+    auto &iot = registry.getService<IotDevice>();
 
     registry.getService<SchedulerService>().scheduleAtFixedRate(
             [this, &iot]() -> void {

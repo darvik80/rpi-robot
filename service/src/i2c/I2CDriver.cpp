@@ -26,7 +26,8 @@ I2CDriver::I2CDriver(std::string_view device, int subDevId) {
 
     if (ioctl(_fd, I2C_SLAVE, subDevId) < 0) {
         close(_fd);
-        throw std::invalid_argument(fmt::format("unable to select I2C device: {}:{0:#x}, {}", device, subDevId, strerror(errno)));
+        throw std::invalid_argument(
+                fmt::format("unable to select I2C device: {}:{0:#x}, {}", device, subDevId, strerror(errno)));
     }
 }
 

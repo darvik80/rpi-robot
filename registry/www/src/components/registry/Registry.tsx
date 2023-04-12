@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {RegistryRepository} from '@repository';
-import {useParams} from 'react-router-dom';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from 'react-router-dom';
 
 
 const Registry = () => {
@@ -107,7 +106,8 @@ const Registry = () => {
                 <div className="form-group row ">
                     <div className="col-md-10"/>
                     <div className="btn-group col-md-2" role="group">
-                        <input className="btn btn-primary" type="button" disabled={!updated} value="Apply" onClick={handleOnApply}/>
+                        <input className="btn btn-primary" type="button" disabled={!updated} value="Apply"
+                               onClick={handleOnApply}/>
                         <input className="btn btn-secondary" type="button" value="Close" onClick={handleOnClose}/>
                     </div>
                 </div>

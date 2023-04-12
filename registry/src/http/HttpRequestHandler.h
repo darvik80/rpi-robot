@@ -28,7 +28,7 @@ public:
     virtual void handle(const HttpRequest &, HttpResponse &) = 0;
 
 protected:
-    void applyHeaders(HttpStringResponse& response) {
+    void applyHeaders(HttpStringResponse &response) {
         response.set(http::field::access_control_allow_origin, "*");
         response.set(http::field::access_control_allow_headers, "Content-Type");
         response.set(http::field::access_control_allow_methods, "GET, POST, DELETE, PUT, PATCH, OPTIONS");

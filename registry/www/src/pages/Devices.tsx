@@ -5,10 +5,10 @@ const RegistryDo = () => {
 
     return (
         <div>
-            <ContentHeader title="IoT Devices" />
+            <ContentHeader title="IoT Devices"/>
             <section className="content">
                 <div className="card">
-                <DeviceList/>
+                    <DeviceList/>
                 </div>
             </section>
         </div>

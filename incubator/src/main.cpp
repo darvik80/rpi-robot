@@ -13,9 +13,9 @@
 
 #include "gpiod/pwm.h"
 
-void * threadFunc(void * arg) {
+void *threadFunc(void *arg) {
 
-    int* stop = (int*)(arg);
+    int *stop = (int *) (arg);
 //    int policy;
 //    struct sched_param param{};
 //
@@ -55,9 +55,9 @@ void * threadFunc(void * arg) {
         usleep(10);
         trig.set_value(0);
 
-        while (!echo.get_value()) { }
+        while (!echo.get_value()) {}
         auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
-        while (echo.get_value()) { }
+        while (echo.get_value()) {}
         auto end = std::chrono::high_resolution_clock::now().time_since_epoch();
         auto distance = (double) (end - start).count() * 0.0343 / 2000;
         logger::info("Dist: {}", distance);
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
     logger::setup(logProps);
     volatile int stop = 0;
     pthread_t threadId;
-    int err = pthread_create(&threadId, nullptr, &threadFunc, (void*)&stop);
+    int err = pthread_create(&threadId, nullptr, &threadFunc, (void *) &stop);
 
 
     err = pthread_join(threadId, nullptr);

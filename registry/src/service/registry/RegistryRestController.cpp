@@ -17,7 +17,7 @@ void RegistryRestController::handle(const HttpRequest &request, HttpResponse &re
     } else if (request.method() == http::verb::put) {
         handlePut(request, result.value().params(), response);
     } else {
-        auto& res = response.emplace<HttpStringResponse>();
+        auto &res = response.emplace<HttpStringResponse>();
         applyHeaders(res);
     }
 }

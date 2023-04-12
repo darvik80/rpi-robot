@@ -42,118 +42,118 @@ export const StyledDropdown = styled(PfDropdown)`
 `;
 
 export const SidebarSearch = () => {
-  const [searchText, setSearchText] = useState('');
-  const [foundMenuItems, setFoundMenuItems] = useState<any[]>([]);
-  const dropdown = useRef(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const [foundMenuItems, setFoundMenuItems] = useState<any[]>([]);
+    const dropdown = useRef(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  useEffect(() => {
-    setFoundMenuItems([]);
-    if (searchText) {
-      setFoundMenuItems(findMenuItems(MENU));
-    } else {
-      setSearchText('');
-      setFoundMenuItems([]);
-    }
-  }, [searchText]);
+    useEffect(() => {
+        setFoundMenuItems([]);
+        if (searchText) {
+            setFoundMenuItems(findMenuItems(MENU));
+        } else {
+            setSearchText('');
+            setFoundMenuItems([]);
+        }
+    }, [searchText]);
 
-  useEffect(() => {
-    if (foundMenuItems && foundMenuItems.length > 0) {
-      setIsDropdownOpen(true);
-    } else {
-      setIsDropdownOpen(false);
-    }
-  }, [foundMenuItems]);
+    useEffect(() => {
+        if (foundMenuItems && foundMenuItems.length > 0) {
+            setIsDropdownOpen(true);
+        } else {
+            setIsDropdownOpen(false);
+        }
+    }, [foundMenuItems]);
 
-  const handleIconClick = () => {
-    setSearchText('');
-    setIsDropdownOpen(false);
-  };
+    const handleIconClick = () => {
+        setSearchText('');
+        setIsDropdownOpen(false);
+    };
 
-  const handleMenuItemClick = () => {
-    setSearchText('');
-    setIsDropdownOpen(false);
-  };
+    const handleMenuItemClick = () => {
+        setSearchText('');
+        setIsDropdownOpen(false);
+    };
 
-  const findMenuItems = (menu: any, results: any = []): any[] => {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const menuItem of menu) {
-      if (menuItem.name.includes(searchText) && menuItem.path) {
-        results.push(menuItem);
-      }
-      if (menuItem.children) {
-        return findMenuItems(menuItem.children, results);
-      }
-    }
-    return results;
-  };
+    const findMenuItems = (menu: any, results: any = []): any[] => {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const menuItem of menu) {
+            if (menuItem.name.includes(searchText) && menuItem.path) {
+                results.push(menuItem);
+            }
+            if (menuItem.children) {
+                return findMenuItems(menuItem.children, results);
+            }
+        }
+        return results;
+    };
 
-  const boldString = (str: string, substr: string) => {
-    return str.replaceAll(
-      substr,
-      `<strong class="text-light">${substr}</strong>`
+    const boldString = (str: string, substr: string) => {
+        return str.replaceAll(
+            substr,
+            `<strong class="text-light">${substr}</strong>`
+        );
+    };
+
+    return (
+        <StyledDropdown
+            ref={dropdown}
+            isOpen={isDropdownOpen}
+            hide-arrow
+            openOnButtonClick={false}
+        >
+            <div slot="button">
+                <div className="input-group">
+                    <input
+                        className="form-control form-control-sidebar"
+                        type="text"
+                        placeholder="Search"
+                        aria-label="Search"
+                        value={searchText}
+                        onInput={(e) => setSearchText((e.target as any).value)}
+                    />
+                    <div className="input-group-append">
+                        <button
+                            type="button"
+                            className="btn btn-sidebar"
+                            onClick={() => handleIconClick()}
+                        >
+                            <i
+                                className={`fas ${searchText.length === 0 && 'fa-search'} ${
+                                    searchText.length > 0 && 'fa-times'
+                                } fa-fw`}
+                            />
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div className="menu" slot="menu">
+                {foundMenuItems && foundMenuItems.length === 0 && (
+                    <div className="nothing-found">No Element found</div>
+                )}
+                {foundMenuItems.length > 0 && (
+                    <div className="list-group">
+                        {foundMenuItems &&
+                            foundMenuItems.map((menuItem: any) => (
+                                <NavLink
+                                    key={menuItem.name + menuItem.path}
+                                    className="list-group-item"
+                                    to={menuItem.path}
+                                    onClick={() => handleMenuItemClick()}
+                                >
+                                    <div
+                                        className="search-title"
+                                        // eslint-disable-next-line react/no-danger
+                                        dangerouslySetInnerHTML={{
+                                            __html: boldString(menuItem.name, searchText)
+                                        }}
+                                    />
+                                    <div className="search-path">{menuItem.name}</div>
+                                </NavLink>
+                            ))}
+                    </div>
+                )}
+            </div>
+        </StyledDropdown>
     );
-  };
-
-  return (
-    <StyledDropdown
-      ref={dropdown}
-      isOpen={isDropdownOpen}
-      hide-arrow
-      openOnButtonClick={false}
-    >
-      <div slot="button">
-        <div className="input-group">
-          <input
-            className="form-control form-control-sidebar"
-            type="text"
-            placeholder="Search"
-            aria-label="Search"
-            value={searchText}
-            onInput={(e) => setSearchText((e.target as any).value)}
-          />
-          <div className="input-group-append">
-            <button
-              type="button"
-              className="btn btn-sidebar"
-              onClick={() => handleIconClick()}
-            >
-              <i
-                className={`fas ${searchText.length === 0 && 'fa-search'} ${
-                  searchText.length > 0 && 'fa-times'
-                } fa-fw`}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="menu" slot="menu">
-        {foundMenuItems && foundMenuItems.length === 0 && (
-          <div className="nothing-found">No Element found</div>
-        )}
-        {foundMenuItems.length > 0 && (
-          <div className="list-group">
-            {foundMenuItems &&
-              foundMenuItems.map((menuItem: any) => (
-                <NavLink
-                  key={menuItem.name + menuItem.path}
-                  className="list-group-item"
-                  to={menuItem.path}
-                  onClick={() => handleMenuItemClick()}
-                >
-                  <div
-                    className="search-title"
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{
-                      __html: boldString(menuItem.name, searchText)
-                    }}
-                  />
-                  <div className="search-path">{menuItem.name}</div>
-                </NavLink>
-              ))}
-          </div>
-        )}
-      </div>
-    </StyledDropdown>
-  );
 };

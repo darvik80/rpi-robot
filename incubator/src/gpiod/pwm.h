@@ -4,6 +4,7 @@
 
 
 #pragma once
+
 #include <gpiod.hpp>
 #include <pthread.h>
 
@@ -15,14 +16,17 @@ namespace gpiod::extension {
         pthread_t _thread{0};
 
     private:
-        static void* thread(void* args);
+        static void *thread(void *args);
 
         [[noreturn]] void process();
+
     public:
         explicit soft_pwm(line line, int initialValue, int pwmRange);
 
-        void setup(line& line, int initialValue, int pwmRange);
+        void setup(line &line, int initialValue, int pwmRange);
+
         void write(int value);
+
         void shutdown();
 
         ~soft_pwm() {

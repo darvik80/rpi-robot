@@ -45,9 +45,9 @@ void Srf05Sensor::postConstruct(Registry &registry) {
             usleep(10);
             trig.set_value(0);
 
-            while (!echo.get_value()) { }
+            while (!echo.get_value()) {}
             auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
-            while (echo.get_value()) { }
+            while (echo.get_value()) {}
             auto end = std::chrono::high_resolution_clock::now().time_since_epoch();
             auto distance = (double) (end - start).count() * 0.0343 / 2000;
             logger::info("Dist: {}", distance);

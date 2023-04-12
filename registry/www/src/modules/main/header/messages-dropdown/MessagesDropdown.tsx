@@ -25,111 +25,111 @@ export const StyledDropdown = styled(PfDropdown)`
 `;
 
 const MessagesDropdown = () => {
-  const [t] = useTranslation();
+    const [t] = useTranslation();
 
-  return (
-    <StyledDropdown hideArrow>
-      <div slot="button">
-        <i className="far fa-comments" />
-        <span className="badge badge-danger navbar-badge">3</span>
-      </div>
-      <div slot="menu">
-        <Link to="/" className="dropdown-item">
-          <div className="media">
-            <PfImage
-              src="/img/default-profile.png"
-              alt="User Avatar"
-              width={50}
-              rounded
-              className="mr-2"
-            />
-            <div className="media-body">
-              <h3 className="dropdown-item-title">
-                Brad Diesel
-                <span className="float-right text-sm text-danger">
-                  <i className="fas fa-star" />
+    return (
+        <StyledDropdown hideArrow>
+            <div slot="button">
+                <i className="far fa-comments"/>
+                <span className="badge badge-danger navbar-badge">3</span>
+            </div>
+            <div slot="menu">
+                <Link to="/" className="dropdown-item">
+                    <div className="media">
+                        <PfImage
+                            src="/img/default-profile.png"
+                            alt="User Avatar"
+                            width={50}
+                            rounded
+                            className="mr-2"
+                        />
+                        <div className="media-body">
+                            <h3 className="dropdown-item-title">
+                                Brad Diesel
+                                <span className="float-right text-sm text-danger">
+                  <i className="fas fa-star"/>
                 </span>
-              </h3>
-              <p className="text-sm">Call me whenever you can...</p>
-              <p className="text-sm text-muted">
-                <i className="far fa-clock mr-1" />
-                <span>
+                            </h3>
+                            <p className="text-sm">Call me whenever you can...</p>
+                            <p className="text-sm text-muted">
+                                <i className="far fa-clock mr-1"/>
+                                <span>
                   {t<string>('header.messages.ago', {
-                    quantity: '30',
-                    unit: 'Minutes'
+                      quantity: '30',
+                      unit: 'Minutes'
                   })}
                 </span>
-              </p>
-            </div>
-          </div>
-        </Link>
-        <div className="dropdown-divider" />
-        <Link to="/" className="dropdown-item">
-          <div className="media">
-            <PfImage
-              src="/img/default-profile.png"
-              alt="User Avatar"
-              width={50}
-              rounded
-              className="mr-2"
-            />
-            <div className="media-body">
-              <h3 className="dropdown-item-title">
-                John Pierce
-                <span className="float-right text-sm text-muted">
-                  <i className="fas fa-star" />
+                            </p>
+                        </div>
+                    </div>
+                </Link>
+                <div className="dropdown-divider"/>
+                <Link to="/" className="dropdown-item">
+                    <div className="media">
+                        <PfImage
+                            src="/img/default-profile.png"
+                            alt="User Avatar"
+                            width={50}
+                            rounded
+                            className="mr-2"
+                        />
+                        <div className="media-body">
+                            <h3 className="dropdown-item-title">
+                                John Pierce
+                                <span className="float-right text-sm text-muted">
+                  <i className="fas fa-star"/>
                 </span>
-              </h3>
-              <p className="text-sm">I got your message bro</p>
-              <p className="text-sm text-muted">
-                <i className="far fa-clock mr-1" />
-                <span>
+                            </h3>
+                            <p className="text-sm">I got your message bro</p>
+                            <p className="text-sm text-muted">
+                                <i className="far fa-clock mr-1"/>
+                                <span>
                   {t<string>('header.messages.ago', {
-                    quantity: '3',
-                    unit: 'Hours'
+                      quantity: '3',
+                      unit: 'Hours'
                   })}
                 </span>
-              </p>
-            </div>
-          </div>
-        </Link>
-        <div className="dropdown-divider" />
-        <Link to="/" className="dropdown-item">
-          <div className="media">
-            <PfImage
-              src="/img/default-profile.png"
-              alt="User Avatar"
-              width={50}
-              rounded
-              className="mr-2"
-            />
-            <div className="media-body">
-              <h3 className="dropdown-item-title">
-                Nora Silvester
-                <span className="float-right text-sm text-warning">
-                  <i className="fas fa-star" />
+                            </p>
+                        </div>
+                    </div>
+                </Link>
+                <div className="dropdown-divider"/>
+                <Link to="/" className="dropdown-item">
+                    <div className="media">
+                        <PfImage
+                            src="/img/default-profile.png"
+                            alt="User Avatar"
+                            width={50}
+                            rounded
+                            className="mr-2"
+                        />
+                        <div className="media-body">
+                            <h3 className="dropdown-item-title">
+                                Nora Silvester
+                                <span className="float-right text-sm text-warning">
+                  <i className="fas fa-star"/>
                 </span>
-              </h3>
-              <p className="text-sm">The subject goes here</p>
-              <p className="text-sm text-muted">
-                <i className="far fa-clock mr-1" />
-                <span>
+                            </h3>
+                            <p className="text-sm">The subject goes here</p>
+                            <p className="text-sm text-muted">
+                                <i className="far fa-clock mr-1"/>
+                                <span>
                   {t<string>('header.messages.ago', {
-                    quantity: '4',
-                    unit: 'Hours'
+                      quantity: '4',
+                      unit: 'Hours'
                   })}
                 </span>
-              </p>
+                            </p>
+                        </div>
+                    </div>
+                </Link>
+                <div className="dropdown-divider"/>
+                <Link to="/" className="dropdown-item dropdown-footer">
+                    {t<string>('header.messages.seeAll')}
+                </Link>
             </div>
-          </div>
-        </Link>
-        <div className="dropdown-divider" />
-        <Link to="/" className="dropdown-item dropdown-footer">
-          {t<string>('header.messages.seeAll')}
-        </Link>
-      </div>
-    </StyledDropdown>
-  );
+        </StyledDropdown>
+    );
 };
 
 export default MessagesDropdown;

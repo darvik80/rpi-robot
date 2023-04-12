@@ -8,55 +8,55 @@ import {SidebarSearch} from '@app/components/sidebar-search/SidebarSearch';
 import i18n from '@app/utils/i18n';
 
 export interface IMenuItem {
-  name: string;
-  icon?: string;
-  path?: string;
-  children?: Array<IMenuItem>;
+    name: string;
+    icon?: string;
+    path?: string;
+    children?: Array<IMenuItem>;
 }
 
 export const MENU: IMenuItem[] = [
-  {
-    name: i18n.t('menusidebar.label.dashboard'),
-    icon: 'fas fa-tachometer-alt nav-icon" />',
-    path: '/'
-  },
-  {
-    name: i18n.t('menusidebar.label.registry'),
-    icon: 'fas fa-wrench nav-icon" />',
-    path: '/registry'
-  },
-  {
-    name: i18n.t('menusidebar.label.devices'),
-    icon: 'fas fa-gamepad nav-icon" />',
-    path: '/devices'
-  },
-  {
-    name: i18n.t('menusidebar.label.device-telemetry'),
-    icon: 'fas fa-gamepad nav-icon" />',
-    path: '/device-telemetry'
-  },
-  // {
-  //   name: i18n.t('menusidebar.label.blank'),
-  //   icon: 'fas fa-wrench nav-icon',
-  //   path: '/blank'
-  // },
-  // {
-  //   name: i18n.t('menusidebar.label.mainMenu'),
-  //   icon: 'far fa-caret-square-down nav-icon',
-  //   children: [
-  //     {
-  //       name: i18n.t('menusidebar.label.subMenu'),
-  //       icon: 'fas fa-hammer nav-icon',
-  //       path: '/sub-menu-1'
-  //     },
-  //
-  //     {
-  //       name: i18n.t('menusidebar.label.blank'),
-  //       icon: 'fas fa-cogs nav-icon',
-  //       path: '/sub-menu-2'
-  //     }
-  //   ]
-  // }
+    {
+        name: i18n.t('menusidebar.label.dashboard'),
+        icon: 'fas fa-tachometer-alt nav-icon" />',
+        path: '/'
+    },
+    {
+        name: i18n.t('menusidebar.label.registry'),
+        icon: 'fas fa-wrench nav-icon" />',
+        path: '/registry'
+    },
+    {
+        name: i18n.t('menusidebar.label.devices'),
+        icon: 'fas fa-gamepad nav-icon" />',
+        path: '/devices'
+    },
+    {
+        name: i18n.t('menusidebar.label.device-telemetry'),
+        icon: 'fas fa-gamepad nav-icon" />',
+        path: '/device-telemetry'
+    },
+    // {
+    //   name: i18n.t('menusidebar.label.blank'),
+    //   icon: 'fas fa-wrench nav-icon',
+    //   path: '/blank'
+    // },
+    // {
+    //   name: i18n.t('menusidebar.label.mainMenu'),
+    //   icon: 'far fa-caret-square-down nav-icon',
+    //   children: [
+    //     {
+    //       name: i18n.t('menusidebar.label.subMenu'),
+    //       icon: 'fas fa-hammer nav-icon',
+    //       path: '/sub-menu-1'
+    //     },
+    //
+    //     {
+    //       name: i18n.t('menusidebar.label.blank'),
+    //       icon: 'fas fa-cogs nav-icon',
+    //       path: '/sub-menu-2'
+    //     }
+    //   ]
+    // }
 ];
 
 const StyledBrandImage = styled(PfImage)`
@@ -65,7 +65,7 @@ const StyledBrandImage = styled(PfImage)`
   margin: -1px 8px 0 6px;
   opacity: 0.8;
   --pf-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
-    0 6px 6px rgba(0, 0, 0, 0.23) !important;
+  0 6px 6px rgba(0, 0, 0, 0.23) !important;
 `;
 
 const StyledUserImage = styled(PfImage)`
@@ -73,64 +73,64 @@ const StyledUserImage = styled(PfImage)`
 `;
 
 const MenuSidebar = () => {
-  const user = useSelector((state: any) => state.auth.currentUser);
-  const sidebarSkin = useSelector((state: any) => state.ui.sidebarSkin);
-  const menuItemFlat = useSelector((state: any) => state.ui.menuItemFlat);
-  const menuChildIndent = useSelector((state: any) => state.ui.menuChildIndent);
+    const user = useSelector((state: any) => state.auth.currentUser);
+    const sidebarSkin = useSelector((state: any) => state.ui.sidebarSkin);
+    const menuItemFlat = useSelector((state: any) => state.ui.menuItemFlat);
+    const menuChildIndent = useSelector((state: any) => state.ui.menuChildIndent);
 
-  return (
-    <aside className={`main-sidebar elevation-4 ${sidebarSkin}`}>
-      <Link to="/" className="brand-link">
-        <StyledBrandImage
-          src="/img/logo.png"
-          alt="AdminLTE Logo"
-          width={33}
-          height={33}
-          rounded
-        />
-        <span className="brand-text font-weight-light">AdminLTE 3</span>
-      </Link>
-      <div className="sidebar">
-        <div className="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div className="image">
-            <StyledUserImage
-              src={user.picture}
-              fallbackSrc="/img/default-profile.png"
-              alt="User"
-              width={34}
-              height={34}
-              rounded
-            />
-          </div>
-          <div className="info">
-            <Link to="/profile" className="d-block">
-              {user.email}
+    return (
+        <aside className={`main-sidebar elevation-4 ${sidebarSkin}`}>
+            <Link to="/" className="brand-link">
+                <StyledBrandImage
+                    src="/img/logo.png"
+                    alt="AdminLTE Logo"
+                    width={33}
+                    height={33}
+                    rounded
+                />
+                <span className="brand-text font-weight-light">AdminLTE 3</span>
             </Link>
-          </div>
-        </div>
+            <div className="sidebar">
+                <div className="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div className="image">
+                        <StyledUserImage
+                            src={user.picture}
+                            fallbackSrc="/img/default-profile.png"
+                            alt="User"
+                            width={34}
+                            height={34}
+                            rounded
+                        />
+                    </div>
+                    <div className="info">
+                        <Link to="/profile" className="d-block">
+                            {user.email}
+                        </Link>
+                    </div>
+                </div>
 
-        <div className="form-inline">
-          <SidebarSearch />
-        </div>
+                <div className="form-inline">
+                    <SidebarSearch/>
+                </div>
 
-        <nav className="mt-2" style={{overflowY: 'hidden'}}>
-          <ul
-            className={`nav nav-pills nav-sidebar flex-column${
-              menuItemFlat ? ' nav-flat' : ''
-            }${menuChildIndent ? ' nav-child-indent' : ''}`}
-            role="menu"
-          >
-            {MENU.map((menuItem: IMenuItem) => (
-              <MenuItem
-                key={menuItem.name + menuItem.path}
-                menuItem={menuItem}
-              />
-            ))}
-          </ul>
-        </nav>
-      </div>
-    </aside>
-  );
+                <nav className="mt-2" style={{overflowY: 'hidden'}}>
+                    <ul
+                        className={`nav nav-pills nav-sidebar flex-column${
+                            menuItemFlat ? ' nav-flat' : ''
+                        }${menuChildIndent ? ' nav-child-indent' : ''}`}
+                        role="menu"
+                    >
+                        {MENU.map((menuItem: IMenuItem) => (
+                            <MenuItem
+                                key={menuItem.name + menuItem.path}
+                                menuItem={menuItem}
+                            />
+                        ))}
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+    );
 };
 
 export default MenuSidebar;

@@ -1,6 +1,4 @@
-import axios, {AxiosRequestConfig} from 'axios';
-import store from '@store/store';
-import {logoutUser} from '@store/reducers/auth';
+import axios from 'axios';
 
 export default axios.create({
     baseURL: "http://localhost:8080/api",

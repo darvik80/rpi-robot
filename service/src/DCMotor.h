@@ -18,10 +18,13 @@ class DCMotor : public BaseService {
     gpiod::extension::soft_pwm _rightPwm;
 private:
     void stop();
+
     void forward(int speed);
 
     void right(int speed, bool dir);
+
     void left(int speed, bool dir);
+
 public:
     DCMotor();
 

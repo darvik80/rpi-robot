@@ -12,9 +12,11 @@ class I2CLcd1602 : public BaseService {
     I2CDriver _i2c;
 private:
     void sendCmd(uint8_t devAddr, uint8_t cmd);
+
     void sendData(uint8_t devAddr, char data);
+
 public:
-    const char* name() override {
+    const char *name() override {
         return "i2c-lcd1602";
     }
 

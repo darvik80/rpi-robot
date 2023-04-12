@@ -54,7 +54,7 @@ namespace gpiod::extension {
         return nullptr;
     }
 
-    void soft_pwm::setup(line& line, int initialValue, int pwmRange) {
+    void soft_pwm::setup(line &line, int initialValue, int pwmRange) {
         if (!_thread) {
             shutdown();
         }

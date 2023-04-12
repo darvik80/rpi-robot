@@ -9,8 +9,10 @@
 class RobotApp : public Application {
 public:
     const char *name() override;
+
 protected:
     void setup(Registry &registry) override;
+
     void destroy(Registry &registry) override;
 };
 

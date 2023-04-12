@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo, useRef} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import DeviceRepository from "../../repository/DeviceRepository";
 import {useTable} from "react-table";
 import Pagination from "@material-ui/lab/Pagination";
