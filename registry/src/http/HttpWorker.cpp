@@ -9,13 +9,10 @@
 
 using namespace boost;
 
-HttpWorker::HttpWorker(asio::io_service &service, std::string_view address, uint16_t port, const HttpRequestHandlerManager::Ptr &handler)
-        : _acceptor(service, {asio::ip::make_address(address), port})
-        , _socket(service)
-        , _handler(handler)
-        , _requestDeadline(service, (std::chrono::steady_clock::time_point::max) ())
-        , _serializer(0)
-{
+HttpWorker::HttpWorker(asio::io_service &service, std::string_view address, uint16_t port,
+                       const HttpRequestHandlerManager::Ptr &handler)
+        : _acceptor(service, {asio::ip::make_address(address), port}), _socket(service), _handler(handler),
+          _requestDeadline(service, (std::chrono::steady_clock::time_point::max) ()), _serializer(0) {
 }
 
 void HttpWorker::start() {
@@ -78,19 +75,19 @@ void HttpWorker::process(const HttpRequest &req) {
     try {
         _handler->process(req, _response);
         std::visit(*this, _response);
-    } catch (std::invalid_argument& ex) {
+    } catch (std::invalid_argument &ex) {
         sendBadResponse(http::status::not_found, ex.what());
-    } catch (std::exception& ex) {
+    } catch (std::exception &ex) {
         sendBadResponse(http::status::bad_request, ex.what());
     }
 }
 
-void HttpWorker::visit(HttpStringResponse& resp) {
+void HttpWorker::visit(HttpStringResponse &resp) {
     resp.set(http::field::server, "Beast");
     resp.keep_alive(false);
     resp.prepare_payload();
 
-    auto& serializer = _serializer.emplace<HttpStringSerializer>(resp);
+    auto &serializer = _serializer.emplace<HttpStringSerializer>(resp);
     http::async_write(
             _socket,
             serializer,
@@ -101,12 +98,12 @@ void HttpWorker::visit(HttpStringResponse& resp) {
     );
 }
 
-void HttpWorker::visit(HttpFileResponse& resp) {
+void HttpWorker::visit(HttpFileResponse &resp) {
     resp.set(http::field::server, "Beast");
     resp.keep_alive(false);
     resp.prepare_payload();
 
-    auto& serializer = _serializer.emplace<HttpFileSerializer>(resp);
+    auto &serializer = _serializer.emplace<HttpFileSerializer>(resp);
 
     http::async_write(
             _socket,
@@ -119,7 +116,7 @@ void HttpWorker::visit(HttpFileResponse& resp) {
 }
 
 void HttpWorker::sendBadResponse(http::status status, std::string_view error) {
-    auto& resp = _response.emplace<HttpStringResponse>();
+    auto &resp = _response.emplace<HttpStringResponse>();
     resp.result(status);
     resp.keep_alive(false);
     resp.set(http::field::server, "Beast");
@@ -127,7 +124,7 @@ void HttpWorker::sendBadResponse(http::status status, std::string_view error) {
     resp.body() = error;
     resp.prepare_payload();
 
-    auto& serializer = _serializer.emplace<HttpStringSerializer>(resp);
+    auto &serializer = _serializer.emplace<HttpStringSerializer>(resp);
 
     http::async_write(
             _socket,

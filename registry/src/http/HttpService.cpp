@@ -15,15 +15,18 @@
 #include "service/device/DeviceRestController.h"
 #include "service/device/DeviceTelemetryRestController.h"
 
-void HttpService::addHandlers(Registry &registry, const HttpProperties& props) {
+void HttpService::addHandlers(Registry &registry, const HttpProperties &props) {
     auto jsonRpc = std::make_shared<JsonRpcHandler>();
     jsonRpc->addMethod(std::make_shared<RpcHealth>());
     registry.getService<EventBusService>().send(JsonRpcRegisterEvent{*jsonRpc});
 
     registerHandler(http::verb::post, "/rpc", jsonRpc);
-    registerHandler(http::verb::get, "/api/registries", std::make_shared<RegistryRestController>(registry.getService<Database>()));
-    registerHandler(http::verb::get, "/api/devices", std::make_shared<DeviceRestController>(registry.getService<Database>()));
-    registerHandler(http::verb::get, "/api/devices-telemetry", std::make_shared<DeviceTelemetryRestController>(registry.getService<Database>()));
+    registerHandler(http::verb::get, "/api/registries",
+                    std::make_shared<RegistryRestController>(registry.getService<Database>()));
+    registerHandler(http::verb::get, "/api/devices",
+                    std::make_shared<DeviceRestController>(registry.getService<Database>()));
+    registerHandler(http::verb::get, "/api/devices-telemetry",
+                    std::make_shared<DeviceTelemetryRestController>(registry.getService<Database>()));
 
     std::string root = ResourceManager::instance().getResourcesDir();
     if (props.root.has_value()) {
@@ -42,21 +45,24 @@ void HttpService::postConstruct(Registry &registry) {
     addHandlers(registry, props);
     auto worker = std::make_shared<HttpWorker>(registry.getIoService(), props.host, props.port, shared_from_this());
 
-    registry.getService<EventBusService>().subscribe<ApplicationStartedEvent>([props, worker, this](const auto &event) -> bool {
-        worker->start();
-        info("{} started: {}:{}", name(), props.host, props.port);
-        return true;
-    });
+    registry.getService<EventBusService>().subscribe<ApplicationStartedEvent>(
+            [props, worker, this](const auto &event) -> bool {
+                worker->start();
+                info("{} started: {}:{}", name(), props.host, props.port);
+                return true;
+            });
 
-    registry.getService<EventBusService>().subscribe<ApplicationCloseEvent>([props, worker, this](const auto &event) -> bool {
-        worker->shutdown();
-        info("{} stopped: {}:{}", name(), props.host, props.port);
-        return true;
-    });
+    registry.getService<EventBusService>().subscribe<ApplicationCloseEvent>(
+            [props, worker, this](const auto &event) -> bool {
+                worker->shutdown();
+                info("{} stopped: {}:{}", name(), props.host, props.port);
+                return true;
+            });
 }
 
-void HttpService::process(const HttpRequest& req, HttpResponse& resp) {
-    info(std::string("handle: ") + req.method_string().data() + ":" + std::string(req.target().data(), req.target().length()));
+void HttpService::process(const HttpRequest &req, HttpResponse &resp) {
+    info(std::string("handle: ") + req.method_string().data() + ":" +
+         std::string(req.target().data(), req.target().length()));
     HttpRequestHandlerManager::process(req, resp);
 }
 

@@ -27,15 +27,16 @@ public:
     template<class R>
     R &getRepository() {
         if (auto iter = _repositories.find(typeid(R)); iter != std::end(_repositories)) {
-            return *static_cast<R*>(iter->second.get());
+            return *static_cast<R *>(iter->second.get());
         }
 
         throw std::invalid_argument(std::string("The repository has not been registered ") + typeid(R).name());
     }
 
     template<class R>
-    R& createRepository() {
-        return *static_cast<R*>(_repositories.emplace(typeid(R), std::make_unique<R>(*_dataSource)).first->second.get());
+    R &createRepository() {
+        return *static_cast<R *>(_repositories.emplace(typeid(R),
+                                                       std::make_unique<R>(*_dataSource)).first->second.get());
     }
 
     virtual void createRepositories() = 0;

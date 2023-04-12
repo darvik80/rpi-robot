@@ -30,7 +30,7 @@ void DeviceRestController::handleGet(const HttpRequest &request, const HttpParam
     if (params.contains("id")) {
         json = repository.findById(std::stoi((*params.find_last("id")).value));
     } else {
-        PageRequest page{.offset = 0, .size = 10};
+        PageRequest page{.offset = 0, .size = 10, .hasCount=true};
         if (const auto it = params.find("size"); it != params.end()) {
             page.size = std::stoi((*it).value);
         }
@@ -42,6 +42,9 @@ void DeviceRestController::handleGet(const HttpRequest &request, const HttpParam
         Filter filter;
         if (auto it = params.find_last("name"); it != params.end()) {
             filter.add("name", Filter::Operation::op_eq, (*it).value);
+        }
+        if (auto it = params.find_last("registry_id"); it != params.end()) {
+            filter.add("registry_id", Filter::Operation::op_eq, (*it).value);
         }
         json = *repository.findAll(filter, page);
     }

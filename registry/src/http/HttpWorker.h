@@ -28,19 +28,21 @@ public:
 
     HttpWorker &operator=(HttpWorker const &) = delete;
 
-    HttpWorker(asio::io_service &service, std::string_view address, uint16_t port, const HttpRequestHandlerManager::Ptr& _handler);
+    HttpWorker(asio::io_service &service, std::string_view address, uint16_t port,
+               const HttpRequestHandlerManager::Ptr &_handler);
 
     void start();
 
     void shutdown();
 
-    void operator()(HttpStringResponse& resp) {
+    void operator()(HttpStringResponse &resp) {
         visit(resp);
     }
 
-    void operator()(HttpFileResponse& resp) {
+    void operator()(HttpFileResponse &resp) {
         visit(resp);
     }
+
 private:
     // The acceptor used to listen for incoming connections.
     tcp::acceptor _acceptor;
@@ -78,7 +80,7 @@ private:
 
     void process(const HttpRequest &req);
 
-    void visit(HttpStringResponse& resp);
+    void visit(HttpStringResponse &resp);
 
-    void visit(HttpFileResponse& resp);
+    void visit(HttpFileResponse &resp);
 };

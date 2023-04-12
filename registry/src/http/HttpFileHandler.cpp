@@ -72,7 +72,7 @@ void HttpFileHandler::handle(const HttpRequest &request, HttpResponse &response)
         }
     }
 
-    auto& resp = response.emplace<HttpFileResponse>();
+    auto &resp = response.emplace<HttpFileResponse>();
     resp.set(http::field::content_type, mimeType(fullPath));
     resp.body() = std::move(file);
     resp.result(http::status::ok);

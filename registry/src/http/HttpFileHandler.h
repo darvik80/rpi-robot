@@ -10,5 +10,6 @@ class HttpFileHandler : public HttpRequestHandler {
     std::string _root;
 public:
     explicit HttpFileHandler(std::string_view root);
+
     void handle(const HttpRequest &request, HttpResponse &response) override;
 };

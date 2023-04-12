@@ -25,6 +25,7 @@ public:
     const char *name() override {
         return "registry";
     }
+
 protected:
     void setup(Registry &registry) override {
         registry.createService<IotRegistry>();
@@ -33,14 +34,14 @@ protected:
 
         registry.getService<EventBusService>().subscribe<IotTelemetry>(
                 [&registry](const IotTelemetry &event) -> bool {
-                    auto& db = registry.getService<RegistryDatabase>();
+                    auto &db = registry.getService<RegistryDatabase>();
                     Filter filter;
                     filter.add("name", event.deviceId);
                     auto dev = db.getRepository<DeviceRepository>().findOne(filter);
                     if (dev) {
-                        DeviceTelemetryDo telemetry {
-                            .deviceId = dev->id,
-                            .json_data = event.message
+                        DeviceTelemetryDo telemetry{
+                                .deviceId = dev->id,
+                                .json_data = event.message
                         };
                         db.getRepository<DeviceTelemetryRepository>().insert(telemetry);
                     }

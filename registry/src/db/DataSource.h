@@ -19,7 +19,8 @@ class DataSource {
 public:
     typedef std::unique_ptr<DataSource> Ptr;
 
-    DataSource(std::string_view host, int port, std::string_view username, std::string_view password, std::string_view database);
+    DataSource(std::string_view host, int port, std::string_view username, std::string_view password,
+               std::string_view database);
 
-    pqxx::connection& getConnection();
+    pqxx::connection &getConnection();
 };

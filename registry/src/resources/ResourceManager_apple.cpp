@@ -22,8 +22,7 @@ class ResourceApple : public Resource {
     std::unique_ptr<interprocess::file_mapping> _file;
     std::unique_ptr<interprocess::mapped_region> _region;
 public:
-    explicit ResourceApple(std::string_view filePath)
-    {
+    explicit ResourceApple(std::string_view filePath) {
         _file = std::make_unique<interprocess::file_mapping>(filePath.data(), interprocess::read_only);
         _region = std::make_unique<interprocess::mapped_region>(*_file, interprocess::read_only);
     }
@@ -67,10 +66,11 @@ public:
     ResourceManagerApple() {
         resourcesDirectory = getResourcesDir() + "/";
     }
+
     std::vector<std::string> getResourceNames() override {
         std::vector<std::string> result;
         filesystem::path dir(getResourcesDir());
-        for (auto &itr : filesystem::directory_iterator(dir)) {
+        for (auto &itr: filesystem::directory_iterator(dir)) {
             // If it's not a directory, list it. If you want to list directories too, just remove this check.
             if (is_regular_file(itr)) {
                 // assign current file name to current_file and echo it out to the console.
@@ -86,7 +86,7 @@ public:
     }
 };
 
-ResourceManager& ResourceManager::instance() {
+ResourceManager &ResourceManager::instance() {
     return boost::serialization::singleton<ResourceManagerApple>::get_mutable_instance();
 }
 

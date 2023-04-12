@@ -17,10 +17,11 @@ struct DeviceConfigurationDo {
     nlohmann::json json_data;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceConfigurationDo, id, deviceId ,createdAt, updatedAt, json_data)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceConfigurationDo, id, deviceId, createdAt, updatedAt, json_data)
 
 struct DeviceDo {
     long id;
+    long registryId;
     std::string createdAt;
     std::string updatedAt;
     std::string name;
@@ -30,7 +31,8 @@ struct DeviceDo {
     std::list<DeviceConfigurationDo> configuration;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceDo, id, createdAt, updatedAt, name, uuid, status, json_data, configuration)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceDo, id, registryId, createdAt, updatedAt, name, uuid, status, json_data,
+                                   configuration)
 
 struct DeviceTelemetryDo {
     long id;
@@ -40,5 +42,5 @@ struct DeviceTelemetryDo {
     nlohmann::json json_data;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceTelemetryDo, id, deviceId ,createdAt, json_data)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceTelemetryDo, id, deviceId, createdAt, json_data)
 

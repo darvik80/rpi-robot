@@ -32,16 +32,17 @@ public:
             return std::hash<std::string>()(req.path + ":" + to_string(req.method).data());
         }
     };
+
 private:
     std::unordered_map<Request, HttpRequestHandlerFn, RequestFunction> _handlers;
 public:
     typedef std::shared_ptr<HttpRequestHandlerManager> Ptr;
 public:
-    void registerHandler(http::verb method, std::string_view path, const HttpRequestHandlerFn& handler) {
+    void registerHandler(http::verb method, std::string_view path, const HttpRequestHandlerFn &handler) {
         _handlers.emplace(Request{method, path.data()}, handler);
     }
 
-    void registerHandler(http::verb method, std::string_view path, const HttpRequestHandler::Ptr& handler) {
+    void registerHandler(http::verb method, std::string_view path, const HttpRequestHandler::Ptr &handler) {
         _handlers.emplace(Request{method, path.data()}, [handler](const HttpRequest &req, HttpResponse &resp) {
             handler->handle(req, resp);
         });

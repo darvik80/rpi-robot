@@ -16,7 +16,7 @@ public:
     typedef std::shared_ptr<RpcMethod> Ptr;
     typedef std::vector<Ptr> PtrVec;
 public:
-    [[nodiscard]] virtual const char* name() const = 0;
+    [[nodiscard]] virtual const char *name() const = 0;
 
     [[nodiscard]] virtual std::optional<nlohmann::json> handle(const std::optional<nlohmann::json> &params) const = 0;
 

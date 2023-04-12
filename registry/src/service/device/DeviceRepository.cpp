@@ -10,7 +10,7 @@ Page<DeviceDo>::Ptr DeviceRepository::findAll(const Filter &filter, const PageRe
     sql::SelectModel s;
     applyFilter(s, filter);
     auto sdata{s};
-    sdata.select("id", "created_at", "name", "uuid", "status", "json_data")
+    sdata.select("id", "registry_id", "created_at", "name", "uuid", "status", "json_data")
             .from("device")
             .offset(page.offset)
             .limit(page.size)
@@ -24,11 +24,12 @@ Page<DeviceDo>::Ptr DeviceRepository::findAll(const Filter &filter, const PageRe
         result->data.push_back(
                 {
                         .id = row.at(0).as<long>(),
-                        .createdAt = row.at(1).as<std::string>(),
-                        .name = row.at(2).as<std::string>(),
-                        .uuid = row.at(3).as<std::string>(),
-                        .status = row.at(4).as<int>(),
-                        .json_data = nlohmann::json::parse(row.at(5).as<std::string>()),
+                        .registryId = row.at(1).as<long>(),
+                        .createdAt = row.at(2).as<std::string>(),
+                        .name = row.at(3).as<std::string>(),
+                        .uuid = row.at(4).as<std::string>(),
+                        .status = row.at(5).as<int>(),
+                        .json_data = nlohmann::json::parse(row.at(6).as<std::string>()),
                 }
         );
         deviceIds.push_back(result->data.back().id);

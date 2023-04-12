@@ -15,7 +15,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Health, status)
 
 class RpcHealth : public RpcSupplier<Health> {
 public:
-    [[nodiscard]] const char* name() const override {
+    [[nodiscard]] const char *name() const override {
         return "health";
     }
 

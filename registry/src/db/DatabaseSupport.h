@@ -180,6 +180,7 @@ public:
     static Filter create() {
         return {};
     }
+
 private:
     std::vector<Field> _fields;
 };

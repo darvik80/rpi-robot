@@ -5,7 +5,7 @@
 #include "HttpRequestHandlerManager.h"
 #include<boost/tokenizer.hpp>
 
-void HttpRequestHandlerManager::process(const HttpRequest& req, HttpResponse& resp) {
+void HttpRequestHandlerManager::process(const HttpRequest &req, HttpResponse &resp) {
     std::string target(req.target().data(), req.target().length());
     boost::char_separator<char> sep{"?"};
     boost::tokenizer tok(target, boost::char_separator<char>{"?"});
@@ -17,14 +17,14 @@ void HttpRequestHandlerManager::process(const HttpRequest& req, HttpResponse& re
         path = "/";
     }
 
-   if (auto it = _handlers.find(Request{req.method(), path}); it != _handlers.end()) {
-       it->second(req, resp);
-   } else {
-       if (it = _handlers.find(Request{req.method(), "/**"}); it != _handlers.end()) {
-           it->second(req, resp);
-           return;
-       }
+    if (auto it = _handlers.find(Request{req.method(), path}); it != _handlers.end()) {
+        it->second(req, resp);
+    } else {
+        if (it = _handlers.find(Request{req.method(), "/**"}); it != _handlers.end()) {
+            it->second(req, resp);
+            return;
+        }
 
-       throw std::invalid_argument(req.target().data());
-   }
+        throw std::invalid_argument(req.target().data());
+    }
 }

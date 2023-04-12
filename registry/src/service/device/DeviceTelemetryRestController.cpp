@@ -21,7 +21,8 @@ void DeviceTelemetryRestController::handle(const HttpRequest &request, HttpRespo
     }
 }
 
-void DeviceTelemetryRestController::handleGet(const HttpRequest &request, const HttpParams &params, HttpResponse &response) {
+void
+DeviceTelemetryRestController::handleGet(const HttpRequest &request, const HttpParams &params, HttpResponse &response) {
     auto repository = _database.getRepository<DeviceTelemetryRepository>();
 
     auto &res = response.emplace<HttpStringResponse>();
@@ -31,7 +32,7 @@ void DeviceTelemetryRestController::handleGet(const HttpRequest &request, const 
     if (params.contains("id")) {
         json = repository.findById(std::stoi((*params.find_last("id")).value));
     } else {
-        PageRequest page{.offset = 0, .size = 10};
+        PageRequest page{.offset = 0, .size = 10, .hasCount=true};
         if (const auto it = params.find("size"); it != params.end()) {
             page.size = std::stoi((*it).value);
         }

@@ -10,13 +10,13 @@
 
 
 class DeviceTelemetryRepository : public TRepository<DeviceTelemetryDo> {
-    public:
-        explicit DeviceTelemetryRepository(DataSource &source) : TRepository(source) {}
+public:
+    explicit DeviceTelemetryRepository(DataSource &source) : TRepository(source) {}
 
-        Page<DeviceTelemetryDo>::Ptr findAll(const Filter &filter, const PageRequest &page) override;
+    Page<DeviceTelemetryDo>::Ptr findAll(const Filter &filter, const PageRequest &page) override;
 
-        long insert(const DeviceTelemetryDo &model) override;
+    long insert(const DeviceTelemetryDo &model) override;
 
-        void update(const DeviceTelemetryDo &model) override;
+    void update(const DeviceTelemetryDo &model) override;
 
 };
