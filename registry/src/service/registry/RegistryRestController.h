@@ -15,6 +15,8 @@ private:
 
     void handlePost(const HttpRequest &request, HttpResponse &response);
 
+    void handlePut(const HttpRequest &request, const HttpParams &params, HttpResponse &response);
+
     void handleDelete(const HttpRequest &request, HttpResponse &response);
 
 public:

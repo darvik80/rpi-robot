@@ -65,11 +65,9 @@ void RegistryRepository::update(const RegistryDo &registry) {
     sql::UpdateModel i;
     i.update("registry")
             .set("name", registry.name)
-                    ("createdAt", registry.createdAt)
                     ("status", registry.status)
-                    ("uuid", registry.uuid)
                     ("json_data", registry.json_data.dump())
             .where(sql::column("id") == registry.id);
-    auto res = worker.exec_params1(i.str());
+    auto res = worker.exec_params(i.str());
     worker.commit();
 }

@@ -1,34 +1,25 @@
-import React, {useState, useEffect, useMemo, useRef} from "react";
-
-import {useNavigate} from "react-router-dom";
-import RegistryRepository from "../../repository/RegistryRepository";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import DeviceTelemetryRepository from "../../repository/DeviceTelemetryRepository";
 import {useTable} from "react-table";
 import Pagination from "@material-ui/lab/Pagination";
 
 
-const RegistryList = (props:any) => {
-    const navigate = useNavigate();
-
-    const [registries, setRegistries] = useState([]);
-    const [searchName, setSearchName] = useState("");
-    const registriesRef = useRef([]);
+const DeviceTelemetry = () => {
+    const [telemetry, setTelemetry] = useState([]);
+    const telemetryRef = useRef([]);
 
     const [page, setPage] = useState(1);
+    const [deviceId, setDeviceId] = useState(0);
     const [count, setCount] = useState(0);
     const [pageSize, setPageSize] = useState(20);
 
-    registriesRef.current = registries;
+    telemetryRef.current = telemetry;
 
-    const onChangeSearchName = (e: any) => {
-        const searchName = e.target.value;
-        setSearchName(searchName);
-    };
-
-    const getRequestParams = (searchName: string, page: number, pageSize: number) => {
+    const getRequestParams = (deviceId: number, page: number, pageSize: number) => {
         let params: any = {};
 
-        if (searchName) {
-            params["name"] = searchName;
+        if (deviceId) {
+            params["deviceId"] = deviceId;
         }
 
         if (page) {
@@ -43,58 +34,38 @@ const RegistryList = (props:any) => {
     };
 
     const findAllRegistries = () => {
-        const params = getRequestParams(searchName, page, pageSize);
+        const params = getRequestParams(deviceId, page, pageSize);
 
-        RegistryRepository.findAll(params)
+        DeviceTelemetryRepository.findAll(params)
             .then((response) => {
-                setRegistries(response.data.data);
+                setTelemetry(response.data.data);
                 setCount(Math.ceil(response.data.total / pageSize));
             })
             .catch((e) => {
                 console.log(e);
             });
     };
-    const findByName = () => {
-        setPage(1);
-        findAllRegistries();
-    }
-
     useEffect(findAllRegistries, [page, pageSize]);
 
-    const refreshList = () => {
-        findAllRegistries();
-    };
-
-    const removeAllTutorials = () => {
-        RegistryRepository.removeAll()
-            .then((response) => {
-                console.log(response.data);
-                refreshList();
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
-
-    const openRegistry = (rowIndex: any) => {
+    const openTelemetry = (rowIndex: any) => {
         // @ts-ignore
-        const id = registriesRef.current[rowIndex].id;
+        const id = telemetryRef.current[rowIndex].id;
 
-        navigate("/registry/" + id);
+        //props.history.push("/registry/" + id);
     };
 
-    const deleteRegistry = (rowIndex: any) => {
+    const deleteTelemetry = (rowIndex: any) => {
         // @ts-ignore
-        const id = registriesRef.current[rowIndex].id;
+        const id = telemetryRef.current[rowIndex].id;
 
-        RegistryRepository.remove(id)
+        DeviceTelemetryRepository.remove(id)
             .then((response) => {
                 //props.history.push("/registry");
 
-                let newRegistries = [...registriesRef.current];
-                newRegistries.splice(rowIndex, 1);
+                let newTelemetry = [...telemetryRef.current];
+                newTelemetry.splice(rowIndex, 1);
 
-                setRegistries(newRegistries);
+                setTelemetry(newTelemetry);
             })
             .catch((e) => {
                 console.log(e);
@@ -112,22 +83,10 @@ const RegistryList = (props:any) => {
                 accessor: "id",
             },
             {
-                Header: "Name",
-                accessor: "name",
-            },
-            {
-                Header: "UUID",
-                accessor: "uuid",
-            },
-            {
-                Header: "Status",
+                Header: "Telemetry",
                 accessor: "json_data",
                 Cell: (props: any) => {
-                    if (props.value) {
-                        return props.value.status;
-                    } else {
-                        return "unknown"
-                    }
+                    return JSON.stringify(props.value, null, 2)
                 },
             },
             {
@@ -137,11 +96,10 @@ const RegistryList = (props:any) => {
                     const rowIdx = props.row.id;
                     return (
                         <div>
-                            <span onClick={() => openRegistry(rowIdx)}>
-                            <i className="far fa-edit action mr-2"></i>
-                            </span>
-
-                            <span onClick={() => deleteRegistry(rowIdx)}>
+                            {/*<span onClick={() => openTelemetry(rowIdx)}>*/}
+                            {/*<i className="far fa-edit action mr-2"></i>*/}
+                            {/*</span>*/}
+                            <span onClick={() => deleteTelemetry(rowIdx)}>
                             <i className="fas fa-trash action"></i>
                             </span>
                         </div>
@@ -162,31 +120,11 @@ const RegistryList = (props:any) => {
     } = useTable({
         // @ts-ignore
         columns,
-        data: registries,
+        data: telemetry,
     });
 
     return (
-        <div className="list row card-body">
-            <div className="col-md-8">
-                <div className="input-group mb-3">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by name"
-                        value={searchName}
-                        onChange={onChangeSearchName}
-                    />
-                    <div className="input-group-append">
-                        <button
-                            className="btn btn-outline-secondary"
-                            type="button"
-                            onClick={findByName}
-                        >
-                            Search
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div className="list row">
             <div className="col-md-12 list">
                 <div className="card-header">
                     <h3 className="card-title">Registries</h3>
@@ -243,4 +181,4 @@ const RegistryList = (props:any) => {
     );
 };
 
-export default RegistryList;
+export default DeviceTelemetry;

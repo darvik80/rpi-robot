@@ -21,12 +21,24 @@ void HttpService::addHandlers(Registry &registry, const HttpProperties &props) {
     registry.getService<EventBusService>().send(JsonRpcRegisterEvent{*jsonRpc});
 
     registerHandler(http::verb::post, "/rpc", jsonRpc);
-    registerHandler(http::verb::get, "/api/registries",
-                    std::make_shared<RegistryRestController>(registry.getService<Database>()));
-    registerHandler(http::verb::get, "/api/devices",
-                    std::make_shared<DeviceRestController>(registry.getService<Database>()));
-    registerHandler(http::verb::get, "/api/devices-telemetry",
-                    std::make_shared<DeviceTelemetryRestController>(registry.getService<Database>()));
+    auto registryRepository = std::make_shared<RegistryRestController>(registry.getService<Database>());
+    registerHandler(http::verb::get, "/api/registries", registryRepository);
+    registerHandler(http::verb::put, "/api/registries", registryRepository);
+    registerHandler(http::verb::post, "/api/registries", registryRepository);
+    registerHandler(http::verb::delete_, "/api/registries", registryRepository);
+    registerHandler(http::verb::options, "/api/registries", registryRepository);
+
+    auto deviceRepository = std::make_shared<DeviceRestController>(registry.getService<Database>());
+    registerHandler(http::verb::get, "/api/devices",deviceRepository);
+    registerHandler(http::verb::put, "/api/devices", deviceRepository);
+    registerHandler(http::verb::post, "/api/devices", deviceRepository);
+    registerHandler(http::verb::delete_, "/api/devices", deviceRepository);
+    registerHandler(http::verb::options, "/api/devices", deviceRepository);
+
+    auto telemetryRepository = std::make_shared<DeviceTelemetryRestController>(registry.getService<Database>());
+    registerHandler(http::verb::get, "/api/devices-telemetry",telemetryRepository);
+    registerHandler(http::verb::delete_, "/api/devices-telemetry",telemetryRepository);
+    registerHandler(http::verb::options, "/api/devices-telemetry",telemetryRepository);
 
     std::string root = ResourceManager::instance().getResourcesDir();
     if (props.root.has_value()) {

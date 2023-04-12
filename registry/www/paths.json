@@ -11,6 +11,9 @@
       "@store": [
         "src/store/"
       ],
+      "@repository": [
+        "src/repository/index"
+      ],
       "@components": [
         "src/components/index"
       ],

@@ -12,6 +12,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setWindowSize} from '@app/store/reducers/ui';
 
 import Dashboard from '@pages/Dashboard';
+import RegistryPage from '@pages/RegistryPage';
 import Registry from '@pages/Registry';
 import Blank from '@pages/Blank';
 import SubMenu from '@pages/SubMenu';
@@ -19,6 +20,8 @@ import Profile from '@pages/profile/Profile';
 
 import PublicRoute from './routes/PublicRoute';
 import PrivateRoute from './routes/PrivateRoute';
+import Devices from "@pages/Devices";
+import {DeviceTelemetry} from "@components";
 
 const App = () => {
   const windowSize = useWindowSize();
@@ -54,7 +57,10 @@ const App = () => {
             <Route path="/blank" element={<Blank />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/" element={<Dashboard />} />
-            <Route path="/registry" element={<Registry />} />
+            <Route path="/registry" element={<RegistryPage />} />
+            <Route path="/registry/:id" element={<Registry />} />
+            <Route path="/devices" element={<Devices />} />
+            <Route path="/device-telemetry" element={<DeviceTelemetry />} />
           </Route>
         </Route>
       </Routes>

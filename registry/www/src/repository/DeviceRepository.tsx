@@ -1,31 +1,30 @@
 import axios from "../utils/axios";
 
 const findAll = (params: any) => {
-    return axios.get("/registries", {params});
+    return axios.get("/devices", {params});
 };
 
 const get = (id: number) => {
-    return axios.get(`/registries?id=${id}`);
+    return axios.get(`/devices?id=${id}`);
 };
 
 const create = (data: any) => {
-    return axios.post("/registries", {
+    return axios.post("/devices", {
         params: data,
     });
 };
 
 const update = (id: number, data: any) => {
-    return axios.put(`/registries?id=${id}`, data);
+    return axios.put(`/devices?id=${id}`, data);
 };
 
-const remove = (id: bigint) => {
-    return axios.delete(`/registries?id=${id}`);
+const remove = (id: number) => {
+    return axios.delete(`/devices?id=${id}`);
 };
 
 const removeAll = () => {
-    return axios.delete(`/registries`);
+    return axios.delete(`/devices`);
 };
-
 
 const RegistryRepository = {
     findAll,
@@ -36,4 +35,4 @@ const RegistryRepository = {
     removeAll,
 };
 
-export default RegistryRepository
+export default RegistryRepository;

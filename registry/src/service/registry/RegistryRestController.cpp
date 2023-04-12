@@ -14,9 +14,11 @@ void RegistryRestController::handle(const HttpRequest &request, HttpResponse &re
 
     if (request.method() == http::verb::get) {
         handleGet(request, result.value().params(), response);
+    } else if (request.method() == http::verb::put) {
+        handlePut(request, result.value().params(), response);
     } else {
-        auto &resp = response.emplace<HttpStringResponse>();
-        resp.body() = "Hello World!";
+        auto& res = response.emplace<HttpStringResponse>();
+        applyHeaders(res);
     }
 }
 
@@ -25,8 +27,8 @@ void RegistryRestController::handleGet(const HttpRequest &request, const HttpPar
 
     auto &res = response.emplace<HttpStringResponse>();
     res.set(http::field::content_type, "application/json");
-    nlohmann::json json;
 
+    nlohmann::json json;
     if (params.contains("id")) {
         json = repository.findById(std::stoi((*params.find_last("id")).value));
     } else {
@@ -50,7 +52,20 @@ void RegistryRestController::handleGet(const HttpRequest &request, const HttpPar
 }
 
 void RegistryRestController::handlePost(const HttpRequest &request, HttpResponse &response) {
+}
 
+void RegistryRestController::handlePut(const HttpRequest &request, const HttpParams &params, HttpResponse &response) {
+    auto repository = _database.getRepository<RegistryRepository>();
+
+    auto &res = response.emplace<HttpStringResponse>();
+    applyHeaders(res);
+
+    if (params.contains("id")) {
+        RegistryDo registry = nlohmann::json::parse(request.body());
+        repository.update(registry);
+    }
+
+    res.body() = R"({"status": "success"})";
 }
 
 void RegistryRestController::handleDelete(const HttpRequest &request, HttpResponse &response) {

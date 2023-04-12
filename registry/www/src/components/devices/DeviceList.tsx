@@ -1,14 +1,10 @@
 import React, {useState, useEffect, useMemo, useRef} from "react";
-
-import {useNavigate} from "react-router-dom";
-import RegistryRepository from "../../repository/RegistryRepository";
+import DeviceRepository from "../../repository/DeviceRepository";
 import {useTable} from "react-table";
 import Pagination from "@material-ui/lab/Pagination";
 
 
-const RegistryList = (props:any) => {
-    const navigate = useNavigate();
-
+const DeviceList = () => {
     const [registries, setRegistries] = useState([]);
     const [searchName, setSearchName] = useState("");
     const registriesRef = useRef([]);
@@ -45,7 +41,7 @@ const RegistryList = (props:any) => {
     const findAllRegistries = () => {
         const params = getRequestParams(searchName, page, pageSize);
 
-        RegistryRepository.findAll(params)
+        DeviceRepository.findAll(params)
             .then((response) => {
                 setRegistries(response.data.data);
                 setCount(Math.ceil(response.data.total / pageSize));
@@ -65,29 +61,18 @@ const RegistryList = (props:any) => {
         findAllRegistries();
     };
 
-    const removeAllTutorials = () => {
-        RegistryRepository.removeAll()
-            .then((response) => {
-                console.log(response.data);
-                refreshList();
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
-
-    const openRegistry = (rowIndex: any) => {
+    const openDevice = (rowIndex: any) => {
         // @ts-ignore
         const id = registriesRef.current[rowIndex].id;
 
-        navigate("/registry/" + id);
+        //props.history.push("/registry/" + id);
     };
 
-    const deleteRegistry = (rowIndex: any) => {
+    const deleteDevice = (rowIndex: any) => {
         // @ts-ignore
         const id = registriesRef.current[rowIndex].id;
 
-        RegistryRepository.remove(id)
+        DeviceRepository.remove(id)
             .then((response) => {
                 //props.history.push("/registry");
 
@@ -103,6 +88,11 @@ const RegistryList = (props:any) => {
 
     const handlePageChange = (event: any, value: number) => {
         setPage(value);
+    };
+
+    const handlePageSizeChange = (event: any) => {
+        setPageSize(event.target.value);
+        setPage(1);
     };
 
     const columns = useMemo(
@@ -137,11 +127,11 @@ const RegistryList = (props:any) => {
                     const rowIdx = props.row.id;
                     return (
                         <div>
-                            <span onClick={() => openRegistry(rowIdx)}>
+                            <span onClick={() => openDevice(rowIdx)}>
                             <i className="far fa-edit action mr-2"></i>
                             </span>
 
-                            <span onClick={() => deleteRegistry(rowIdx)}>
+                            <span onClick={() => deleteDevice(rowIdx)}>
                             <i className="fas fa-trash action"></i>
                             </span>
                         </div>
@@ -166,7 +156,7 @@ const RegistryList = (props:any) => {
     });
 
     return (
-        <div className="list row card-body">
+        <div className="list row">
             <div className="col-md-8">
                 <div className="input-group mb-3">
                     <input
@@ -243,4 +233,4 @@ const RegistryList = (props:any) => {
     );
 };
 
-export default RegistryList;
+export default DeviceList;

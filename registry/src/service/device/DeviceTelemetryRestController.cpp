@@ -15,9 +15,11 @@ void DeviceTelemetryRestController::handle(const HttpRequest &request, HttpRespo
 
     if (request.method() == http::verb::get) {
         handleGet(request, result.value().params(), response);
+    } else if (request.method() == http::verb::delete_) {
+        handleDelete(request, result.value().params(), response);
     } else {
         auto &resp = response.emplace<HttpStringResponse>();
-        resp.body() = "Hello World!";
+        applyHeaders(resp);
     }
 }
 
@@ -25,10 +27,7 @@ void
 DeviceTelemetryRestController::handleGet(const HttpRequest &request, const HttpParams &params, HttpResponse &response) {
     auto repository = _database.getRepository<DeviceTelemetryRepository>();
 
-    auto &res = response.emplace<HttpStringResponse>();
-    res.set(http::field::content_type, "application/json");
     nlohmann::json json;
-
     if (params.contains("id")) {
         json = repository.findById(std::stoi((*params.find_last("id")).value));
     } else {
@@ -45,5 +44,20 @@ DeviceTelemetryRestController::handleGet(const HttpRequest &request, const HttpP
         json = *repository.findAll(filter, page);
     }
 
+    auto &res = response.emplace<HttpStringResponse>();
     res.body() = json.dump();
+    applyHeaders(res);
+}
+
+void DeviceTelemetryRestController::handleDelete(const HttpRequest &request, const HttpParams &params,
+                                                 HttpResponse &response) {
+    auto repository = _database.getRepository<DeviceTelemetryRepository>();
+
+    if (params.contains("id")) {
+        repository.remove(std::stoi((*params.find_last("id")).value));
+    }
+
+    auto &res = response.emplace<HttpStringResponse>();
+    res.body() = R"({"status": "success"})";
+    applyHeaders(res);
 }

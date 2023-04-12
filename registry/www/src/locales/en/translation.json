@@ -75,8 +75,10 @@
   },
   "menusidebar": {
     "label": {
-      "registry": "Registry",
       "dashboard": "Dashboard",
+      "registry": "Registry",
+      "devices": "Devices",
+      "device-telemetry": "Device Telemetry",
       "profile": "Profile",
       "blank": "Blank",
       "mainMenu": "Main Menu",

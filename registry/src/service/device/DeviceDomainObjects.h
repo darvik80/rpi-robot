@@ -42,5 +42,5 @@ struct DeviceTelemetryDo {
     nlohmann::json json_data;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceTelemetryDo, id, deviceId, createdAt, json_data)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceTelemetryDo, id, deviceId, refDevice, createdAt, json_data)
 

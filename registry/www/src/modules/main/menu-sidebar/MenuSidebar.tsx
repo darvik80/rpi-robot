@@ -16,37 +16,47 @@ export interface IMenuItem {
 
 export const MENU: IMenuItem[] = [
   {
-    name: i18n.t('menusidebar.label.registry'),
-    icon: 'fas fa-wrench nav-icon" />',
-    path: '/registry'
-  },
-  {
     name: i18n.t('menusidebar.label.dashboard'),
     icon: 'fas fa-tachometer-alt nav-icon" />',
     path: '/'
   },
   {
-    name: i18n.t('menusidebar.label.blank'),
-    icon: 'fas fa-wrench nav-icon',
-    path: '/blank'
+    name: i18n.t('menusidebar.label.registry'),
+    icon: 'fas fa-wrench nav-icon" />',
+    path: '/registry'
   },
   {
-    name: i18n.t('menusidebar.label.mainMenu'),
-    icon: 'far fa-caret-square-down nav-icon',
-    children: [
-      {
-        name: i18n.t('menusidebar.label.subMenu'),
-        icon: 'fas fa-hammer nav-icon',
-        path: '/sub-menu-1'
-      },
-
-      {
-        name: i18n.t('menusidebar.label.blank'),
-        icon: 'fas fa-cogs nav-icon',
-        path: '/sub-menu-2'
-      }
-    ]
-  }
+    name: i18n.t('menusidebar.label.devices'),
+    icon: 'fas fa-gamepad nav-icon" />',
+    path: '/devices'
+  },
+  {
+    name: i18n.t('menusidebar.label.device-telemetry'),
+    icon: 'fas fa-gamepad nav-icon" />',
+    path: '/device-telemetry'
+  },
+  // {
+  //   name: i18n.t('menusidebar.label.blank'),
+  //   icon: 'fas fa-wrench nav-icon',
+  //   path: '/blank'
+  // },
+  // {
+  //   name: i18n.t('menusidebar.label.mainMenu'),
+  //   icon: 'far fa-caret-square-down nav-icon',
+  //   children: [
+  //     {
+  //       name: i18n.t('menusidebar.label.subMenu'),
+  //       icon: 'fas fa-hammer nav-icon',
+  //       path: '/sub-menu-1'
+  //     },
+  //
+  //     {
+  //       name: i18n.t('menusidebar.label.blank'),
+  //       icon: 'fas fa-cogs nav-icon',
+  //       path: '/sub-menu-2'
+  //     }
+  //   ]
+  // }
 ];
 
 const StyledBrandImage = styled(PfImage)`

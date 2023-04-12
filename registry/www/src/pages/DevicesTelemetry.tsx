@@ -1,18 +1,18 @@
 import React from 'react';
-import {ContentHeader, Registry} from '@components';
+import {ContentHeader, DeviceTelemetry} from '@components';
 
-const RegistryPage = () => {
+const RegistryDo = () => {
 
     return (
         <div>
-            <ContentHeader title="IoT Registry" />
+            <ContentHeader title="IoT Devices" />
             <section className="content">
                 <div className="card">
-                <Registry/>
+                <DeviceTelemetry/>
                 </div>
             </section>
         </div>
     );
 };
 
-export default RegistryPage;
+export default RegistryDo;

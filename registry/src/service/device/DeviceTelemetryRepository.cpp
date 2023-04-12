@@ -3,24 +3,23 @@
 //
 
 #include "DeviceTelemetryRepository.h"
-#include <boost/iterator/filter_iterator.hpp>
+#include <unordered_set>
 
 Page<DeviceTelemetryDo>::Ptr DeviceTelemetryRepository::findAll(const Filter &filter, const PageRequest &page) {
     auto result = std::make_shared<Page<DeviceTelemetryDo>>();
 
     sql::SelectModel s;
     applyFilter(s, filter);
-    auto sdata{s};
-    sdata.select("id", "device_id", "created_at", "json_data")
-            .from("device")
+    s.select("id", "device_id", "created_at", "json_data")
+            .from("device_telemetry")
             .offset(page.offset)
             .limit(page.size)
-            .order_by("id");
+            .order_by("id DESC");
 
     pqxx::nontransaction w(_source.getConnection());
-    auto res = w.exec_params(sdata.str());
+    auto res = w.exec_params(s.str());
 
-    std::vector<long> deviceIds;
+    std::unordered_set<long> deviceIds;
     for (const auto &row: res) {
         result->data.push_back(
                 {
@@ -30,12 +29,12 @@ Page<DeviceTelemetryDo>::Ptr DeviceTelemetryRepository::findAll(const Filter &fi
                         .json_data = nlohmann::json::parse(row.at(3).as<std::string>()),
                 }
         );
-        deviceIds.push_back(result->data.back().id);
+        deviceIds.insert(result->data.back().deviceId);
     }
 
     if (!deviceIds.empty()) {
         sql::SelectModel cs;
-        sdata.select("id", "created_at", "name", "uuid", "status", "json_data")
+        cs.select("id", "created_at", "name", "uuid", "status", "json_data")
                 .from("device")
                 .where(sql::column("id").in(deviceIds));
 
@@ -60,9 +59,9 @@ Page<DeviceTelemetryDo>::Ptr DeviceTelemetryRepository::findAll(const Filter &fi
 
 
     if (page.hasCount) {
-        auto scount{s};
-        scount.select("COUNT(id)").from("device_telemetry");
-        result->total = w.exec_params1(scount.str()).at(0).as<size_t>();;
+        sql::SelectModel sc;
+        sc.select("COUNT(id)").from("device_telemetry");
+        result->total = w.exec_params1(sc.str()).at(0).as<size_t>();;
     }
 
     return result;
@@ -85,3 +84,12 @@ long DeviceTelemetryRepository::insert(const DeviceTelemetryDo &model) {
 void DeviceTelemetryRepository::update(const DeviceTelemetryDo &model) {
 }
 
+
+void DeviceTelemetryRepository::remove(long id) {
+    pqxx::work worker(_source.getConnection());
+    sql::DeleteModel d;
+    d.from("device_telemetry").where(sql::column("id") == id);
+
+    auto res = worker.exec_params(d.str());
+    worker.commit();
+}

@@ -84,7 +84,7 @@ void HttpWorker::process(const HttpRequest &req) {
 
 void HttpWorker::visit(HttpStringResponse &resp) {
     resp.set(http::field::server, "Beast");
-    resp.keep_alive(false);
+    resp.keep_alive(true);
     resp.prepare_payload();
 
     auto &serializer = _serializer.emplace<HttpStringSerializer>(resp);

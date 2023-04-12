@@ -1,5 +1,5 @@
 import React from 'react';
-import {ContentHeader, Registry} from '@components';
+import {ContentHeader, RegistryList} from '@components';
 
 const RegistryPage = () => {
 
@@ -8,7 +8,7 @@ const RegistryPage = () => {
             <ContentHeader title="IoT Registry" />
             <section className="content">
                 <div className="card">
-                <Registry/>
+                <RegistryList/>
                 </div>
             </section>
         </div>

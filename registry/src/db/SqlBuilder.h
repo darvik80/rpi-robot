@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include <unordered_set>
 #include <string>
 #include <string_view>
 #include <boost/algorithm/string.hpp>
@@ -99,6 +100,16 @@ namespace sql {
         return ret;
     }
 
+    template<typename T>
+    std::string str_val_join(const std::unordered_set<T> &v, const std::string &delim) {
+        std::string ret;
+        auto it = std::begin(v);
+        if (it != std::end(v)) {
+            ret = to_value<T>(*it);
+            while (++it != std::end(v)) ret += delim + to_value<T>(*it);
+        }
+        return ret;
+    }
 
     class column {
     public:
@@ -146,6 +157,20 @@ namespace sql {
             if (size == 1) {
                 _cond.append(" = ");
                 _cond.append(to_value(args[0]));
+            } else {
+                _cond.append(" in (");
+                _cond.append(str_val_join<T>(args, ", "));
+                _cond.append(")");
+            }
+            return *this;
+        }
+
+        template<typename T>
+        column &in(const std::unordered_set<T> &args) {
+            size_t size = args.size();
+            if (size == 1) {
+                _cond.append(" = ");
+                _cond.append(to_value(*args.begin()));
             } else {
                 _cond.append(" in (");
                 _cond.append(str_val_join<T>(args, ", "));
