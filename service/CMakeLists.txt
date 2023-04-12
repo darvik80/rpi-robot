@@ -21,7 +21,6 @@ file(GLOB SRCS_G
 
 file(COPY resources/settings.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-message(STATUS ${CMAKE_HOST_SYSTEM_PROCESSOR} " " ${RPI_LIB})
 add_executable(${PROJECT_NAME} ${SRCS_G})
 target_link_libraries(
         ${PROJECT_NAME}

@@ -22,7 +22,12 @@ include_directories(
 set(RESOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 set(WWW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/www)
 
-execute_process(COMMAND yarn install WORKING_DIRECTORY ${WWW_DIRECTORY})
+message(STATUS "Build ReactJS App")
+execute_process(
+        COMMAND yarn install
+        COMMAND yarn build
+        WORKING_DIRECTORY ${WWW_DIRECTORY}
+)
 
 if (APPLE)
     message("Apple incubator build")
