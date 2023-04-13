@@ -6,6 +6,7 @@ import {ContentHeader} from "@components";
 
 import {useNavigate, useParams} from 'react-router-dom';
 
+import {isMobile} from 'react-device-detect';
 
 const DeviceTelemetry = () => {
     const navigate = useNavigate();
@@ -146,6 +147,12 @@ const DeviceTelemetry = () => {
         []
     );
 
+
+    let initialState = {}
+    if (isMobile) {
+        initialState = {hiddenColumns: ['id', "refDevice", "actions"]};
+    }
+
     // @ts-ignore
     const {
         getTableProps,
@@ -157,7 +164,12 @@ const DeviceTelemetry = () => {
         // @ts-ignore
         columns,
         data: telemetry,
+        initialState,
     });
+
+    const handleOnRefresh = (e: any) => {
+        findAllTelemetry()
+    }
 
     const handleOnClose = (e: any) => {
         navigate(-1)
@@ -165,7 +177,7 @@ const DeviceTelemetry = () => {
 
     return (
         <div>
-            <ContentHeader title="IoT Telemetry"/>
+            <ContentHeader title="Telemetry history"/>
             <section className="content">
                 <div className="card">
                     <div className="card-header">
@@ -179,9 +191,11 @@ const DeviceTelemetry = () => {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-11"/>
-                            <div className="col-md-1">
+                            <div className="col-md-10"/>
+                            <div className="col-md-2">
                                 <div className="btn-group" role="group">
+                                    <input className="btn btn-primary" type="button" value="Refresh"
+                                           onClick={handleOnRefresh}/>
                                     <input className="btn btn-secondary" type="button" value="Close"
                                            onClick={handleOnClose}/>
                                 </div>
@@ -189,13 +203,7 @@ const DeviceTelemetry = () => {
                         </div>
                     </div>
                 </div>
-
                 <div className="card">
-                    <div className="row">
-                        <div className="col-md-12 card-header">
-                            <h3 className="card-title">Device History</h3>
-                        </div>
-                    </div>
                     <div className="card-body">
                         <div className="row">
                             <div className="col-md-12">
@@ -221,7 +229,8 @@ const DeviceTelemetry = () => {
                                             <tr {...row.getRowProps()} key={row.id}>
                                                 {row.cells.map((cell, id) => {
                                                     return (
-                                                        <td {...cell.getCellProps()} key={id}>{cell.render("Cell")}</td>
+                                                        <td {...cell.getCellProps()}
+                                                            key={id}>{cell.render("Cell")}</td>
                                                     );
                                                 })}
                                             </tr>
@@ -250,7 +259,7 @@ const DeviceTelemetry = () => {
                 </div>
             </section>
         </div>
-    );
-};
+    )
+}
 
 export default DeviceTelemetry;

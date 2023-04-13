@@ -4,6 +4,7 @@ import {useTable} from "react-table";
 import Pagination from "@material-ui/lab/Pagination";
 import {useNavigate} from 'react-router-dom';
 import {ContentHeader} from "@components";
+import {isMobile} from 'react-device-detect';
 
 const DevicesPage = () => {
     const navigate = useNavigate();
@@ -155,7 +156,7 @@ const DevicesPage = () => {
                             <span onClick={() => openDevice(rowIdx)}>
                             <i className="far fa-edit action mr-2"></i>
                             </span>
-                            <span onClick={() => deleteDevice(rowIdx)}>
+                            <span onClick={() => deleteDevice(rowIdx)} hidden={isMobile}>
                             <i className="fas fa-trash action"></i>
                             </span>
                         </div>
@@ -165,6 +166,11 @@ const DevicesPage = () => {
         ],
         []
     );
+
+    let initialState = {}
+    if (isMobile) {
+        initialState = {hiddenColumns: ['id', "uuid", "json_data"]};
+    }
 
     // @ts-ignore
     const {
@@ -177,6 +183,7 @@ const DevicesPage = () => {
         // @ts-ignore
         columns,
         data: devices,
+        initialState
     });
 
     return (

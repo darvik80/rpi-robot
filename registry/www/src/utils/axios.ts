@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+let baseApi = "/api"
+if (process.env.NODE_ENV === "development") {
+    baseApi = "http://localhost:8080/api"
+}
+
 export default axios.create({
-    baseURL: "http://localhost:8080/api",
+    baseURL: baseApi,
     headers: {
         "Content-type": "application/json"
     }

@@ -5,6 +5,7 @@ import {RegistryRepository} from "@repository";
 import {useTable} from "react-table";
 import Pagination from "@material-ui/lab/Pagination";
 import {ContentHeader} from "@components";
+import {isMobile} from 'react-device-detect';
 
 
 const RegistryPage = () => {
@@ -127,7 +128,7 @@ const RegistryPage = () => {
                             <i className="far fa-edit action mr-2"></i>
                             </span>
 
-                            <span onClick={() => deleteRegistry(rowIdx)}>
+                            <span onClick={() => deleteRegistry(rowIdx)} hidden={isMobile}>
                             <i className="fas fa-trash action"></i>
                             </span>
                         </div>
@@ -137,6 +138,11 @@ const RegistryPage = () => {
         ],
         []
     );
+
+    let initialState = {}
+    if (isMobile) {
+        initialState = {hiddenColumns: ['id', "uuid", "json_data"]};
+    }
 
     // @ts-ignore
     const {
@@ -149,6 +155,7 @@ const RegistryPage = () => {
         // @ts-ignore
         columns,
         data: registries,
+        initialState
     });
 
     return (
@@ -167,7 +174,7 @@ const RegistryPage = () => {
                                         value={searchName}
                                         onChange={onChangeSearchName}
                                     />
-                                    <div className="input-group-append">
+                                    <div className="input-group-append" hidden={isMobile}>
                                         <button
                                             className="btn btn-outline-secondary"
                                             type="button"

@@ -9,11 +9,12 @@
 #include <boost/dll.hpp>
 
 class ResourceLinux : public Resource {
-    const void *_start;
-    const void *_end;
+    const void* _start;
+    const void* _end;
 public:
-    explicit ResourceLinux(const void *start, const void *end)
-            : _start(start), _end(end) {
+    explicit ResourceLinux(const void* start, const void* end)
+            : _start(start), _end(end)
+    {
     }
 
     const void *getOffset() override {
@@ -21,12 +22,11 @@ public:
     }
 
     size_t getSize() override {
-        return (unsigned long) _end - (unsigned long) _start;
+        return (unsigned long)_end - (unsigned long)_start;
     }
 };
 
-${
-POINTERS_FOR_EMBED_FILES}
+${POINTERS_FOR_EMBED_FILES}
 
 class ResourceManagerLinux : public ResourceManager {
     std::map<std::string, Resource::Ptr> _resources;
@@ -37,7 +37,7 @@ public:
 
     std::vector<std::string> getResourceNames() override {
         std::vector<std::string> result;
-        for (const auto &elem: _resources) {
+        for (const auto &elem : _resources) {
             result.push_back(elem.first);
         }
 
@@ -60,6 +60,6 @@ public:
     }
 };
 
-ResourceManager &ResourceManager::instance() {
+ResourceManager& ResourceManager::instance() {
     return boost::serialization::singleton<ResourceManagerLinux>::get_mutable_instance();
 }
