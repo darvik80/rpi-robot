@@ -12,15 +12,17 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setWindowSize} from '@app/store/reducers/ui';
 
 import Dashboard from '@pages/Dashboard';
-import RegistryPage from '@pages/RegistryPage';
-import Registry from '@pages/Registry';
 import Blank from '@pages/Blank';
 import SubMenu from '@pages/SubMenu';
 import Profile from '@pages/profile/Profile';
 
 import PublicRoute from './routes/PublicRoute';
-import Devices from "@pages/Devices";
-import DeviceTelemetry from "@pages/DevicesTelemetry";
+
+import RegistryPage from '@pages/registry/RegistryPage';
+import Registry from '@pages/registry/Registry';
+import DevicesPage from "@pages/devices/DevicesPage";
+import Device from "@pages/devices/Device";
+import DeviceTelemetry from "@pages/devices/DeviceTelemetry";
 
 const App = () => {
     const windowSize = useWindowSize();
@@ -56,10 +58,11 @@ const App = () => {
                         <Route path="/blank" element={<Blank/>}/>
                         <Route path="/profile" element={<Profile/>}/>
                         <Route path="/" element={<Dashboard/>}/>
-                        <Route path="/registry" element={<RegistryPage/>}/>
-                        <Route path="/registry/:id" element={<Registry/>}/>
-                        <Route path="/devices" element={<Devices/>}/>
-                        <Route path="/device-telemetry" element={<DeviceTelemetry/>}/>
+                        <Route path="/registries" element={<RegistryPage/>}/>
+                        <Route path="/registries/:id" element={<Registry/>}/>
+                        <Route path="/devices" element={<DevicesPage/>}/>
+                        <Route path="/devices/:id" element={<Device/>}/>
+                        <Route path="/device-telemetry/:deviceId" element={<DeviceTelemetry/>}/>
                     </Route>
                 </Route>
             </Routes>

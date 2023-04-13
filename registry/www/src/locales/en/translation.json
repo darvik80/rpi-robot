@@ -49,11 +49,7 @@
       "contact": "Contact"
     },
     "language": {
-      "turkish": "Turkish",
-      "english": "English",
-      "german": "German",
-      "french": "French",
-      "spanish": "Spanish"
+      "english": "English"
     },
     "messages": {
       "ago": "{{quantity}} {{unit}} Ago",
@@ -76,7 +72,7 @@
   "menusidebar": {
     "label": {
       "dashboard": "Dashboard",
-      "registry": "Registry",
+      "registry": "Registries",
       "devices": "Devices",
       "device-telemetry": "Device Telemetry",
       "profile": "Profile",

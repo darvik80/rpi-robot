@@ -23,17 +23,12 @@ export const MENU: IMenuItem[] = [
     {
         name: i18n.t('menusidebar.label.registry'),
         icon: 'fas fa-wrench nav-icon" />',
-        path: '/registry'
+        path: '/registries'
     },
     {
         name: i18n.t('menusidebar.label.devices'),
         icon: 'fas fa-gamepad nav-icon" />',
         path: '/devices'
-    },
-    {
-        name: i18n.t('menusidebar.label.device-telemetry'),
-        icon: 'fas fa-history nav-icon" />',
-        path: '/device-telemetry'
     },
     // {
     //   name: i18n.t('menusidebar.label.blank'),

@@ -5,6 +5,7 @@ export function makeServer({environment = "test"} = {}) {
     return createServer({
         models: {
             registry: Model,
+            device: Model,
         },
 
         serializers: {
@@ -60,6 +61,7 @@ export function makeServer({environment = "test"} = {}) {
         },
 
         routes() {
+            // Registry
             this.get("/api/registries", (schema, request) => {
                 let page = parseInt(request.queryParams.page)
                 let size = parseInt(request.queryParams.size)
@@ -92,6 +94,43 @@ export function makeServer({environment = "test"} = {}) {
                 return schema.registries.create(attrs)
             })
             this.delete("/api/registries/:id", (schema, request) => {
+                // @ts-ignore
+                return schema.registries.find(request.params.id).destroy()
+            })
+
+            // Device
+            this.get("/api/devices", (schema, request) => {
+                let page = parseInt(request.queryParams.page)
+                let size = parseInt(request.queryParams.size)
+                let name = request.queryParams.name
+                let offset = page * size
+                let data: any = []
+
+                // @ts-ignore
+                schema.devices.all().models.forEach(item => {
+                    if (name) {
+                        if (item.name.startsWith(name)) {
+                            data.push(item)
+                        }
+                    } else {
+                        data.push(item)
+                    }
+                })
+
+                return {
+                    devices: data.slice(offset, offset + size),
+                    total: data.length,
+                }
+            })
+            let newDeviceId = 3
+            this.post("/api/devices", (schema, request) => {
+                let attrs = JSON.parse(request.requestBody)
+                attrs.id = newDeviceId++
+
+                // @ts-ignore
+                return schema.registries.create(attrs)
+            })
+            this.delete("/api/devices/:id", (schema, request) => {
                 // @ts-ignore
                 return schema.registries.find(request.params.id).destroy()
             })

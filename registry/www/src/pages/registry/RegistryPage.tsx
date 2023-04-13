@@ -1,12 +1,13 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 
 import {useNavigate} from "react-router-dom";
-import RegistryRepository from "../../repository/RegistryRepository";
+import {RegistryRepository} from "@repository";
 import {useTable} from "react-table";
 import Pagination from "@material-ui/lab/Pagination";
+import {ContentHeader} from "@components";
 
 
-const RegistryList = (props: any) => {
+const RegistryPage = () => {
     const navigate = useNavigate();
 
     const [registries, setRegistries] = useState([]);
@@ -15,7 +16,7 @@ const RegistryList = (props: any) => {
 
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(0);
-    const [pageSize, setPageSize] = useState(20);
+    const [pageSize, setPageSize] = useState(10);
 
     registriesRef.current = registries;
 
@@ -61,26 +62,11 @@ const RegistryList = (props: any) => {
 
     useEffect(findAllRegistries, [page, pageSize]);
 
-    const refreshList = () => {
-        findAllRegistries();
-    };
-
-    const removeAllTutorials = () => {
-        RegistryRepository.removeAll()
-            .then((response) => {
-                console.log(response.data);
-                refreshList();
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
-
     const openRegistry = (rowIndex: any) => {
         // @ts-ignore
         const id = registriesRef.current[rowIndex].id;
 
-        navigate("/registry/" + id);
+        navigate("/registries/" + id);
     };
 
     const deleteRegistry = (rowIndex: any) => {
@@ -166,65 +152,70 @@ const RegistryList = (props: any) => {
     });
 
     return (
-        <div className="card">
-            <div className="list row">
-                <div className="col-md-12">
-                    <div className="card-header">
-                        <h3 className="card-title">Registries</h3>
-                    </div>
+        <div>
+            <ContentHeader title="Registries"/>
+            <section className="content">
+                <div className="card">
                     <div className="card-body">
-                        <div className="col-md-8">
-                            <div className="input-group mb-3">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Search by name"
-                                    value={searchName}
-                                    onChange={onChangeSearchName}
-                                />
-                                <div className="input-group-append">
-                                    <button
-                                        className="btn btn-outline-secondary"
-                                        type="button"
-                                        onClick={findByName}
-                                    >
-                                        Search
-                                    </button>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="input-group mb-3">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Search by name"
+                                        value={searchName}
+                                        onChange={onChangeSearchName}
+                                    />
+                                    <div className="input-group-append">
+                                        <button
+                                            className="btn btn-outline-secondary"
+                                            type="button"
+                                            onClick={findByName}
+                                        >
+                                            Search
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <table
-                            className="table table-striped table-bordered"
-                            {...getTableProps()}
-                        >
-                            <thead>
-                            {headerGroups.map((headerGroup, headerId) => (
-                                <tr {...headerGroup.getHeaderGroupProps()} key={headerId}>
-                                    {headerGroup.headers.map((column) => (
-                                        <th {...column.getHeaderProps()} key={column.id}>
-                                            {column.render("Header")}
-                                        </th>
+                        <div className="row">
+                            <div className="col-md-12">
+                                <table
+                                    className="table table-striped table-bordered"
+                                    {...getTableProps()}
+                                >
+                                    <thead>
+                                    {headerGroups.map((headerGroup, headerId) => (
+                                        <tr {...headerGroup.getHeaderGroupProps()} key={headerId}>
+                                            {headerGroup.headers.map((column) => (
+                                                <th {...column.getHeaderProps()} key={column.id}>
+                                                    {column.render("Header")}
+                                                </th>
+                                            ))}
+                                        </tr>
                                     ))}
-                                </tr>
-                            ))}
-                            </thead>
-                            <tbody {...getTableBodyProps()}>
-                            {rows.map((row, i) => {
-                                prepareRow(row);
-                                return (
-                                    <tr {...row.getRowProps()} key={row.id}>
-                                        {row.cells.map((cell, id) => {
-                                            return (
-                                                <td {...cell.getCellProps()} key={id}>{cell.render("Cell")}</td>
-                                            );
-                                        })}
-                                    </tr>
-                                );
-                            })}
-                            </tbody>
-                        </table>
-                        <div className="col-md-12">
-                            <div className="card-tools">
+                                    </thead>
+                                    <tbody {...getTableBodyProps()}>
+                                    {rows.map((row, i) => {
+                                        prepareRow(row);
+                                        return (
+                                            <tr {...row.getRowProps()} key={row.id}>
+                                                {row.cells.map((cell, id) => {
+                                                    return (
+                                                        <td {...cell.getCellProps()}
+                                                            key={id}>{cell.render("Cell")}</td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        );
+                                    })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-12 card-tools">
                                 <Pagination
                                     className="pagination pagination-sm float-right"
                                     count={count}
@@ -240,9 +231,11 @@ const RegistryList = (props: any) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
-    );
+
+    )
+        ;
 };
 
-export default RegistryList;
+export default RegistryPage;

@@ -17,7 +17,7 @@ const Dashboard = () => {
                                 <div className="icon">
                                     <i className="ion ion-bag"/>
                                 </div>
-                                <a href="/registry" className="small-box-footer">
+                                <a href="/registries" className="small-box-footer">
                                     More info <i className="fas fa-arrow-circle-right"/>
                                 </a>
                             </div>

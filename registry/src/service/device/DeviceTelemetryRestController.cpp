@@ -41,6 +41,9 @@ DeviceTelemetryRestController::handleGet(const HttpRequest &request, const HttpP
         }
 
         Filter filter;
+        if (auto it = params.find_last("device_id"); it != params.end()) {
+            filter.add("device_id", Filter::Operation::op_eq, (*it).value);
+        }
         json = *repository.findAll(filter, page);
     }
 

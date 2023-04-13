@@ -60,6 +60,7 @@ Page<DeviceTelemetryDo>::Ptr DeviceTelemetryRepository::findAll(const Filter &fi
 
     if (page.hasCount) {
         sql::SelectModel sc;
+        applyFilter(sc, filter);
         sc.select("COUNT(id)").from("device_telemetry");
         result->total = w.exec_params1(sc.str()).at(0).as<size_t>();;
     }
