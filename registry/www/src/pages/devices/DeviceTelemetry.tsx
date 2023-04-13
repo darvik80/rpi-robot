@@ -109,13 +109,6 @@ const DeviceTelemetry = () => {
                 accessor: "id",
             },
             {
-                Header: "Device",
-                accessor: "refDevice",
-                Cell: (props: any) => {
-                    return props.value.name
-                },
-            },
-            {
                 Header: "Created At",
                 accessor: "createdAt"
             },
@@ -133,9 +126,6 @@ const DeviceTelemetry = () => {
                     const rowIdx = props.row.id;
                     return (
                         <div>
-                            {/*<span onClick={() => openTelemetry(rowIdx)}>*/}
-                            {/*<i className="far fa-edit action mr-2"></i>*/}
-                            {/*</span>*/}
                             <span onClick={() => deleteTelemetry(rowIdx)}>
                             <i className="fas fa-trash action"></i>
                             </span>
