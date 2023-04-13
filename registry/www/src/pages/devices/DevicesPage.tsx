@@ -151,10 +151,10 @@ const DevicesPage = () => {
                     return (
                         <div>
                             <span onClick={() => openTelemetry(rowIdx)}>
-                            <i className="far fa-user mr-2"></i>
+                            <i className="fas fa-history mr-2"></i>
                             </span>
                             <span onClick={() => openDevice(rowIdx)}>
-                            <i className="far fa-edit action mr-2"></i>
+                            <i className="fas fa-edit action mr-2"></i>
                             </span>
                             <span onClick={() => deleteDevice(rowIdx)} hidden={isMobile}>
                             <i className="fas fa-trash action"></i>

@@ -80,8 +80,8 @@ const Main = () => {
                 <div className="preloader flex-column justify-content-center align-items-center">
                     <PfImage
                         className="animation__shake"
-                        src="/img/logo.png"
-                        alt="AdminLTELogo"
+                        src="/img/logo_iot.png"
+                        alt="CreArtS Logo"
                         height={60}
                         width={60}
                     />

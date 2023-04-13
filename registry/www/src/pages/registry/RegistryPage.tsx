@@ -125,7 +125,7 @@ const RegistryPage = () => {
                     return (
                         <div>
                             <span onClick={() => openRegistry(rowIdx)}>
-                            <i className="far fa-edit action mr-2"></i>
+                            <i className="fas fa-edit action mr-2"></i>
                             </span>
 
                             <span onClick={() => deleteRegistry(rowIdx)} hidden={isMobile}>
