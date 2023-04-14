@@ -63,6 +63,7 @@ services:
       - 2022:22
     volumes:
       - ./docker-debug-armv8/bin:/home/builder/rpi-robot/cmake-build-debug-armv8/bin
+      - ./docker-debug-armv8/etc:/home/builder/rpi-robot/cmake-build-debug-armv8/etc
 
   # builder for Banana PI Berry
   builder_arm32v7:
@@ -82,6 +83,7 @@ services:
       - 2023:22
     volumes:
       - ./docker-debug-armv7/bin:/home/builder/rpi-robot/cmake-build-debug-armv7/bin
+      - ./docker-debug-armv7/etc:/home/builder/rpi-robot/cmake-build-debug-armv7/etc
 
   simulator_arm64v8:
     security_opt:
@@ -97,6 +99,8 @@ services:
     ports:
       - 3022:22
       - 1234:1234
+    volumes:
+      - ./docker-debug-armv8/etc:/home/debugger/etc
 
   simulator_arm32v7:
     security_opt:
@@ -112,3 +116,5 @@ services:
     ports:
       - 3023:22
       - 1235:1234
+    volumes:
+      - ./docker-debug-armv8/etc:/home/debugger/etc

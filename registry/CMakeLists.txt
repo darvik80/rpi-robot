@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(registry)
 
-file(COPY resources/settings.json DESTINATION ${PROPERTIES_DIR})
-
 file(GLOB SRCS_G
         src/*.cpp
         src/db/*.cpp
@@ -20,7 +18,7 @@ include_directories(
 )
 
 set(RESOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
-set(WWW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/www)
+set(WWW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/www/build)
 
 message(STATUS "Build ReactJS App")
 execute_process(
@@ -86,6 +84,8 @@ else ()
 
     add_executable(${PROJECT_NAME} ${SRCS_G} ${RES_SRC_FILE} ${RES_EMBED_FILES})
     set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/../bin)
+    file(COPY ${WWW_DIRECTORY} DESTINATION "${PROPERTIES_DIR}/www")
+    file(COPY resources/settings.json DESTINATION ${PROPERTIES_DIR}/${PROJECT_NAME})
 endif ()
 
 target_link_libraries(${PROJECT_NAME} logging application iot-platform libpqxx::pqxx ${IOKIT_LIBRARY} ${CORE_LIBRARY})

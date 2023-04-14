@@ -11,20 +11,10 @@ if (APPLE)
     file(COPY resources/macos/settings.json DESTINATION ${PROPERTIES_DIR})
 else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-
-    if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES arm)
-        file(COPY resources/orange/settings.json DESTINATION ${PROPERTIES_DIR})
-    elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES aarch64)
-        file(COPY resources/pi4/settings.json DESTINATION ${PROPERTIES_DIR})
-    else ()
-        message(STATUS "No settings!!!")
-    endif ()
-
+    file(COPY resources/settings.json DESTINATION ${PROPERTIES_DIR}/${PROJECT_NAME})
 endif ()
-file(COPY resources/server.pem DESTINATION ${PROPERTIES_DIR})
 
 file(GLOB SRCS_G src/*.cpp)
-
 set(RESOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 if (APPLE)
@@ -51,5 +41,6 @@ else ()
     file(COPY resources/settings.json DESTINATION {CMAKE_INSTALL_PREFIX}/etc/monitor_settings.json)
     add_executable(${PROJECT_NAME} ${SRCS_G})
 endif ()
+file(COPY resources/server.pem DESTINATION ${PROPERTIES_DIR})
 
 target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} logging application iot-platform)
