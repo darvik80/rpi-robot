@@ -18,4 +18,6 @@ public:
     long insert(const DeviceDo &model) override;
 
     void update(const DeviceDo &model) override;
+
+    void deleteByFilter(const Filter &filter) override;
 };

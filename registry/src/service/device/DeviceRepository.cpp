@@ -101,3 +101,12 @@ void DeviceRepository::update(const DeviceDo &model) {
     worker.commit();
 }
 
+void DeviceRepository::deleteByFilter(const Filter &filter) {
+    pqxx::work worker(_source.getConnection());
+
+    sql::DeleteModel d;
+    d.from("registry");
+    applyFilter<sql::DeleteModel>(d, filter);
+    auto res = worker.exec_params(d.str());
+    worker.commit();
+}

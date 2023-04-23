@@ -19,5 +19,5 @@ public:
 
     void update(const DeviceTelemetryDo &model) override;
 
-    void remove(long id);
+    void deleteByFilter(const Filter &filter) override;
 };

@@ -4,23 +4,10 @@
 
 #pragma once
 
-#include "http/HttpRequestHandler.h"
-#include "db/Database.h"
-#include "Service.h"
+#include "service/RestRepositoryController.h"
+#include "RegistryRepository.h"
 
-class RegistryRestController : public HttpRequestHandler {
-    Database &_database;
-private:
-    void handleGet(const HttpRequest &request, const HttpParams &params, HttpResponse &response);
-
-    void handlePost(const HttpRequest &request, HttpResponse &response);
-
-    void handlePut(const HttpRequest &request, const HttpParams &params, HttpResponse &response);
-
-    void handleDelete(const HttpRequest &request, HttpResponse &response);
-
+class RegistryRestController : public DatabaseRestRepositoryController<RegistryDo, RegistryRepository> {
 public:
-    explicit RegistryRestController(Database &database) : _database(database) {}
-
-    void handle(const HttpRequest &request, HttpResponse &response) override;
+    explicit RegistryRestController(Database &database) : DatabaseRestRepositoryController(database) {}
 };

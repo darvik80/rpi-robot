@@ -85,11 +85,11 @@ long DeviceTelemetryRepository::insert(const DeviceTelemetryDo &model) {
 void DeviceTelemetryRepository::update(const DeviceTelemetryDo &model) {
 }
 
-
-void DeviceTelemetryRepository::remove(long id) {
+void DeviceTelemetryRepository::deleteByFilter(const Filter &filter) {
     pqxx::work worker(_source.getConnection());
     sql::DeleteModel d;
-    d.from("device_telemetry").where(sql::column("id") == id);
+    d.from("device_telemetry");
+    applyFilter<sql::DeleteModel>(d, filter);
 
     auto res = worker.exec_params(d.str());
     worker.commit();

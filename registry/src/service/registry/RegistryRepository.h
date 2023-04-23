@@ -25,7 +25,9 @@ public:
 
     Page<RegistryDo>::Ptr findAll(const Filter &filter, const PageRequest &page) override;
 
-    long insert(const RegistryDo &registry) override;;
+    long insert(const RegistryDo &registry) override;
 
-    void update(const RegistryDo &registry) override;;
+    void update(const RegistryDo &registry) override;
+
+    void deleteByFilter(const Filter &filter) override;
 };

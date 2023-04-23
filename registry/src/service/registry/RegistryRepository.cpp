@@ -71,3 +71,13 @@ void RegistryRepository::update(const RegistryDo &registry) {
     auto res = worker.exec_params(i.str());
     worker.commit();
 }
+
+void RegistryRepository::deleteByFilter(const Filter &filter) {
+    pqxx::work worker(_source.getConnection());
+
+    sql::DeleteModel d;
+    d.from("registry");
+    applyFilter<sql::DeleteModel>(d, filter);
+    auto res = worker.exec_params(d.str());
+    worker.commit();
+}

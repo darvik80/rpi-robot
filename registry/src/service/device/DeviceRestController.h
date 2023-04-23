@@ -4,20 +4,10 @@
 
 #pragma once
 
-#include "http/HttpRequestHandler.h"
-#include "db/Database.h"
+#include "service/RestRepositoryController.h"
+#include "DeviceRepository.h"
 
-class DeviceRestController : public HttpRequestHandler {
-    Database &_database;
-private:
-    void handleGet(const HttpRequest &request, const HttpParams &params, HttpResponse &response);
-
-    void handlePost(const HttpRequest &request, HttpResponse &response);
-
-    void handleDelete(const HttpRequest &request, HttpResponse &response);
-
+class DeviceRestController : public DatabaseRestRepositoryController<DeviceDo, DeviceRepository> {
 public:
-    explicit DeviceRestController(Database &database) : _database(database) {}
-
-    void handle(const HttpRequest &request, HttpResponse &response) override;
+    explicit DeviceRestController(Database &database) : DatabaseRestRepositoryController(database) {}
 };
