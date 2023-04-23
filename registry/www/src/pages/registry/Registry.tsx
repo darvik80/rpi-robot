@@ -21,7 +21,7 @@ const Registry = () => {
     const findDevice = (id: number) => {
         RegistryRepository.get(id)
             .then((response: any) => {
-                setRegistry(response.data.data);
+                setRegistry(response.data);
             })
             .catch((e) => {
                 console.log(e);

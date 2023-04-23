@@ -51,7 +51,7 @@ const DeviceTelemetry = () => {
     const findDevice = (id: number) => {
         DeviceRepository.get(id)
             .then((response: any) => {
-                setDevice(response.data.data);
+                setDevice(response.data);
             })
             .catch((e) => {
                 console.log(e);
