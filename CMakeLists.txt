@@ -26,6 +26,7 @@ include_directories(
 
         core-utils/event-bus/src
         core-utils/logging/src
+        core-utils/core/src
         core-utils/application/src
         core-utils/network/src
         core-utils/iot-platform/src
@@ -52,6 +53,6 @@ elseif (UNIX AND NOT APPLE)
         add_subdirectory(service)
     endif ()
     message(STATUS "incubator with GPIO")
-    add_subdirectory(incubator)
 endif ()
 add_subdirectory(registry)
+add_subdirectory(incubator)
