@@ -84,7 +84,7 @@ else ()
 
     add_executable(${PROJECT_NAME} ${SRCS_G} ${RES_SRC_FILE} ${RES_EMBED_FILES})
     set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/../bin)
-    file(COPY ${WWW_DIRECTORY} DESTINATION "${PROPERTIES_DIR}/www")
+    #file(COPY ${WWW_DIRECTORY} DESTINATION "${PROPERTIES_DIR}/www")
     file(COPY resources/settings.json DESTINATION ${PROPERTIES_DIR}/${PROJECT_NAME})
 endif ()
 

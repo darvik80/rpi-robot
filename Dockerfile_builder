@@ -21,12 +21,12 @@ RUN mkdir -p /home/${USER}/.ssh
 RUN mkdir -p /home/${USER}/rpi-robot/cmake-build-debug-${ARCH}
 RUN mkdir -p /home/${USER}/.conan2
 
-COPY docker-configs/authorized_keys /home/${USER}/.ssh/authorized_keys
 RUN conan profile detect --force
 COPY docker-configs/conan.${ARCH}.profile /home/${USER}/.conan2/profiles/default
 COPY conanfile.txt /home/${USER}/rpi-robot/conanfile.txt
 WORKDIR /home/${USER}/rpi-robot
 RUN conan install . --output-folder=cmake-build-debug-${ARCH} --build=missing
+COPY docker-configs/id_rsa_builder.pub /home/${USER}/.ssh/authorized_keys
 
 USER root
 RUN service ssh start

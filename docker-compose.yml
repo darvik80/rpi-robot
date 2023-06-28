@@ -13,7 +13,7 @@ services:
     expose:
       - 9090
     ports:
-      - 9090:9090
+      - "9090:9090"
 
   grafana:
     image: grafana/grafana:latest
@@ -31,16 +31,16 @@ services:
       dockerfile: DockerFile_rabbitmq
     container_name: rabbitmq
     ports:
-      - 5671:5671
-      - 5672:5672
-      - 15672:15672
-      - 1883:1883
-      - 8884:8883
+      - "5671:5671"
+      - "5672:5672"
+      - "15672:15672"
+      - "1883:1883"
+      - "8884:8883"
 
   postgres:
     image: postgres:14
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: 1234
     volumes:
@@ -60,7 +60,7 @@ services:
         IMAGE: arm64v8/debian:bullseye
     container_name: builder_arm64v8
     ports:
-      - 2022:22
+      - "2022:22"
     volumes:
       - ./docker-debug-armv8/bin:/home/builder/rpi-robot/cmake-build-debug-armv8/bin
       - ./docker-debug-armv8/etc:/home/builder/rpi-robot/cmake-build-debug-armv8/etc
@@ -97,8 +97,8 @@ services:
         IMAGE: arm64v8/debian:bullseye
     container_name: simulator_arm64v8
     ports:
-      - 3022:22
-      - 1234:1234
+      - "3022:22"
+      - "1234:1234"
     volumes:
       - ./docker-debug-armv8/etc:/home/debugger/etc
 
@@ -114,7 +114,7 @@ services:
         IMAGE: arm32v7/debian:bullseye
     container_name: simulator_arm32v7
     ports:
-      - 3023:22
-      - 1235:1234
+      - "3023:22"
+      - "1235:1234"
     volumes:
       - ./docker-debug-armv8/etc:/home/debugger/etc

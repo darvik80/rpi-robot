@@ -41,6 +41,6 @@ else ()
     file(COPY resources/settings.json DESTINATION {CMAKE_INSTALL_PREFIX}/etc/monitor_settings.json)
     add_executable(${PROJECT_NAME} ${SRCS_G})
 endif ()
-file(COPY resources/server.pem DESTINATION ${PROPERTIES_DIR})
+#file(COPY resources/server.pem DESTINATION ${PROPERTIES_DIR})
 
 target_link_libraries(${PROJECT_NAME} ${IOKIT_LIBRARY} logging application iot-platform)
