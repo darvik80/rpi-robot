@@ -15,7 +15,18 @@ Robot based on RPI 3
 * [nlohmann-json](https://github.com/nlohmann/json)
 * [gpiod](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
 
-## Trobleshots
+## Troubleshoots
+
+* Build with conan
+1. Install dependencies
+```bash
+  conan install . --output-folder=cmake-build-debug --build=missing
+```
+2. Add parameter for CMake
+```bash
+  -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+```
+![](https://raw.githubusercontent.com/darvik80/rpi-robot/master/images/cmake-config.png)
 
 * GDB Server does not work for Docker
   add run arg for docker config: --security-opt seccomp=unconfined
