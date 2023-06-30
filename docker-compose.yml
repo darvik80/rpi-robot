@@ -49,7 +49,7 @@ services:
   # builder for Raspberry PI Zero 2, 3, 4
   builder_arm64v8:
     security_opt:
-      - seccomp:unconfined
+      - seccomp:unconfined/home/builder/rpi-robot/cmake-build-debug-armv8
     build:
       context: .
       dockerfile: Dockerfile_builder

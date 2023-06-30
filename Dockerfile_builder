@@ -19,6 +19,8 @@ RUN pip3 install conan
 USER ${USER}
 RUN mkdir -p /home/${USER}/.ssh
 RUN mkdir -p /home/${USER}/rpi-robot/cmake-build-debug-${ARCH}
+RUN mkdir -p /home/${USER}/rpi-robot/cmake-build-debug-${ARCH}/bin
+RUN mkdir -p /home/${USER}/rpi-robot/cmake-build-debug-${ARCH}/etc
 RUN mkdir -p /home/${USER}/.conan2
 
 RUN conan profile detect --force
