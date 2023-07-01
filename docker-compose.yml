@@ -11,7 +11,7 @@ services:
       - '-storage.local.path=/prometheus'
       - '-alertmanager.url=http://alertmanager:9093'
     expose:
-      - 9090
+      - "9090"
     ports:
       - "9090:9090"
 
@@ -23,7 +23,7 @@ services:
     volumes:
       - ./docker-data/grafana:/var/lib/grafana
     ports:
-      - 3000:3000
+      - "3000:3000"
 
   rabbitmq:
     build:
@@ -49,7 +49,7 @@ services:
   # builder for Raspberry PI Zero 2, 3, 4
   builder_arm64v8:
     security_opt:
-      - seccomp:unconfined/home/builder/rpi-robot/cmake-build-debug-armv8
+      - seccomp:unconfined
     build:
       context: .
       dockerfile: Dockerfile_builder
@@ -80,7 +80,7 @@ services:
         CONAN: conan-arm32v7.profile
     container_name: builder_arm32v7
     ports:
-      - 2023:22
+      - "2023:22"
     volumes:
       - ./docker-debug-armv7/bin:/home/builder/rpi-robot/cmake-build-debug-armv7/bin
       - ./docker-debug-armv7/etc:/home/builder/rpi-robot/cmake-build-debug-armv7/etc
