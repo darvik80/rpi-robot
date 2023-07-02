@@ -5,16 +5,21 @@ project(monitor)
 find_package(Boost 1.81 REQUIRED)
 find_package(fmt)
 
+file(GLOB SRCS_G src/*.cpp)
+
 if (APPLE)
     find_library(IOKIT_LIBRARY IOKit)
     find_library(CORE_LIBRARY CoreFoundation)
     file(COPY resources/macos/settings.json DESTINATION ${PROPERTIES_DIR})
+
+    file(GLOB SRCS_OS_G
+            src/macos/smc.c
+            )
 else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
     file(COPY resources/settings.json DESTINATION ${PROPERTIES_DIR}/${PROJECT_NAME})
 endif ()
 
-file(GLOB SRCS_G src/*.cpp)
 set(RESOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 if (APPLE)
@@ -36,7 +41,7 @@ if (APPLE)
     resource(RESOURCES ${RESOURCE_DIRECTORY} Resources/ *.*)
     set(RESOURCES_G ${RESOURCES})
 
-    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRCS_G} ${RESOURCES_G})
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRCS_G} ${SRCS_OS_G} ${RESOURCES_G})
 else ()
     file(COPY resources/settings.json DESTINATION {CMAKE_INSTALL_PREFIX}/etc/monitor_settings.json)
     add_executable(${PROJECT_NAME} ${SRCS_G})

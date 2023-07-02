@@ -3,7 +3,7 @@
 //
 
 #include "logging/Logging.h"
-#include "bitmask_operators.hpp"
+#include "bitmask_operators.h"
 #include <system_error>
 
 namespace iot {

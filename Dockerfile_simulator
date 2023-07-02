@@ -7,12 +7,12 @@ ARG USER=debugger
 RUN useradd -m -u ${UID} -s /bin/bash ${USER}
 
 # Non-interactive configuration of tzdata
-#ENV DEBIAN_FRONTEND noninteractive
-#ENV DEBCONF_NONINTERACTIVE_SEEN true
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN true
 RUN { echo 'tzdata tzdata/Areas select Etc'; echo 'tzdata tzdata/Zones/Etc select UTC'; } | debconf-set-selections
 
 RUN apt-get update
-RUN apt-get install -y cmake gdb openssh-server mc gdbserver
+RUN apt-get install -y cmake gdb openssh-server mc gdbserver strace
 
 
 USER ${USER}

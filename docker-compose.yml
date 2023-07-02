@@ -48,6 +48,8 @@ services:
 
   # builder for Raspberry PI Zero 2, 3, 4
   builder_arm64v8:
+    cap_add:
+      - SYS_PTRACE
     security_opt:
       - seccomp:unconfined
     build:
@@ -67,6 +69,8 @@ services:
 
   # builder for Banana PI Berry
   builder_arm32v7:
+    cap_add:
+      - SYS_PTRACE
     security_opt:
       - seccomp:unconfined
     build:
@@ -86,6 +90,9 @@ services:
       - ./docker-debug-armv7/etc:/home/builder/rpi-robot/cmake-build-debug-armv7/etc
 
   simulator_arm64v8:
+    privileged: true
+    cap_add:
+      - SYS_PTRACE
     security_opt:
       - seccomp:unconfined
     build:
@@ -103,6 +110,8 @@ services:
       - ./docker-debug-armv8/etc:/home/debugger/etc
 
   simulator_arm32v7:
+    cap_add:
+      - SYS_PTRACE
     security_opt:
       - seccomp:unconfined
     build:

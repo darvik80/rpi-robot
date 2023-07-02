@@ -6,10 +6,12 @@
 
 #include <BaseService.h>
 #include <optional>
+#include "TemperatureSensor.h"
 
 struct SystemInfoEvent {
-    float cpuTemp{};
-    std::optional<float> gpuTemp{};
+    std::optional<double> cpuTemp{};
+    std::optional<double> gpuTemp{};
+    std::optional<double> ambientTemp{};
 };
 
 #include <nlohmann/json.hpp>
@@ -18,23 +20,8 @@ void to_json(nlohmann::json &j, const SystemInfoEvent &e);
 
 void from_json(const nlohmann::json &j, SystemInfoEvent &e);
 
-class TemperatureSensor {
-public:
-    typedef std::unique_ptr<TemperatureSensor> Ptr;
-
-    enum Type {
-        CPU,
-        GPU
-    };
-
-    virtual float getTemperature(Type type) = 0;
-
-    virtual ~TemperatureSensor() = default;
-};
-
-
 class SystemMonitorService : public BaseServiceShared<SystemMonitorService> {
-    TemperatureSensor::Ptr _sensor;
+    TemperatureSensor _sensor{};
 public:
     const char *name() override;
 
