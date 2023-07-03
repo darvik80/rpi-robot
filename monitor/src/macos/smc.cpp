@@ -20,7 +20,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <IOKit/IOKitLib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -110,7 +109,7 @@ kern_return_t SMCCall(int index, SMCKeyData_t* inputStructure, SMCKeyData_t* out
 #endif
 }
 
-kern_return_t SMCReadKey(UInt32Char_t key, SMCVal_t* val)
+kern_return_t SMCReadKey(uint32char_t key, SMCVal_t* val)
 {
     kern_return_t result;
     SMCKeyData_t inputStructure;
@@ -236,7 +235,7 @@ void readAndPrintFanRPMs(void)
 {
     kern_return_t result;
     SMCVal_t val;
-    UInt32Char_t key;
+    uint32char_t key;
     int totalFans, i;
 
     result = SMCReadKey("FNum", &val);
@@ -279,91 +278,6 @@ void readAndPrintFanRPMs(void)
 
             pct *= 100.f;
             printf("Fan %d - %s at %.0f RPM (%.0f%%)\n", i, name, rpm, pct);
-
-            //sprintf(key, "F%dSf", i);
-            //SMCReadKey(key, &val);
-            //printf("    Safe speed   : %.0f\n", strtof(val.bytes, val.dataSize, 2));
-            //sprintf(key, "F%dTg", i);
-            //SMCReadKey(key, &val);
-            //printf("    Target speed : %.0f\n", strtof(val.bytes, val.dataSize, 2));
-            //SMCReadKey("FS! ", &val);
-            //if ((_strtoul((char *)val.bytes, 2, 16) & (1 << i)) == 0)
-            //    printf("    Mode         : auto\n");
-            //else
-            //    printf("    Mode         : forced\n");
         }
     }
-}
-
-int main(int argc, char* argv[])
-{
-    char scale = 'C';
-    bool show_scale = true;
-    bool cpu = false;
-    bool fan = false;
-    bool gpu = false;
-    bool amb = false;
-
-    int c;
-    while ((c = getopt(argc, argv, "CFTcfgah?")) != -1) {
-        switch (c) {
-            case 'F':
-            case 'C':
-                scale = c;
-                break;
-            case 'T':
-                show_scale = false;
-                break;
-            case 'c':
-                cpu = true;
-                break;
-            case 'f':
-                fan = true;
-                break;
-            case 'g':
-                gpu = true;
-                break;
-            case 'a':
-                amb = true;
-                break;
-            case 'h':
-            case '?':
-                printf("usage: osx-cpu-temp <options>\n");
-                printf("Options:\n");
-                printf("  -F  Display temperatures in degrees Fahrenheit.\n");
-                printf("  -C  Display temperatures in degrees Celsius (Default).\n");
-                printf("  -T  Do not display the units for temperatures.\n");
-                printf("  -c  Display CPU temperature (Default).\n");
-                printf("  -g  Display GPU temperature.\n");
-                printf("  -a  Display ambient temperature.\n");
-                printf("  -f  Display fan speeds.\n");
-                printf("  -h  Display this help.\n");
-                printf("\nIf more than one of -c, -f, or -g are specified, titles will be added\n");
-                return -1;
-        }
-    }
-
-    if (!fan && !gpu && !amb) {
-        cpu = true;
-    }
-
-    bool show_title = fan + gpu + cpu + amb > 1;
-
-    SMCOpen();
-
-    if (cpu) {
-        readAndPrintTemperature("CPU: ", show_title, SMC_KEY_CPU_TEMP, scale, show_scale);
-    }
-    if (gpu) {
-        readAndPrintTemperature("GPU: ", show_title, SMC_KEY_GPU_TEMP, scale, show_scale);
-    }
-    if (amb) {
-        readAndPrintTemperature("Ambient: ", show_title, SMC_KEY_AMBIENT_TEMP, scale, show_scale);
-    }
-    if (fan) {
-        readAndPrintFanRPMs();
-    }
-
-    SMCClose();
-    return 0;
 }

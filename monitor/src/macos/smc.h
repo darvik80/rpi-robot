@@ -5,6 +5,10 @@
 #ifndef RPI_ROBOT_SMC_H
 #define RPI_ROBOT_SMC_H
 
+#include <IOKit/IOKitLib.h>
+
+#include <stdint.h>
+
 /*
  * Apple System Management Control (SMC) Tool
  * Copyright (C) 2006 devnull
@@ -52,48 +56,54 @@ typedef struct {
     char minor;
     char build;
     char reserved[1];
-    UInt16 release;
+    uint16_t release;
 } SMCKeyData_vers_t;
 
 typedef struct {
-    UInt16 version;
-    UInt16 length;
-    UInt32 cpuPLimit;
-    UInt32 gpuPLimit;
-    UInt32 memPLimit;
+    uint16_t version;
+    uint16_t length;
+    uint32_t cpuPLimit;
+    uint32_t gpuPLimit;
+    uint32_t memPLimit;
 } SMCKeyData_pLimitData_t;
 
 typedef struct {
-    UInt32 dataSize;
-    UInt32 dataType;
+    uint32_t dataSize;
+    uint32_t dataType;
     char dataAttributes;
 } SMCKeyData_keyInfo_t;
 
 typedef char SMCBytes_t[32];
 
 typedef struct {
-    UInt32 key;
+    uint32_t key;
     SMCKeyData_vers_t vers;
     SMCKeyData_pLimitData_t pLimitData;
     SMCKeyData_keyInfo_t keyInfo;
     char result;
     char status;
     char data8;
-    UInt32 data32;
+    uint32_t data32;
     SMCBytes_t bytes;
 } SMCKeyData_t;
 
-typedef char UInt32Char_t[5];
+typedef char uint32char_t[5];
 
 typedef struct {
-    UInt32Char_t key;
-    UInt32 dataSize;
-    UInt32Char_t dataType;
+    uint32char_t key;
+    uint32_t dataSize;
+    uint32char_t dataType;
     SMCBytes_t bytes;
 } SMCVal_t;
 
+kern_return_t SMCOpen(void);
+
 // prototypes
-double SMCGetTemperature(char* key);
-int SMCGetFanRpm(char* key);
+double SMCGetTemperature(char *key);
+
+
+int SMCGetFanRpm(char *key);
+
+kern_return_t SMCClose();
 
 #endif //RPI_ROBOT_SMC_H

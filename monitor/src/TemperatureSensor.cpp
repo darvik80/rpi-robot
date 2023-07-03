@@ -16,15 +16,23 @@
 #endif
 
 std::optional<double> TemperatureSensor::getTemperature(TemperatureSensor::Type type) {
+    std::optional<double> result;
+    
 #ifdef __APPLE__
+    SMCOpen();
+
     switch (type) {
         case CPU:
-            return SMCGetTemperature(SMC_KEY_CPU_TEMP);
+            result = SMCGetTemperature(SMC_KEY_CPU_TEMP);
+            break;
         case GPU:
-            return SMCGetTemperature(SMC_KEY_GPU_TEMP);
+            result = SMCGetTemperature(SMC_KEY_GPU_TEMP);
+            break;
         case AMBIENT:
-            return SMCGetTemperature(SMC_KEY_AMBIENT_TEMP);
+            result = SMCGetTemperature(SMC_KEY_AMBIENT_TEMP);
+            break;
     }
+
 #else
     switch (type) {
         case CPU: {
@@ -34,12 +42,13 @@ std::optional<double> TemperatureSensor::getTemperature(TemperatureSensor::Type 
             if (piCpuTempFile.is_open()) {
                 buffer << piCpuTempFile.rdbuf();
                 piCpuTempFile.close();
-                return round(std::stod(buffer.str()) / 1000 * 100) / 100;
+                result = round(std::stod(buffer.str()) / 1000 * 100) / 100;
             }
         }
         default:
             break;
     }
 #endif
-    return {};
+
+    return result;
 }

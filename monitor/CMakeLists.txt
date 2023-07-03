@@ -13,7 +13,7 @@ if (APPLE)
     file(COPY resources/macos/settings.json DESTINATION ${PROPERTIES_DIR})
 
     file(GLOB SRCS_OS_G
-            src/macos/smc.c
+            src/macos/smc.cpp
             )
 else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
