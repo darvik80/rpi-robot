@@ -3,8 +3,36 @@
 //
 
 #include "logging/Logging.h"
-#include "bitmask_operators.h"
+#include "bitmask_operators.hpp"
 #include <system_error>
+
+typedef uint_least8_t MsgId;
+
+struct Message {
+    Message() = default;
+    [[nodiscard]] virtual MsgId getMsgId() const = 0;
+};
+
+template<MsgId id>
+struct TMessage : Message {
+public:
+    enum {
+        ID = id
+    };
+
+    [[nodiscard]] MsgId getMsgId() const override {
+        return ID;
+    }
+};
+
+template<MsgId id, typename T>
+struct TContainer : TMessage<id> {
+    T msg;
+};
+
+struct ApplicationMessage : TMessage<0xff> {
+    std::string message;
+};
 
 namespace iot {
     enum class errc {
@@ -71,6 +99,8 @@ namespace std {
 #include <iostream>
 
 int main(int argc, char *argv[]) {
+    ApplicationMessage msg { .message = "hello world" };
+
     ERenderPass primary = ERenderPass::Geometry | ERenderPass::Lighting;
 
     if ((primary & ERenderPass::Geometry) == ERenderPass::Geometry) {
