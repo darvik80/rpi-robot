@@ -10,7 +10,7 @@ file(GLOB SRCS_G src/*.cpp)
 if (APPLE)
     find_library(IOKIT_LIBRARY IOKit)
     find_library(CORE_LIBRARY CoreFoundation)
-    file(COPY resources/macos/settings.json DESTINATION ${PROPERTIES_DIR})
+    file(COPY resources/settings.json DESTINATION ${PROPERTIES_DIR})
 
     file(GLOB SRCS_OS_G
             src/macos/smc.cpp
