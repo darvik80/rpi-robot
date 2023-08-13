@@ -5,10 +5,10 @@
     "file": false
   },
   "iot-mqtt": {
-    "address": "127.0.0.1",
+    "address": "192.168.0.3",
     "username": "mqtt",
     "password": "mqtt",
-    "registry-id": "crearts-iot",
+    "registry-id": "smart-home",
     "device-id": "monitor",
     "key-file": "server.pem"
   }

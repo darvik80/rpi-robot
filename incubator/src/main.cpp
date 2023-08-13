@@ -67,28 +67,41 @@ namespace std {
     struct is_error_condition_enum<iot::errc> : public true_type {
     };
 }
-
+#include <array>
 #include <iostream>
 
+const double pi = std::acos(-1);
+
+static uint32_t Color(uint8_t r, uint8_t g, uint8_t b) {
+    return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
+}
+
+struct WifiConnected {
+    char ssid[32];
+};
+
+struct MagicAction {
+    uint16_t actionId{0};
+};
+
+union UserContext {
+    WifiConnected wifiConnected;
+    MagicAction magicAction;
+};
+
+struct UserMessage {
+    uint16_t msgId;
+};
+
 int main(int argc, char *argv[]) {
-    ERenderPass primary = ERenderPass::Geometry | ERenderPass::Lighting;
-
-    if ((primary & ERenderPass::Geometry) == ERenderPass::Geometry) {
-        std::cout << "ERenderPass::Geometry" << std::endl;
+    std::array<uint32_t, 16> data;
+    for (size_t idx = 0; idx < data.size(); idx++) {
+        double val = std::abs(std::sin(pi*2*idx/data.size())*255);
+        data[idx] = Color(0, (uint8_t)val, 0);
+        std::cout << val << " ";
     }
 
-    auto ec1 = iot::make_error_code(iot::errc::device_unknown);
-    logger::info("val: {}", ec1.value());
-    logger::info("msg: {}", ec1.message());
-
-    auto ec2 = iot::make_error_code(iot::errc::device_auth_failed);
-
-    logger::info("val: {}", ec2.value());
-    logger::info("msg: {}", ec2.message());
-
-    if (ec1 == ec2) {
-        logger::info("same errors");
-    }
+    std::cout << std::endl;
 
     return 0;
 }

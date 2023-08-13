@@ -9,7 +9,7 @@
     "client-id": "registry",
     "username": "mqtt",
     "password": "mqtt",
-    "registry-id": "crearts-iot",
+    "registry-id": "smart-home",
     "key-file": "server.pem"
   }
 }

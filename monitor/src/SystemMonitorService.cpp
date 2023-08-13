@@ -10,7 +10,7 @@
 
 void to_json(nlohmann::json &j, const SystemInfoEvent &e) {
     if (e.cpuTemp) {
-        j["cpu-temp"] = e.gpuTemp.value();
+        j["cpu-temp"] = e.cpuTemp.value();
     }
     if (e.gpuTemp) {
         j["gpu-temp"] = e.gpuTemp.value();
