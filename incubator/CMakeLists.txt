@@ -13,4 +13,6 @@ include_directories(
         /usr/include
 )
 
-target_link_libraries(${PROJECT_NAME} logging core)
+find_package(etl REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} logging core etl::etl)

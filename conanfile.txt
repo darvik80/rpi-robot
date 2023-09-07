@@ -4,6 +4,7 @@ nlohmann_json/3.11.2
 openssl/1.1.1t
 boost/1.81.0
 libpqxx/7.7.4
+etl/20.38.0
 
 [generators]
 CMakeDeps

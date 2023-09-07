@@ -95,42 +95,36 @@ namespace std {
     struct is_error_condition_enum<iot::errc> : public true_type {
     };
 }
-#include <array>
+
 #include <iostream>
+#include <iomanip>
 
-const double pi = std::acos(-1);
+#include <etl/string.h>
 
-static uint32_t Color(uint8_t r, uint8_t g, uint8_t b) {
-    return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
-}
-
-struct WifiConnected {
-    char ssid[32];
+struct SimpleStruct {
+   char ssid[32];
 };
 
-struct MagicAction {
-    uint16_t actionId{0};
-};
-
-union UserContext {
-    WifiConnected wifiConnected;
-    MagicAction magicAction;
-};
-
-struct UserMessage {
-    uint16_t msgId;
+struct EtlStruct {
+    etl::string<32> ssid;
 };
 
 int main(int argc, char *argv[]) {
-    ApplicationMessage msg { .message = "hello world" };
 
-    ERenderPass primary = ERenderPass::Geometry | ERenderPass::Lighting;
+    std::cout << "is trivial SimpleStruct: " <<etl::is_trivially_copyable_v<SimpleStruct> << std::endl;
 
-    if ((primary & ERenderPass::Geometry) == ERenderPass::Geometry) {
-        std::cout << "ERenderPass::Geometry" << std::endl;
-    }
+    std::cout << "is trivial EtlStruct: " <<std::is_trivially_copyable_v<EtlStruct> << std::endl;
 
-    std::cout << std::endl;
+    uint8_t p[] = { 0x01, 0x0F, 0x03, 0x04, 0x05, 0x06 };
+    std::stringstream res;
+    res << std::uppercase << std::setfill('0') << std::hex;
+    res << std::setw(2) << (int)p[0] << ":";
+    res << std::setw(2) << (int)p[1] << ":";
+    res << std::setw(2) << (int)p[2] << ":";
+    res << std::setw(2) << (int)p[3] << ":";
+    res << std::setw(2) << (int)p[4] << ":";
+    res << std::setw(2) << (int)p[5];
 
+    std::cout << res.str();
     return 0;
 }
