@@ -1,130 +1,187 @@
 //
 // Created by Kishchenko Ivan on 27/11/2022.
 //
-
-#include "logging/Logging.h"
-#include "bitmask_operators.hpp"
-#include <system_error>
-
-typedef uint_least8_t MsgId;
-
-struct Message {
-    Message() = default;
-    [[nodiscard]] virtual MsgId getMsgId() const = 0;
-};
-
-template<MsgId id>
-struct TMessage : Message {
-public:
-    enum {
-        ID = id
-    };
-
-    [[nodiscard]] MsgId getMsgId() const override {
-        return ID;
-    }
-};
-
-template<MsgId id, typename T>
-struct TContainer : TMessage<id> {
-    T msg;
-};
-
-struct ApplicationMessage : TMessage<0xff> {
-    std::string message;
-};
-
-namespace iot {
-    enum class errc {
-        success = 0,
-        device_unknown,
-        device_auth_failed
-    };
-
-    namespace detail {
-
-        class iot_category : public std::error_category {
-        public:
-            const char *name() const noexcept override {
-                return "my app";
-            }
-
-            [[nodiscard]] std::string message(int ev) const override {
-                switch (static_cast<iot::errc>(ev)) {
-                    case iot::errc::success:
-                        return "SUCCESS";
-                    case iot::errc::device_unknown:
-                        return "device unknown";
-                    case iot::errc::device_auth_failed:
-                        return "device auth failed";
-                    default:
-                        return "unknown";
-                }
-            }
-
-            [[nodiscard]] bool equivalent(int code, const std::error_condition &condition) const _NOEXCEPT override {
-                return error_category::equivalent(code, condition);
-            }
-        };
-    }
-
-
-    const std::error_category &category() {
-        // The category singleton
-        static detail::iot_category instance;
-        return instance;
-    }
-
-    inline std::error_code make_error_code(iot::errc val) {
-        // Create an error_code with the original mpg123 error value
-        // and the mpg123 error category.
-        return {static_cast<int>(val), category()};
-    }
-
-    std::error_condition make_error_condition(iot::errc val) {
-        return {static_cast<int>(val), category()};
-    }
-}
-
-namespace std {
-    template<>
-    struct is_error_code_enum<iot::errc> : public true_type {
-    };
-
-    template<>
-    struct is_error_condition_enum<iot::errc> : public true_type {
-    };
-}
-
+#include <string>
+#include <vector>
+#include <optional>
 #include <iostream>
-#include <iomanip>
+#include <cjson/cJSON.h>
+#include <unistd.h>
 
-#include <etl/string.h>
+struct MqttProperties {
+    struct BrokerInfo {
+        std::string uri;
+        std::optional<std::string> username;
+        std::optional<std::string> password;
+        std::optional<std::string> caCert;
+        std::optional<std::string> clientCert;
+        std::optional<std::string> clientKey;
+        std::string deviceName;
+        std::string productName;
+    };
 
-struct SimpleStruct {
-   char ssid[32];
+    std::vector<BrokerInfo> brokers;
+    int retries{3};
 };
 
-struct EtlStruct {
-    etl::string<32> ssid;
+void fromJson(cJSON *json, MqttProperties::BrokerInfo &props) {
+    cJSON *item = json->child;
+    while (item) {
+        if (!strcmp(item->string, "uri") && item->type == cJSON_String) {
+            props.uri = item->valuestring;
+        } else if (!strcmp(item->string, "username") && item->type == cJSON_String) {
+            props.username = item->valuestring;
+        } else if (!strcmp(item->string, "password") && item->type == cJSON_String) {
+            props.password = item->valuestring;
+        } else if (!strcmp(item->string, "ca-cert-file") && item->type == cJSON_String) {
+            props.caCert = item->valuestring;
+        } else if (!strcmp(item->string, "client-cert") && item->type == cJSON_String) {
+            props.clientCert = item->valuestring;
+        } else if (!strcmp(item->string, "client-key-file") && item->type == cJSON_String) {
+            props.clientKey = item->valuestring;
+        } else if (!strcmp(item->string, "device-name") && item->type == cJSON_String) {
+            props.deviceName = item->valuestring;
+        } else if (!strcmp(item->string, "product-name") && item->type == cJSON_String) {
+            props.productName = item->valuestring;
+        }
+
+        item = item->next;
+    }
+}
+
+void fromJson(cJSON *json, MqttProperties &props) {
+    MqttProperties::BrokerInfo info;
+    if (json->type == cJSON_Object) {
+        fromJson(json, info);
+        props.brokers.push_back(info);
+    } else if (json->type == cJSON_Array) {
+        cJSON *item = json->child;
+        while (item) {
+            if (item->type == cJSON_Object) {
+                fromJson(item, info);
+                props.brokers.push_back(info);
+            }
+            item = item->next;
+        }
+    }
+
+}
+
+std::string jsonConfig = R"(
+{
+  "mqtt": {
+        "type": "local",
+        "uri": "mqtt://192.168.0.3",
+        "username": "mqtt",
+        "password": "mqtt",
+        "device-name": "magic-lamp",
+        "product-name": "darvik-home"
+    }
+}
+)";
+
+class MqttLoadBalancer {
+    int _retries;
+    int _iterRetries{0};
+    std::vector<MqttProperties::BrokerInfo>::iterator _iter;
+    std::vector<MqttProperties::BrokerInfo> _brokers;
+public:
+    explicit MqttLoadBalancer(const MqttProperties &props) : _brokers(props.brokers), _retries(props.retries) {
+        _iter = _brokers.end();
+    }
+
+    std::tuple<MqttProperties::BrokerInfo &, bool> getNextBroker() {
+        if (--_iterRetries <= 0) {
+            _iterRetries = _retries;
+            if (_iter == _brokers.end()) {
+                _iter = _brokers.begin();
+            } else if (++_iter == _brokers.end()) {
+                _iter = _brokers.begin();
+            }
+
+            return {*_iter, true};
+        }
+
+        return {*_iter, false};
+    }
 };
+
+bool compareTopics(std::string_view topic, std::string_view origin) {
+    enum class State {
+        None,
+        Slash,
+    } state = State::None;
+    auto it = topic.begin(), oit = origin.begin();
+
+    while (it != topic.end() && oit != origin.end()) {
+        switch (state) {
+            case State::Slash:
+                if (*it == '#') {
+                    if (*oit == '/') return false;
+                    if (++oit == origin.end()) ++it;
+                    continue;
+                } else if (*it == '+') {
+                    if (*oit != '/') {
+                        ++oit;
+                        continue;
+                    } else ++it;
+                } else {
+                    if (*it == '/') ++oit;
+                    state = State::None;
+                }
+                break;
+            case State::None:
+            default:
+                if (*it == '/') {
+                    if (*oit != '/') return false;
+                    state = State::Slash;
+                } else if (*it == '+' || *it == '#') {
+                    return false;
+                }
+                if (*it != *oit) return false;
+        }
+
+        ++it, ++oit;
+    }
+
+    if (it != topic.end() && *it == '+') {
+        ++it;
+    }
+
+    return it == topic.end() && oit == origin.end();
+}
+
 
 int main(int argc, char *argv[]) {
+    std::cout << compareTopics("/registry/device/user/custom-topic", "/registry/device/user/custom-topic") << std::endl;
+    std::cout << compareTopics("/registry/device/+/+", "/registry/device/user/custom-topic") << std::endl;
+    std::cout << compareTopics("/user/custom-topic", "/registry/device/user/custom-topic") << std::endl;
 
-    std::cout << "is trivial SimpleStruct: " <<etl::is_trivially_copyable_v<SimpleStruct> << std::endl;
+    std::string topic = "/registry/device/user/custom-topic";
+    MqttProperties props;
 
-    std::cout << "is trivial EtlStruct: " <<std::is_trivially_copyable_v<EtlStruct> << std::endl;
+    cJSON *json = cJSON_ParseWithLength(jsonConfig.c_str(), jsonConfig.size());
+    cJSON *item = json->child;
+    while (item) {
+        if (0 == strcmp(item->string, "mqtt")) {
+            fromJson(item, props);
+        }
+        item = item->next;
+    }
 
-    uint8_t p[] = { 0x01, 0x0F, 0x03, 0x04, 0x05, 0x06 };
-    std::stringstream res;
-    res << std::uppercase << std::setfill('0') << std::hex;
-    res << std::setw(2) << (int)p[0] << ":";
-    res << std::setw(2) << (int)p[1] << ":";
-    res << std::setw(2) << (int)p[2] << ":";
-    res << std::setw(2) << (int)p[3] << ":";
-    res << std::setw(2) << (int)p[4] << ":";
-    res << std::setw(2) << (int)p[5];
+    cJSON_free(json);
 
-    std::cout << res.str();
+    MqttLoadBalancer balancer(props);
+
+    while (true) {
+        auto [broker, status] = balancer.getNextBroker();
+        if (status) {
+            std::cout << "updated server: " << broker.uri << std::endl;
+        } else {
+            std::cout << "cur server: " << broker.uri << std::endl;
+        }
+        sleep(2);
+    }
+
     return 0;
 }

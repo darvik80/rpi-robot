@@ -14,5 +14,6 @@ include_directories(
 )
 
 find_package(etl REQUIRED)
+find_package(cJSON REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} logging core etl::etl)
+target_link_libraries(${PROJECT_NAME} logging core etl::etl cjson::cjson)

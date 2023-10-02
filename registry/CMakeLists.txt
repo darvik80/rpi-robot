@@ -11,6 +11,7 @@ file(GLOB SRCS_G
         src/resources/*.cpp)
 
 find_package(libpqxx)
+find_package(prometheus-cpp)
 
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -88,4 +89,13 @@ else ()
     file(COPY resources/settings.json DESTINATION ${PROPERTIES_DIR}/${PROJECT_NAME})
 endif ()
 
-target_link_libraries(${PROJECT_NAME} logging application iot-platform libpqxx::pqxx ${IOKIT_LIBRARY} ${CORE_LIBRARY})
+target_link_libraries(
+        ${PROJECT_NAME}
+        logging
+        application
+        iot-platform
+        libpqxx::pqxx
+        prometheus-cpp::prometheus-cpp
+        ${IOKIT_LIBRARY}
+        ${CORE_LIBRARY}
+)

@@ -10,6 +10,9 @@
 #include "service/registry/RegistryRepository.h"
 #include "service/device/DeviceRepository.h"
 #include "service/device/DeviceTelemetryRepository.h"
+#include "service/PrometheusService.h"
+
+#include <prometheus/gauge.h>
 
 class RegistryDatabase : public Database {
 public:
@@ -31,10 +34,13 @@ protected:
         registry.createService<IotRegistry>();
         registry.createService<RegistryDatabase>();
         registry.createService<HttpService>();
+        registry.createService<PrometheusService>();
 
         registry.getService<EventBusService>().subscribe<IotTelemetry>(
-                [&registry](const IotTelemetry &event) -> bool {
+                [this, &registry](const IotTelemetry &event) -> bool {
+                    info("device: {}, telemetry: {}", event.deviceId, event.message.dump());
                     auto &db = registry.getService<RegistryDatabase>();
+
                     Filter filter;
                     filter.add("name", event.deviceId);
                     auto dev = db.getRepository<DeviceRepository>().findOne(filter);
@@ -45,6 +51,21 @@ protected:
                         };
                         db.getRepository<DeviceTelemetryRepository>().insert(telemetry);
                     }
+
+                    if (event.message.contains("status")) {
+                        auto &prometheus = registry.getService<PrometheusService>();
+                        std::string status = event.message["status"].get<std::string>();
+                        auto &gauge = prometheus::BuildGauge()
+                                .Name("devices")
+                                .Register(*prometheus.getRegistry());
+                        info("device: {}, status: {}", event.deviceId, status);
+                        if (status == "online") {
+                            gauge.Add({{"device_id", event.deviceId}}).Increment();
+                        } else if (status == "offline") {
+                            gauge.Add({{"device_id", event.deviceId}}).Decrement();
+                        }
+                    }
+
                     return true;
                 });
 
