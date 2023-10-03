@@ -12,6 +12,7 @@ build
 cmake-build-*
 /venv/
 
+docker-debug
 docker-debug-*
 docker-data
 

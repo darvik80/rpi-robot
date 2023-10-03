@@ -32,6 +32,9 @@ inline void fromEnv(EnvPropertiesSource &source, PrometheusProperties &props) {
 class PrometheusService : public BaseServiceShared<PrometheusService> {
     std::shared_ptr<prometheus::Exposer> _exposer;
     std::shared_ptr<prometheus::Registry> _registry;
+private:
+    void handleTelemetryJsonObject(prometheus::Registry &registry, std::string_view device, const nlohmann::json &json);
+    void handleTelemetryJson(prometheus::Registry &registry, std::string_view device, const nlohmann::json &json);
 public:
     PrometheusService();
 

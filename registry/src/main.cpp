@@ -12,8 +12,6 @@
 #include "service/device/DeviceTelemetryRepository.h"
 #include "service/PrometheusService.h"
 
-#include <prometheus/gauge.h>
-
 class RegistryDatabase : public Database {
 public:
     void createRepositories() override {
@@ -37,8 +35,7 @@ protected:
         registry.createService<PrometheusService>();
 
         registry.getService<EventBusService>().subscribe<IotTelemetry>(
-                [this, &registry](const IotTelemetry &event) -> bool {
-                    info("device: {}, telemetry: {}", event.deviceId, event.message.dump());
+                [&registry](const IotTelemetry &event) -> bool {
                     auto &db = registry.getService<RegistryDatabase>();
 
                     Filter filter;
@@ -51,34 +48,14 @@ protected:
                         };
                         db.getRepository<DeviceTelemetryRepository>().insert(telemetry);
                     }
-
-                    if (event.message.contains("status")) {
-                        auto &prometheus = registry.getService<PrometheusService>();
-                        std::string status = event.message["status"].get<std::string>();
-                        auto &gauge = prometheus::BuildGauge()
-                                .Name("devices")
-                                .Register(*prometheus.getRegistry());
-                        info("device: {}, status: {}", event.deviceId, status);
-                        if (status == "online") {
-                            gauge.Add({{"device_id", event.deviceId}}).Increment();
-                        } else if (status == "offline") {
-                            gauge.Add({{"device_id", event.deviceId}}).Decrement();
-                        }
-                    }
-
                     return true;
                 });
-
-    }
-
-    void destroy(Registry &registry) override {
 
     }
 };
 
 
 int main(int argc, char *argv[]) {
-
     RegistryApp app;
     app.run(argc, argv);
 
