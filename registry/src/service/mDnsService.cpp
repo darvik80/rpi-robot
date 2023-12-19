@@ -66,8 +66,8 @@ int mdnsRecordCallback(int sock, const struct sockaddr *from, size_t addrlen,
 
         if ((service.length == (sizeof(dns_sd) - 1)) && (strncmp(service.str, dns_sd, sizeof(dns_sd) - 1) == 0)) {
             std::cout << "  --> answer " << service_record->service << " \n";
-            mdns_query_answer_unicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer), service_record->service,
-                                  service_length);
+//            mdns_query_answer_unicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer), service_record->service,
+//                                  service_length);
         } else if ((service.length == service_length) &&
                    (strncmp(service.str, service_record->service, service_length) == 0)) {
             uint16_t unicast = (rclass & MDNS_UNICAST_RESPONSE);
@@ -75,10 +75,10 @@ int mdnsRecordCallback(int sock, const struct sockaddr *from, size_t addrlen,
                      << service_record->port << " (" << (unicast ? "unicast" : "multicast") << ")\n";
             if (!unicast) addrlen = 0;
             char txt_record[] = "asdf=1";
-            mdns_query_answer_multicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer), query_id, service_record->service,
-                              service_length, service_record->hostname, strlen(service_record->hostname),
-                              service_record->address_ipv4, service_record->address_ipv6, (uint16_t)service_record->port,
-                              txt_record, sizeof(txt_record));
+//            mdns_query_answer_multicast(sock, from, addrlen, sendbuffer, sizeof(sendbuffer), query_id, service_record->service,
+//                              service_length, service_record->hostname, strlen(service_record->hostname),
+//                              service_record->address_ipv4, service_record->address_ipv6, (uint16_t)service_record->port,
+//                              txt_record, sizeof(txt_record));
         }
     } else if (rtype == static_cast<uint16_t>(mdns_record_type::MDNS_RECORDTYPE_SRV)) {
         mdns_record_srv_t service =
