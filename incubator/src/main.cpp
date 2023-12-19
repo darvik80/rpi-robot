@@ -1,187 +1,219 @@
 //
 // Created by Kishchenko Ivan on 27/11/2022.
 //
-#include <string>
-#include <vector>
-#include <optional>
-#include <iostream>
-#include <cjson/cJSON.h>
-#include <unistd.h>
 
-struct MqttProperties {
-    struct BrokerInfo {
-        std::string uri;
-        std::optional<std::string> username;
-        std::optional<std::string> password;
-        std::optional<std::string> caCert;
-        std::optional<std::string> clientCert;
-        std::optional<std::string> clientKey;
-        std::string deviceName;
-        std::string productName;
+#include <Application.h>
+#include <Registry.h>
+#include <boost/asio/serial_port.hpp>
+
+#include <list>
+#include <iostream>
+
+LOG_COMPONENT_SETUP(esp8266, esp8266_logger)
+
+enum Esp01ConnState {
+    STATUS_UNKNOWN,
+    STATUS_CHECK_VERSION,
+    STATUS_WIFI_GET_STATUS,
+    STATUS_WIFI_SET_MODE,
+    STATUS_WIFI_WAIT_CONNECTION,
+    STATUS_MQTT_WAIT_SET_USER_CFG,
+    STATUS_MQTT_WAIT_CONNECTION,
+    STATUS_MQTT_WAIT_SUB,
+};
+
+class SerialPortService : public BaseServiceShared<SerialPortService> {
+    const char *MQTT_EVENT_SUBRECV = "+MQTTSUBRECV";
+    const char *MQTT_EVENT_WIFI_DISCONNECTED = "WIFI DISCONNECTED";
+
+    std::shared_ptr<boost::asio::serial_port> _serial;
+
+    std::array<char, 1024> _raw{};
+
+    std::string _response;
+
+    struct Command {
+        std::string cmd;
+        std::function<void(std::string_view data)> callback;
     };
 
-    std::vector<BrokerInfo> brokers;
-    int retries{3};
-};
+    std::queue<Command> _cmd;
 
-void fromJson(cJSON *json, MqttProperties::BrokerInfo &props) {
-    cJSON *item = json->child;
-    while (item) {
-        if (!strcmp(item->string, "uri") && item->type == cJSON_String) {
-            props.uri = item->valuestring;
-        } else if (!strcmp(item->string, "username") && item->type == cJSON_String) {
-            props.username = item->valuestring;
-        } else if (!strcmp(item->string, "password") && item->type == cJSON_String) {
-            props.password = item->valuestring;
-        } else if (!strcmp(item->string, "ca-cert-file") && item->type == cJSON_String) {
-            props.caCert = item->valuestring;
-        } else if (!strcmp(item->string, "client-cert") && item->type == cJSON_String) {
-            props.clientCert = item->valuestring;
-        } else if (!strcmp(item->string, "client-key-file") && item->type == cJSON_String) {
-            props.clientKey = item->valuestring;
-        } else if (!strcmp(item->string, "device-name") && item->type == cJSON_String) {
-            props.deviceName = item->valuestring;
-        } else if (!strcmp(item->string, "product-name") && item->type == cJSON_String) {
-            props.productName = item->valuestring;
+    Esp01ConnState _state{STATUS_UNKNOWN};
+
+    std::string wifiSSID = "alibaba-guest";
+    std::string wifiPASS = "";
+
+    std::string clientId = "a24TdEOcf2z.mqttx-client|securemode=2\\,signmethod=hmacsha256\\,timestamp=1698901303093|";
+    std::string username = "mqttx-client&a24TdEOcf2z";
+    std::string password = "9701be0910906d016c246f3763d1ec7d2ddd96c9bbd5633e5ad10067540f1bd5";
+    std::string uri = "a24TdEOcf2z.iot-as-mqtt.ap-southeast-1.aliyuncs.com";
+
+private:
+    bool handleEvent(std::string_view reply) {
+        if (MQTT_EVENT_SUBRECV == reply.substr(0, strlen(MQTT_EVENT_SUBRECV))) {
+            handleMqttEventSubRecv(reply);
+            return true;
+        } else if (reply.find(MQTT_EVENT_WIFI_DISCONNECTED) != std::string::npos) {
+            writeSome("AT+GMR\r\n");
+            return true;
         }
 
-        item = item->next;
-    }
-}
-
-void fromJson(cJSON *json, MqttProperties &props) {
-    MqttProperties::BrokerInfo info;
-    if (json->type == cJSON_Object) {
-        fromJson(json, info);
-        props.brokers.push_back(info);
-    } else if (json->type == cJSON_Array) {
-        cJSON *item = json->child;
-        while (item) {
-            if (item->type == cJSON_Object) {
-                fromJson(item, info);
-                props.brokers.push_back(info);
-            }
-            item = item->next;
-        }
+        return false;
     }
 
-}
-
-std::string jsonConfig = R"(
-{
-  "mqtt": {
-        "type": "local",
-        "uri": "mqtt://192.168.0.3",
-        "username": "mqtt",
-        "password": "mqtt",
-        "device-name": "magic-lamp",
-        "product-name": "darvik-home"
-    }
-}
-)";
-
-class MqttLoadBalancer {
-    int _retries;
-    int _iterRetries{0};
-    std::vector<MqttProperties::BrokerInfo>::iterator _iter;
-    std::vector<MqttProperties::BrokerInfo> _brokers;
-public:
-    explicit MqttLoadBalancer(const MqttProperties &props) : _brokers(props.brokers), _retries(props.retries) {
-        _iter = _brokers.end();
+    void handleMqttEventSubRecv(std::string_view reply) {
     }
 
-    std::tuple<MqttProperties::BrokerInfo &, bool> getNextBroker() {
-        if (--_iterRetries <= 0) {
-            _iterRetries = _retries;
-            if (_iter == _brokers.end()) {
-                _iter = _brokers.begin();
-            } else if (++_iter == _brokers.end()) {
-                _iter = _brokers.begin();
-            }
-
-            return {*_iter, true};
-        }
-
-        return {*_iter, false};
-    }
-};
-
-bool compareTopics(std::string_view topic, std::string_view origin) {
-    enum class State {
-        None,
-        Slash,
-    } state = State::None;
-    auto it = topic.begin(), oit = origin.begin();
-
-    while (it != topic.end() && oit != origin.end()) {
-        switch (state) {
-            case State::Slash:
-                if (*it == '#') {
-                    if (*oit == '/') return false;
-                    if (++oit == origin.end()) ++it;
-                    continue;
-                } else if (*it == '+') {
-                    if (*oit != '/') {
-                        ++oit;
-                        continue;
-                    } else ++it;
-                } else {
-                    if (*it == '/') ++oit;
-                    state = State::None;
-                }
+    void handleSuccess() {
+        switch (_state) {
+            case STATUS_UNKNOWN:
+            case STATUS_CHECK_VERSION:
+                _state = STATUS_WIFI_SET_MODE;
+            case STATUS_WIFI_SET_MODE:
+                writeSome(fmt::format(R"(AT+CWJAP="{}","{}")" "\r\n", wifiSSID, wifiPASS));
+                _state = STATUS_WIFI_WAIT_CONNECTION;
                 break;
-            case State::None:
-            default:
-                if (*it == '/') {
-                    if (*oit != '/') return false;
-                    state = State::Slash;
-                } else if (*it == '+' || *it == '#') {
-                    return false;
-                }
-                if (*it != *oit) return false;
+            case STATUS_WIFI_WAIT_CONNECTION:
+                writeSome(fmt::format(
+                                  R"(AT+MQTTUSERCFG=0,mqtt,"{}","{}","{}",,,"")",
+                                  clientId,
+                                  username,
+                                  password
+                          )
+                );
+                _state = STATUS_MQTT_WAIT_SET_USER_CFG;
+                break;
+            case  STATUS_MQTT_WAIT_SET_USER_CFG:
+                writeSome(fmt::format(
+                                  "AT+MQTTCONN=0,\"{}\",1883,1",
+                                  uri
+                          )
+                );
+                _state = STATUS_MQTT_WAIT_CONNECTION;
+                break;
+            case STATUS_MQTT_WAIT_CONNECTION:
+                break;
         }
-
-        ++it, ++oit;
     }
 
-    if (it != topic.end() && *it == '+') {
-        ++it;
+    void handleError() {
+        _state = STATUS_CHECK_VERSION;
+        writeSome("AT+GMR\r\n");
     }
 
-    return it == topic.end() && oit == origin.end();
+    bool parceMessageReport(std::string_view msg) {
+        esp8266::log::info("resp> {}", msg);
+        if (msg == "ready") {
+            writeSome("AT+GMR\r\n");
+        } else if (msg == "busy p…") {
+            _state = STATUS_UNKNOWN;
+        } else if (msg == "OK") {
+            handleSuccess();
+        } else if (msg == "ERROR") {
+            handleError();
+        } else {
+            handleEvent(msg);
+        }
+    }
+
+    void asyncRead() {
+        _serial->async_read_some(
+                boost::asio::buffer(_raw.data(), _raw.size()),
+                [this](const boost::system::error_code &ec, size_t bytes) {
+                    for (unsigned int i = 0; i < bytes; ++i) {
+                        char c = _raw[i];
+                        if (c == '\n') {
+                            while (_response.back() == '\r') {
+                                _response.pop_back();
+                            }
+                            parceMessageReport(_response);
+                            _response.clear();
+                        } else {
+                            _response += c;
+                        }
+                    }
+
+                    asyncRead();
+                });
+    }
+
+    std::size_t writeSome(std::string_view buf) {
+        esp8266::log::info(buf.data());
+        boost::system::error_code ec;
+        return _serial->write_some(boost::asio::buffer(buf), ec);
+    }
+
+public:
+    const char *name() override {
+        return "serial";
+    }
+
+    void postConstruct(Registry &registry) override {
+        _serial = std::make_shared<boost::asio::serial_port>(registry.getIoService());
+        _serial->open("/dev/cu.usbserial-130");
+
+        _serial->set_option(boost::asio::serial_port_base::baud_rate(115200));
+        _serial->set_option(boost::asio::serial_port_base::character_size(8));
+        _serial->set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one));
+        _serial->set_option(boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none));
+        _serial->set_option(
+                boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
+
+        asyncRead();
+    }
+};
+
+class Esp8266App : public Application {
+public:
+    const char *name() override {
+        return "esp8266";
+    }
+
+protected:
+    void setup(Registry &registry) override {
+        registry.createService<SerialPortService>();
+    }
+};
+
+typedef uint8_t bdaddr[8];
+
+struct Barcode {
+    char name[64]{};
+    bdaddr bdAddr{};
+};
+
+namespace detail {
+    void set(char *dst, std::string_view src, size_t size) {
+        std::copy_n(src.begin(), std::min(size, src.size()), dst);
+        if (size > src.size()) {
+            std::fill_n(dst + src.size(), size - src.size(), '0');
+        }
+    }
+
+    template<typename T, std::enable_if_t<std::is_trivially_copyable<T>::value, bool> = true>
+    void set(T &dst, const T &src, size_t size) {
+        memcpy(&dst, &src, size);
+    }
 }
 
+template<typename T>
+inline void set_prop(T &dst, const std::string_view &src) {
+    detail::set(dst, src, sizeof(T));
+}
+
+template<typename T>
+inline void set_prop(T &dst, const T &src) {
+    detail::set(dst, src, sizeof(T));
+}
 
 int main(int argc, char *argv[]) {
-    std::cout << compareTopics("/registry/device/user/custom-topic", "/registry/device/user/custom-topic") << std::endl;
-    std::cout << compareTopics("/registry/device/+/+", "/registry/device/user/custom-topic") << std::endl;
-    std::cout << compareTopics("/user/custom-topic", "/registry/device/user/custom-topic") << std::endl;
-
-    std::string topic = "/registry/device/user/custom-topic";
-    MqttProperties props;
-
-    cJSON *json = cJSON_ParseWithLength(jsonConfig.c_str(), jsonConfig.size());
-    cJSON *item = json->child;
-    while (item) {
-        if (0 == strcmp(item->string, "mqtt")) {
-            fromJson(item, props);
-        }
-        item = item->next;
-    }
-
-    cJSON_free(json);
-
-    MqttLoadBalancer balancer(props);
-
-    while (true) {
-        auto [broker, status] = balancer.getNextBroker();
-        if (status) {
-            std::cout << "updated server: " << broker.uri << std::endl;
-        } else {
-            std::cout << "cur server: " << broker.uri << std::endl;
-        }
-        sleep(2);
-    }
+    Esp8266App app;
+    app.run(argc, argv);
+//    Barcode barcode{};
+//
+//    set_prop(barcode.name, "hello");
+//    set_prop(barcode.bdAddr, {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07});
 
     return 0;
 }

@@ -13,7 +13,6 @@ include_directories(
         /usr/include
 )
 
-find_package(etl REQUIRED)
 find_package(cJSON REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} logging core etl::etl cjson::cjson)
+target_link_libraries(${PROJECT_NAME} logging core application)

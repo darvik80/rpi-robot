@@ -12,6 +12,7 @@ file(GLOB SRCS_G
 
 find_package(libpqxx)
 find_package(prometheus-cpp)
+find_package(mdns)
 
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -96,6 +97,7 @@ target_link_libraries(
         iot-platform
         libpqxx::pqxx
         prometheus-cpp::prometheus-cpp
+        mdns::mdns
         ${IOKIT_LIBRARY}
         ${CORE_LIBRARY}
 )

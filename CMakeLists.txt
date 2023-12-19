@@ -12,10 +12,12 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME ON)
 add_definitions(-DBOOST_STACKTRACE_GNU_SOURCE_NOT_REQUIRED -DBOOST_STACKTRACE_USE_ADDR2LINE)
 
-find_package(Boost 1.81 REQUIRED)
+find_package(Boost 1.83 REQUIRED)
 find_package(fmt REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(nlohmann_json REQUIRED)
+
+link_directories(${Boost_LIBRARY_DIRS})
 # }
 
 include_directories(
