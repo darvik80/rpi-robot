@@ -20,7 +20,7 @@ include_directories(
 )
 
 set(RESOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
-set(WWW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/www/build)
+set(WWW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/www)
 
 message(STATUS "Build ReactJS App")
 execute_process(
@@ -56,6 +56,8 @@ if (APPLE)
     resource(HTML_MEDIA ${WWW_DIRECTORY}/build/static/media Resources/www/static/media *.*)
     resource(HTML_IMG ${WWW_DIRECTORY}/build/img Resources/www/img *.png)
 
+    message("WWW: " ${WWW_DIRECTORY}/build)
+    message("HTML:" ${HTML})
     set(RESOURCES_G
             ${RESOURCES}
             ${HTML}

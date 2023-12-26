@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS device_telemetry;
 DROP TABLE IF EXISTS device;
 DROP TABLE IF EXISTS registryId;
 
-CREATE TABLE IF NOT EXISTS registryId
+CREATE TABLE IF NOT EXISTS registry
 (
     id         SERIAL PRIMARY KEY,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,

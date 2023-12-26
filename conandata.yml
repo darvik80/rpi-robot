@@ -1,0 +1,11 @@
+# This file is managed by Conan, contents will be overwritten.
+# To keep your changes, remove these comment lines, but the plugin won't be able to modify your requirements
+
+requirements:
+  - "libpqxx/7.8.1"
+  - "prometheus-cpp/1.1.0"
+  - "mdns/1.4.3"
+  - "openssl/3.2.0"
+  - "boost/1.83.0"
+  - "nlohmann_json/3.11.3"
+  - "fmt/10.1.1"

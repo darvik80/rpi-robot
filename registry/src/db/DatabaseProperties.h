@@ -8,6 +8,7 @@
 #include "properties/source/EnvPropertiesSource.h"
 
 struct DatabaseProperties {
+    std::string type;
     std::string host = "127.0.0.1";
     int port = 5432;
     std::string username = "postgres";
